@@ -19,10 +19,22 @@ def main(argv: list[str] | None = None) -> int:
         prog="langfilter",
         description="言語ブロック付き Markdown/QMD から必要な言語だけを抽出します。",
         epilog=(
-            "Examples:\n"
+            "最小例:\n"
             "  langfilter filter manuscript.qmd --lang ja -o manuscript.ja.qmd\n"
+            "\n"
+            "よく使う例:\n"
             "  cat manuscript.md | langfilter filter --lang en > manuscript.en.md\n"
-            "  langfilter filter --lang both < bilingual.md > merged.md"
+            "  langfilter filter --lang en manuscript.qmd -o manuscript.en.qmd\n"
+            "  langfilter filter --lang ja manuscript.qmd -o manuscript.ja.qmd\n"
+            "  langfilter filter --lang both manuscript.qmd -o manuscript.both.qmd\n"
+            "\n"
+            "失敗しやすいケース回避例:\n"
+            "  # パイプ入力時に input 引数は省略可能（- 扱い）\n"
+            "  cat bilingual.md | langfilter filter --lang ja > ja.md\n"
+            "  # --lang を切り替えて出力差分を比較\n"
+            "  langfilter filter manuscript.qmd --lang en > /tmp/en.md && \\\n"
+            "  langfilter filter manuscript.qmd --lang ja > /tmp/ja.md && \\\n"
+            "  langfilter filter manuscript.qmd --lang both > /tmp/both.md"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

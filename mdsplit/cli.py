@@ -14,11 +14,22 @@ def main(argv: list[str] | None = None) -> int:
         prog="mdsplit",
         description="Markdown/QMD ドキュメントを分割・再構成するツール。",
         epilog=(
-            "Examples:\n"
+            "最小例:\n"
             "  mdsplit decompose manuscript.qmd\n"
-            "  mdsplit decompose chapter.md -o chapter_sections --flat\n"
-            "  mdsplit compose chapter_sections/hierarchy.json -o rebuilt.qmd\n"
-            "  mdsplit verify chapter_sections/hierarchy.json"
+            "\n"
+            "よく使う例:\n"
+            "  mdsplit decompose manuscript.qmd -o manuscript_sections\n"
+            "  mdsplit compose manuscript_sections/hierarchy.json -o rebuilt.qmd\n"
+            "  mdsplit compose manuscript_sections/hierarchy.json > rebuilt.qmd\n"
+            "  mdsplit verify manuscript_sections/hierarchy.json\n"
+            "\n"
+            "失敗しやすいケース回避例:\n"
+            "  # 1) decompose -> 2) verify -> 3) compose の順で安全に確認\n"
+            "  mdsplit decompose manuscript.qmd -o manuscript_sections && \\\n"
+            "  mdsplit verify manuscript_sections/hierarchy.json && \\\n"
+            "  mdsplit compose manuscript_sections/hierarchy.json -o rebuilt.qmd\n"
+            "  # compose を標準出力で使うときはリダイレクトを忘れない\n"
+            "  mdsplit compose manuscript_sections/hierarchy.json > rebuilt.qmd"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

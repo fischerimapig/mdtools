@@ -14,10 +14,24 @@ def main(argv: list[str] | None = None) -> int:
         prog="mdhtml-rewrite",
         description="HTML 混在 Markdown/QMD の調査・整形・画像変換を行うユーティリティ。",
         epilog=(
-            "Examples:\n"
+            "最小例:\n"
+            "  mdhtml-rewrite inventory input.md -o inventory.json\n"
+            "\n"
+            "よく使う例:\n"
             "  mdhtml-rewrite inventory input.md -o inventory.json\n"
             "  mdhtml-rewrite rewrite input.md -o output.qmd --inventory inventory.json --report rewrite_report.json\n"
-            "  mdhtml-rewrite convert figures --format svg --report convert_report.json"
+            "  mdhtml-rewrite convert figures --dry-run\n"
+            "  mdhtml-rewrite convert figures --format svg --report convert_svg_report.json\n"
+            "  mdhtml-rewrite convert figures --format png --dpi 300 --report convert_png_report.json\n"
+            "\n"
+            "失敗しやすいケース回避例:\n"
+            "  # inventory を先に生成してから rewrite に渡し、判定の揺れを減らす\n"
+            "  mdhtml-rewrite inventory input.md -o inventory.json && \\\n"
+            "  mdhtml-rewrite rewrite input.md -o output.qmd --inventory inventory.json\n"
+            "  # convert は先に --dry-run で対象確認。SVG 優先か PNG+高DPI かを用途で切り替える\n"
+            "  mdhtml-rewrite convert figures --dry-run && \\\n"
+            "  mdhtml-rewrite convert figures --format svg && \\\n"
+            "  mdhtml-rewrite convert figures --format png --dpi 300"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
