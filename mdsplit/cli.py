@@ -12,46 +12,57 @@ from .decompose import decompose
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="mdsplit",
-        description="Decompose and reassemble Markdown/QMD documents.",
+        description="Markdown/QMD ドキュメントを分割・再構成するツール。",
+        epilog=(
+            "Examples:\n"
+            "  mdsplit decompose manuscript.qmd\n"
+            "  mdsplit decompose chapter.md -o chapter_sections --flat\n"
+            "  mdsplit compose chapter_sections/hierarchy.json -o rebuilt.qmd\n"
+            "  mdsplit verify chapter_sections/hierarchy.json"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # decompose
     p_decompose = subparsers.add_parser(
         "decompose",
-        help="Split a markdown file into sections and hierarchy JSON.",
+        help="Markdown/QMD をセクション群へ分割する",
+        description="入力の Markdown/QMD を見出し構造ごとに分割し、hierarchy.json を生成します。",
     )
-    p_decompose.add_argument("input", help="Input .md or .qmd file")
+    p_decompose.add_argument("input", help="入力 Markdown/QMD ファイル（.md / .qmd）。")
     p_decompose.add_argument(
         "-o", "--output-dir",
-        help="Output directory (default: <input_stem>_sections/)",
+        help="分割結果の出力先ディレクトリ。未指定時は <入力名>_sections/ を自動作成。",
     )
     p_decompose.add_argument(
         "--flat", action="store_true",
-        help="Use flat directory structure instead of nested",
+        help="階層ディレクトリではなくフラット構造で出力（ファイル配置のみ変更）。",
     )
 
     # compose
     p_compose = subparsers.add_parser(
         "compose",
-        help="Reassemble a markdown file from hierarchy JSON.",
+        help="hierarchy.json から Markdown/QMD を再構成する",
+        description="decompose で作成した hierarchy.json とセクション群から文書を再構成します。",
     )
-    p_compose.add_argument("hierarchy", help="Path to hierarchy.json")
+    p_compose.add_argument("hierarchy", help="入力 hierarchy.json のパス。")
     p_compose.add_argument(
         "-o", "--output",
-        help="Output file path (default: stdout)",
+        help="再構成後の出力ファイルパス。未指定時は標準出力へ書き出し。",
     )
     p_compose.add_argument(
         "--base-level", type=int, default=None,
-        help="Override base heading level",
+        help="見出しの基準レベルを上書き（例: 2 で ## から開始）。",
     )
 
     # verify
     p_verify = subparsers.add_parser(
         "verify",
-        help="Check that all section files referenced in hierarchy.json exist.",
+        help="hierarchy.json の参照ファイル存在を検証する",
+        description="hierarchy.json が参照するセクション Markdown/QMD ファイルの存在を検証します。",
     )
-    p_verify.add_argument("hierarchy", help="Path to hierarchy.json")
+    p_verify.add_argument("hierarchy", help="検証対象の hierarchy.json パス。")
 
     args = parser.parse_args(argv)
 
