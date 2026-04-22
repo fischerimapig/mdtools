@@ -1,7 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "mdtools"
 version = "0.1.0"
-description = "Add your description here"
+description = "Markdown tools collection"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = []
+
+[project.scripts]
+mdtools        = "mdtools.main:main"
+mdsplit        = "mdsplit.cli:main"
+langfilter     = "langfilter.cli:main"
+mdhtml-rewrite = "mdhtml_rewrite.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["mdtools", "mdsplit", "mdhtml_rewrite", "langfilter"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]
