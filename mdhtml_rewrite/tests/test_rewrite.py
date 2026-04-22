@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tools.mdhtml_rewrite.rewrite import rewrite_file
+from mdhtml_rewrite.rewrite import rewrite_file
 
 
 def test_rewrite_prefers_png_for_eps_with_sibling_png(tmp_path):
