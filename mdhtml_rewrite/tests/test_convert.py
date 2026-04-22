@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 
-from tools.mdhtml_rewrite import convert as convert_mod
-from tools.mdhtml_rewrite.model import ConversionResult
+from mdhtml_rewrite import convert as convert_mod
+from mdhtml_rewrite.model import ConversionResult
 
 
 def _write_eps(path: Path, creator: str) -> None:
