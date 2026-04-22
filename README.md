@@ -36,6 +36,7 @@ uv run mdsplit --help
 ## 使い方
 
 各ツールは個別コマンドとして、または `mdtools <tool>` の統合コマンドとして呼び出せます。
+まずは各コマンドの `--help` を確認し、オプション定義と最小実行例を把握してから README の詳細へ進んでください。
 
 ```bash
 mdsplit decompose document.md -o work/
@@ -131,3 +132,26 @@ uv run python -m pytest -q
 ## ライセンス
 
 MIT
+
+## ドキュメント運用ルール（README / --help 同期）
+
+### 基本方針
+
+- `--help` は「実行時に必要な操作情報（オプション定義・短い例）」を示す。
+- README は「背景、設計意図、詳細ユースケース」を示す。
+- まず `--help` を見てから README を読む導線を維持する。
+
+### 変更時チェックリスト（簡易運用）
+
+1. CLI の `epilog` を変更した場合、対応する README の「主要コマンド例（--help と同期）」節を同時に更新したか。
+2. README 側で主要コマンド例を変更した場合、対応する CLI の `epilog` を同時に更新したか。
+3. `--help` は短い実行例に留め、背景説明や長文の運用ノウハウは README に寄せたか。
+4. 仕上げに次を実行し、差分が意図通りか確認したか。
+
+```bash
+mdsplit --help
+langfilter --help
+mdhtml-rewrite --help
+git diff -- README.md mdsplit/README.md mdhtml_rewrite/README.md langfilter/README.md \
+  mdsplit/cli.py mdhtml_rewrite/cli.py langfilter/cli.py
+```
