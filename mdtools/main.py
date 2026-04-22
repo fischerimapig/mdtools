@@ -17,15 +17,36 @@ def _print_help(file=None) -> None:
     tool_list = ",".join(_TOOLS)
     print(f"usage: mdtools [-h] [--version] {{{tool_list}}} ...", file=file)
     print("", file=file)
-    print("Markdown tools collection.", file=file)
+    print("Markdown ドキュメント処理向けのツール群です。", file=file)
+    print("分割・言語抽出・書き換えを単一エントリポイントから実行できます。", file=file)
     print("", file=file)
     print("tools:", file=file)
     for name, (_, desc) in _TOOLS.items():
         print(f"  {name:<12} {desc}", file=file)
     print("", file=file)
+    print("tool details:", file=file)
+    print("  mdsplit", file=file)
+    print("    概要: Markdown を章・セクション単位で分割/再結合します。", file=file)
+    print("    代表的な利用シーン: 長文ドキュメントをレビュー単位で小さく分けたいとき。", file=file)
+    print("    次のヘルプ: mdtools mdsplit --help", file=file)
+    print("", file=file)
+    print("  langfilter", file=file)
+    print("    概要: バイリンガル Markdown から必要言語の行だけを抽出します。", file=file)
+    print("    代表的な利用シーン: 日英併記の原稿から配布用に片言語版を作るとき。", file=file)
+    print("    次のヘルプ: mdtools langfilter --help", file=file)
+    print("", file=file)
+    print("  rewrite", file=file)
+    print("    概要: HTML 風 Markdown を QMD 向け形式へ変換します。", file=file)
+    print("    代表的な利用シーン: 既存 Markdown を Quarto 用に整形したいとき。", file=file)
+    print("    次のヘルプ: mdtools rewrite --help", file=file)
+    print("", file=file)
+    print("共通の使い方:", file=file)
+    print("  mdtools <tool> <subcommand> --help", file=file)
+    print("  例: mdtools mdsplit split --help", file=file)
+    print("", file=file)
     print("options:", file=file)
-    print("  -h, --help   show this help message and exit", file=file)
-    print("  --version    show version and exit", file=file)
+    print("  --version    バージョンを表示して終了", file=file)
+    print("  -h, --help   このヘルプを表示して終了", file=file)
 
 
 def main() -> None:
@@ -42,6 +63,8 @@ def main() -> None:
     tool = argv[0]
     if tool not in _TOOLS:
         print(f"mdtools: unknown tool '{tool}'", file=sys.stderr)
+        print(f"hint: available tools: {', '.join(_TOOLS)}", file=sys.stderr)
+        print("hint: try `mdtools --help` or `mdtools <tool> --help`", file=sys.stderr)
         _print_help(file=sys.stderr)
         sys.exit(1)
 
