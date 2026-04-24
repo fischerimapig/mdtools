@@ -10,10 +10,15 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from enum import Enum, auto
 from typing import Callable
 
+
 from .loader import Entry
+from mdtools.core.mdscan import (
+    join_lines_preserving_trailing_newline,
+    scan_md_lines_from_list,
+    split_text_preserving_trailing_newline,
+)
 
 
 # ── Regex patterns ─────────────────────────────────────────────────
@@ -25,9 +30,6 @@ SPAN_RE = re.compile(r"\[([^\[\]]*)\]\{([^{}]+)\}")
 #   ::: {.glossary filter=term format=dl}
 GLOSSARY_OPEN_RE = re.compile(r"^:::\s*\{\s*\.glossary\b([^}]*)\}\s*$")
 FENCE_CLOSE_RE = re.compile(r"^:::\s*$")
-
-# Code fence (3+ backticks or tildes)
-CODE_FENCE_RE = re.compile(r"^(`{3,}|~{3,})")
 
 # Attribute tokens inside span/div braces
 ATTR_KV_RE = re.compile(r'(\w+)\s*=\s*("([^"]*)"|(\S+))')
@@ -228,12 +230,6 @@ def _render_definition_list(entries: list[Entry], lang: str) -> str:
 # ── Main state machine ────────────────────────────────────────────
 
 
-class _State(Enum):
-    NORMAL = auto()
-    IN_CODE_FENCE = auto()
-    IN_GLOSSARY_BLOCK = auto()
-
-
 MissingHandler = Callable[[str, Attrs, str], str]
 """Called for an unresolved marker: (id, attrs, original_marker_text) -> replacement."""
 
@@ -278,15 +274,9 @@ def resolve(
     else:
         raise ValueError(f"invalid on_missing value: {on_missing!r}")
 
-    lines = text.split("\n")
-    ends_with_newline = text.endswith("\n")
-    if ends_with_newline and lines and lines[-1] == "":
-        lines = lines[:-1]
-
+    lines, trailing = split_text_preserving_trailing_newline(text)
     out: list[str] = []
-    state = _State.NORMAL
-    code_fence_char: str | None = None
-    code_fence_len = 0
+    in_glossary_block = False
     pending_block_attrs: Attrs | None = None
 
     def substitute_spans(line: str) -> str:
@@ -310,48 +300,32 @@ def resolve(
             return resolve_marker(entry, attrs, lang, label)
         return SPAN_RE.sub(repl, line)
 
-    for line in lines:
-        if state == _State.NORMAL:
-            m_code = CODE_FENCE_RE.match(line)
-            if m_code:
-                code_fence_char = m_code.group(1)[0]
-                code_fence_len = len(m_code.group(1))
-                state = _State.IN_CODE_FENCE
-                out.append(line)
-                continue
+    for md in scan_md_lines_from_list(lines):
+        line = md.text
 
-            m_gloss = GLOSSARY_OPEN_RE.match(line)
-            if m_gloss:
-                pending_block_attrs = parse_attrs(m_gloss.group(1))
-                state = _State.IN_GLOSSARY_BLOCK
-                continue
-
-            out.append(substitute_spans(line))
-
-        elif state == _State.IN_CODE_FENCE:
+        if md.in_code_fence:
             out.append(line)
-            m_close = CODE_FENCE_RE.match(line)
-            if m_close:
-                close_char = m_close.group(1)[0]
-                close_len = len(m_close.group(1))
-                if close_char == code_fence_char and close_len >= code_fence_len:
-                    state = _State.NORMAL
-                    code_fence_char = None
-                    code_fence_len = 0
+            continue
 
-        elif state == _State.IN_GLOSSARY_BLOCK:
+        if in_glossary_block:
             if FENCE_CLOSE_RE.match(line):
                 assert pending_block_attrs is not None
                 rendered = render_glossary_block(entries, pending_block_attrs, lang)
                 if rendered:
                     out.extend(rendered.split("\n"))
                 pending_block_attrs = None
-                state = _State.NORMAL
+                in_glossary_block = False
+            continue
 
-    result = "\n".join(out)
-    if ends_with_newline and result:
-        result += "\n"
-    return result
+        m_gloss = GLOSSARY_OPEN_RE.match(line)
+        if m_gloss:
+            pending_block_attrs = parse_attrs(m_gloss.group(1))
+            in_glossary_block = True
+            continue
+
+        out.append(substitute_spans(line))
+
+    return join_lines_preserving_trailing_newline(out, trailing)
 
 
 def find_missing(
@@ -363,32 +337,15 @@ def find_missing(
     Line numbers are 1-based. Code fences are skipped.
     """
     missing: list[tuple[int, str, str]] = []
-    state = _State.NORMAL
-    code_fence_char: str | None = None
-    code_fence_len = 0
 
-    for lineno, line in enumerate(text.split("\n"), start=1):
-        if state == _State.NORMAL:
-            m_code = CODE_FENCE_RE.match(line)
-            if m_code:
-                code_fence_char = m_code.group(1)[0]
-                code_fence_len = len(m_code.group(1))
-                state = _State.IN_CODE_FENCE
+    for md in scan_md_lines_from_list(text.split("\n")):
+        if md.in_code_fence:
+            continue
+        for m in SPAN_RE.finditer(md.text):
+            attrs = parse_attrs(m.group(2))
+            if attrs.marker_class is None:
                 continue
-            for m in SPAN_RE.finditer(line):
-                attrs = parse_attrs(m.group(2))
-                if attrs.marker_class is None:
-                    continue
-                eid = attrs.kv.get("id")
-                if eid and eid not in entries:
-                    missing.append((lineno, eid, m.group(0)))
-        elif state == _State.IN_CODE_FENCE:
-            m_close = CODE_FENCE_RE.match(line)
-            if m_close:
-                close_char = m_close.group(1)[0]
-                close_len = len(m_close.group(1))
-                if close_char == code_fence_char and close_len >= code_fence_len:
-                    state = _State.NORMAL
-                    code_fence_char = None
-                    code_fence_len = 0
+            eid = attrs.kv.get("id")
+            if eid and eid not in entries:
+                missing.append((md.lineno, eid, m.group(0)))
     return missing
