@@ -6,20 +6,12 @@ containing Pandoc/Quarto fenced div language blocks and returns filtered text.
 
 from __future__ import annotations
 
-import re
-
 from mdtools.core.mdscan import (
     join_lines_preserving_trailing_newline,
     scan_md_lines_from_list,
     split_text_preserving_trailing_newline,
 )
-
-
-# Opening lang fence:  ::: {lang=en}  or  :::{lang="ja"}  etc.
-LANG_OPEN_RE = re.compile(r"^:::\s*\{\s*lang\s*=\s*\"?(\w+)\"?\s*\}")
-
-# Closing fence for a lang block: exactly ::: with optional trailing whitespace
-LANG_CLOSE_RE = re.compile(r"^:::\s*$")
+from mdtools.core.pandoc import DIV_OPEN_RE, FENCE_CLOSE_RE, parse_attrs
 
 
 def filter_lang(text: str, lang: str) -> str:
@@ -48,7 +40,7 @@ def filter_lang(text: str, lang: str) -> str:
 
         # Inside a lang block: code fences are just content; use lang logic only
         if current_lang is not None:
-            if LANG_CLOSE_RE.match(line):
+            if FENCE_CLOSE_RE.match(line):
                 if current_lang == lang:
                     out.append(line)
                 current_lang = None
@@ -61,11 +53,17 @@ def filter_lang(text: str, lang: str) -> str:
             out.append(line)
             continue
 
-        m_lang = LANG_OPEN_RE.match(line)
-        if m_lang:
-            current_lang = m_lang.group(1)
-            if current_lang == lang:
-                out.append(line)
+        m_div = DIV_OPEN_RE.match(line)
+        if m_div:
+            attrs = parse_attrs(m_div.group(1))
+            lang_value = attrs.kv.get("lang")
+            if lang_value is not None:
+                current_lang = lang_value
+                if current_lang == lang:
+                    out.append(line)
+                continue
+            # Non-lang fenced div (.callout-note etc.) — pass through
+            out.append(line)
             continue
 
         out.append(line)
