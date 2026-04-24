@@ -15,11 +15,16 @@ mdtools        = "mdtools.main:main"
 mdsplit        = "mdsplit.cli:main"
 langfilter     = "langfilter.cli:main"
 mdhtml-rewrite = "mdhtml_rewrite.cli:main"
+glossary       = "glossary.cli:main"
+
+[project.optional-dependencies]
+yaml = ["pyyaml>=6.0"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["mdtools", "mdsplit", "mdhtml_rewrite", "langfilter"]
+packages = ["mdtools", "mdsplit", "mdhtml_rewrite", "langfilter", "glossary"]
 
 [dependency-groups]
 dev = [
     "pytest>=9.0.3",
+    "pyyaml>=6.0",
 ]

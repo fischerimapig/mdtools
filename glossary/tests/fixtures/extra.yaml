@@ -1,0 +1,8 @@
+entries:
+  - id: CONF_BITS
+    kind: const
+    value: 256
+    description:
+      en: "Bit width of one CONF word."
+      ja: "CONF 語のビット幅。"
+    source: "legacy/core/common.vh:595"

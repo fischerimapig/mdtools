@@ -8,6 +8,7 @@ _TOOLS: dict[str, tuple[str, str]] = {
     "mdsplit":    ("mdsplit.cli",        "Decompose and reassemble Markdown documents"),
     "langfilter": ("langfilter.cli",     "Filter bilingual Markdown by language"),
     "rewrite":    ("mdhtml_rewrite.cli", "Rewrite HTML-ish Markdown to QMD-friendly format"),
+    "glossary":   ("glossary.cli",       "Resolve term/constant markers and list registered entries"),
 }
 
 
@@ -39,6 +40,12 @@ def _print_help(file=None) -> None:
     print("    概要: HTML 風 Markdown を QMD 向け形式へ変換します。", file=file)
     print("    代表的な利用シーン: 既存 Markdown を Quarto 用に整形したいとき。", file=file)
     print("    次のヘルプ: mdtools rewrite --help", file=file)
+    print("", file=file)
+    print("  glossary", file=file)
+    print("    概要: 用語・定数マーカーを定義ファイルから解決し、一覧表も出力します。", file=file)
+    print("    代表的な利用シーン: langfilter で言語別出力を作ったあとに", file=file)
+    print("      []{.term id=...} 等のマーカーを差し込みたいとき。", file=file)
+    print("    次のヘルプ: mdtools glossary --help", file=file)
     print("", file=file)
     print("共通の使い方:", file=file)
     print("  mdtools <tool> <subcommand> --help", file=file)
