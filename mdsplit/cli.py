@@ -7,6 +7,7 @@ import sys
 
 from .compose import compose
 from .decompose import decompose
+from mdtools.core.io import write_text_or_stdout
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -86,7 +87,7 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "compose":
         result = compose(args.hierarchy, args.output, base_level=args.base_level)
         if not args.output:
-            sys.stdout.write(result)
+            write_text_or_stdout(result, None)
         else:
             print(f"Composed document written to: {args.output}")
         return 0

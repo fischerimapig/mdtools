@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import json
 import re
 from pathlib import Path
 
 from .model import DivBlock, Embed, FigureBlock, RefLink
+from mdtools.core.io import write_json
 
 FIGURE_RE = re.compile(r"<figure\b[^>]*>.*?</figure>", re.DOTALL)
 DIV_RE = re.compile(r"<div\b[^>]*>.*?</div>", re.DOTALL)
@@ -175,6 +175,6 @@ def build_inventory(input_path: str | Path, output_path: str | Path | None = Non
     }
 
     if output_path:
-        Path(output_path).write_text(json.dumps(inv, ensure_ascii=False, indent=2), encoding="utf-8")
+        write_json(output_path, inv)
 
     return inv

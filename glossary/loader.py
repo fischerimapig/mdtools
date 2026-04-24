@@ -19,10 +19,11 @@ Schema (see glossary/README.md for full details)::
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+from mdtools.core.io import StructuredFileError, read_structured_file
 
 
 VALID_KINDS = ("term", "const", "symbol")
@@ -46,26 +47,10 @@ class Entry:
 
 
 def _load_file(path: Path) -> dict[str, Any]:
-    suffix = path.suffix.lower()
-    text = path.read_text(encoding="utf-8")
-
-    if suffix == ".json":
-        return json.loads(text)
-
-    if suffix in (".yaml", ".yml"):
-        try:
-            import yaml  # type: ignore[import-untyped]
-        except ImportError as exc:
-            raise GlossaryError(
-                f"YAML support requires PyYAML. Install with: "
-                f"pip install pyyaml  (source: {path})"
-            ) from exc
-        return yaml.safe_load(text) or {}
-
-    raise GlossaryError(
-        f"Unsupported definition file extension '{suffix}': {path}. "
-        f"Use .json, .yaml, or .yml."
-    )
+    try:
+        return read_structured_file(path)
+    except StructuredFileError as exc:
+        raise GlossaryError(str(exc)) from exc
 
 
 def _validate_entry(raw: dict[str, Any], source: Path) -> Entry:
@@ -114,10 +99,7 @@ def load(paths: list[str | Path]) -> dict[str, Entry]:
         if not path.is_file():
             raise GlossaryError(f"Definition file not found: {path}")
 
-        try:
-            doc = _load_file(path)
-        except json.JSONDecodeError as exc:
-            raise GlossaryError(f"{path}: invalid JSON: {exc}") from exc
+        doc = _load_file(path)
 
         if not isinstance(doc, dict):
             raise GlossaryError(f"{path}: top-level must be an object")

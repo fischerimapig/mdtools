@@ -4,24 +4,11 @@ from __future__ import annotations
 
 import argparse
 import sys
-from pathlib import Path
 
 from . import lister
 from .loader import GlossaryError, load
 from .resolver import ResolveError, find_missing, resolve
-
-
-def _read_input(arg: str) -> str:
-    if arg == "-":
-        return sys.stdin.read()
-    return Path(arg).read_text(encoding="utf-8")
-
-
-def _write_output(text: str, dest: str | None) -> None:
-    if dest:
-        Path(dest).write_text(text, encoding="utf-8")
-    else:
-        sys.stdout.write(text)
+from mdtools.core.io import read_text_or_stdin, write_text_or_stdout
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -152,13 +139,13 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     if args.command == "resolve":
-        text = _read_input(args.input)
+        text = read_text_or_stdin(args.input)
         try:
             out = resolve(text, entries, args.lang, on_missing=args.on_missing)
         except ResolveError as exc:
             print(f"glossary: resolve failed: {exc}", file=sys.stderr)
             return 1
-        _write_output(out, args.output)
+        write_text_or_stdout(out, args.output)
         return 0
 
     if args.command == "list":
@@ -167,11 +154,11 @@ def main(argv: list[str] | None = None) -> int:
             out = lister.format_json(selected)
         else:
             out = lister.format_text(selected)
-        _write_output(out, args.output)
+        write_text_or_stdout(out, args.output)
         return 0
 
     if args.command == "verify":
-        text = _read_input(args.input)
+        text = read_text_or_stdin(args.input)
         missing = find_missing(text, entries)
         if missing:
             for lineno, eid, marker in missing:
