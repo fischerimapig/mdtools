@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+from mdtools.core.io import dumps_json, read_json, write_json
 
 
 @dataclass
@@ -62,15 +63,16 @@ class DocumentTree:
         )
 
     def to_json(self, indent: int = 2) -> str:
-        return json.dumps(self.to_dict(), indent=indent, ensure_ascii=False)
+        return dumps_json(self.to_dict(), indent=indent)
 
     @classmethod
     def from_json(cls, text: str) -> DocumentTree:
+        import json
         return cls.from_dict(json.loads(text))
 
     def save(self, path: str | Path) -> None:
-        Path(path).write_text(self.to_json(), encoding="utf-8")
+        write_json(path, self.to_dict())
 
     @classmethod
     def load(cls, path: str | Path) -> DocumentTree:
-        return cls.from_json(Path(path).read_text(encoding="utf-8"))
+        return cls.from_dict(read_json(path))
