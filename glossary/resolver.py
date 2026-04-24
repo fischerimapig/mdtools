@@ -9,9 +9,7 @@ fenced divs are passed through untouched (they belong to langfilter).
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 from typing import Callable
-
 
 from .loader import Entry
 from mdtools.core.mdscan import (
@@ -19,51 +17,34 @@ from mdtools.core.mdscan import (
     scan_md_lines_from_list,
     split_text_preserving_trailing_newline,
 )
-
-
-# ── Regex patterns ─────────────────────────────────────────────────
-
-# Pandoc bracketed span:  [label]{.class key=value key="value"}
-SPAN_RE = re.compile(r"\[([^\[\]]*)\]\{([^{}]+)\}")
-
-# Glossary fenced div (block-level only, whole line):
-#   ::: {.glossary filter=term format=dl}
-GLOSSARY_OPEN_RE = re.compile(r"^:::\s*\{\s*\.glossary\b([^}]*)\}\s*$")
-FENCE_CLOSE_RE = re.compile(r"^:::\s*$")
-
-# Attribute tokens inside span/div braces
-ATTR_KV_RE = re.compile(r'(\w+)\s*=\s*("([^"]*)"|(\S+))')
-ATTR_CLASS_RE = re.compile(r"\.(\S+)")
+from mdtools.core.pandoc import (
+    BRACKETED_SPAN_RE as SPAN_RE,
+    DIV_OPEN_RE,
+    FENCE_CLOSE_RE,
+    PandocAttrs,
+    parse_attrs as _pandoc_parse_attrs,
+)
 
 
 MARKER_CLASSES = frozenset({"term", "const", "symbol"})
 
 
-# ── Attribute parsing ─────────────────────────────────────────────
-
-
-@dataclass
-class Attrs:
-    classes: list[str]
-    kv: dict[str, str]
+class Attrs(PandocAttrs):
+    """PandocAttrs extended with glossary-specific marker_class property."""
 
     @property
     def marker_class(self) -> str | None:
-        for cls in self.classes:
-            if cls in MARKER_CLASSES:
-                return cls
-        return None
+        return self.first_class_in(MARKER_CLASSES)
 
 
 def parse_attrs(s: str) -> Attrs:
-    """Parse the inside of ``{...}`` in a Pandoc span or fenced div."""
-    classes = ATTR_CLASS_RE.findall(s)
-    kv: dict[str, str] = {}
-    for m in ATTR_KV_RE.finditer(s):
-        key = m.group(1)
-        value = m.group(3) if m.group(3) is not None else m.group(4)
-        kv[key] = value
-    return Attrs(classes=classes, kv=kv)
+    """Parse ``{...}`` attributes and return glossary-aware Attrs."""
+    base = _pandoc_parse_attrs(s)
+    return Attrs(classes=base.classes, kv=base.kv)
+
+
+def _marker_class(attrs: PandocAttrs) -> str | None:
+    return attrs.first_class_in(MARKER_CLASSES)
 
 
 # ── Resolution of one marker to text ──────────────────────────────
@@ -98,14 +79,9 @@ def _format_value(v: object) -> str:
 
 
 def resolve_marker(
-    entry: Entry, attrs: Attrs, lang: str, label: str = ""
+    entry: Entry, attrs: PandocAttrs, lang: str, label: str = ""
 ) -> str:
-    """Render a single marker to its replacement text.
-
-    ``label`` (the text inside ``[...]``) overrides the default rendering
-    when non-empty, matching Pandoc's behaviour where the bracketed text
-    is preserved.
-    """
+    """Render a single marker to its replacement text."""
     if label:
         return label
 
@@ -182,7 +158,7 @@ def resolve_marker(
 
 
 def render_glossary_block(
-    entries: dict[str, Entry], attrs: Attrs, lang: str
+    entries: dict[str, Entry], attrs: PandocAttrs, lang: str
 ) -> str:
     """Render a ``::: {.glossary ...} ... :::`` block to a Markdown table."""
     filt = attrs.kv.get("filter")
@@ -230,22 +206,22 @@ def _render_definition_list(entries: list[Entry], lang: str) -> str:
 # ── Main state machine ────────────────────────────────────────────
 
 
-MissingHandler = Callable[[str, Attrs, str], str]
+MissingHandler = Callable[[str, PandocAttrs, str], str]
 """Called for an unresolved marker: (id, attrs, original_marker_text) -> replacement."""
 
 
-def _default_missing(eid: str, attrs: Attrs, original: str) -> str:
+def _default_missing(eid: str, attrs: PandocAttrs, original: str) -> str:
     raise ResolveError(f"undefined id '{eid}' referenced by marker {original!r}")
 
 
 def _warn_missing(stream):
-    def handler(eid: str, attrs: Attrs, original: str) -> str:
+    def handler(eid: str, attrs: PandocAttrs, original: str) -> str:
         print(f"warning: undefined id '{eid}' in marker {original!r}", file=stream)
         return original
     return handler
 
 
-def _keep_missing(eid: str, attrs: Attrs, original: str) -> str:
+def _keep_missing(eid: str, attrs: PandocAttrs, original: str) -> str:
     return original
 
 
@@ -255,14 +231,7 @@ def resolve(
     lang: str,
     on_missing: str = "error",
 ) -> str:
-    """Resolve all markers in ``text`` using the loaded registry.
-
-    Args:
-        text: Markdown input.
-        entries: Loaded registry from :func:`loader.load`.
-        lang: "en" or "ja" (used for term name / description selection).
-        on_missing: "error" | "warn" | "keep".
-    """
+    """Resolve all markers in ``text`` using the loaded registry."""
     import sys
 
     if on_missing == "error":
@@ -277,13 +246,13 @@ def resolve(
     lines, trailing = split_text_preserving_trailing_newline(text)
     out: list[str] = []
     in_glossary_block = False
-    pending_block_attrs: Attrs | None = None
+    pending_block_attrs: PandocAttrs | None = None
 
     def substitute_spans(line: str) -> str:
         def repl(m: re.Match[str]) -> str:
             label = m.group(1)
             attrs = parse_attrs(m.group(2))
-            cls = attrs.marker_class
+            cls = _marker_class(attrs)
             if cls is None:
                 return m.group(0)
             eid = attrs.kv.get("id")
@@ -317,11 +286,13 @@ def resolve(
                 in_glossary_block = False
             continue
 
-        m_gloss = GLOSSARY_OPEN_RE.match(line)
-        if m_gloss:
-            pending_block_attrs = parse_attrs(m_gloss.group(1))
-            in_glossary_block = True
-            continue
+        m_div = DIV_OPEN_RE.match(line)
+        if m_div:
+            attrs = parse_attrs(m_div.group(1))
+            if attrs.has_class("glossary"):
+                pending_block_attrs = attrs
+                in_glossary_block = True
+                continue
 
         out.append(substitute_spans(line))
 
@@ -331,11 +302,7 @@ def resolve(
 def find_missing(
     text: str, entries: dict[str, Entry]
 ) -> list[tuple[int, str, str]]:
-    """Scan ``text`` for marker references not present in ``entries``.
-
-    Returns a list of ``(line_number, id, original_marker_text)``.
-    Line numbers are 1-based. Code fences are skipped.
-    """
+    """Scan ``text`` for marker references not present in ``entries``."""
     missing: list[tuple[int, str, str]] = []
 
     for md in scan_md_lines_from_list(text.split("\n")):
@@ -343,7 +310,7 @@ def find_missing(
             continue
         for m in SPAN_RE.finditer(md.text):
             attrs = parse_attrs(m.group(2))
-            if attrs.marker_class is None:
+            if _marker_class(attrs) is None:
                 continue
             eid = attrs.kv.get("id")
             if eid and eid not in entries:
