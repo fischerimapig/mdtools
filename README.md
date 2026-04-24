@@ -7,6 +7,7 @@ Markdown 文書の編集を補助するコマンドラインツール集。
 | **mdsplit** | Markdown/QMD 文書を見出し単位のセクションファイルに分解・再構成する |
 | **langfilter** | 日英併記 Markdown から指定言語のブロックだけを抽出する |
 | **mdhtml-rewrite** | pandoc 変換後の HTML 断片を Quarto (.qmd) 互換の記法へ変換する |
+| **glossary** | 用語・定数マーカーを定義ファイルから解決し、一覧表も出力する |
 
 ## 必要環境
 
@@ -22,7 +23,7 @@ Markdown 文書の編集を補助するコマンドラインツール集。
 uv tool install .
 ```
 
-`mdtools` / `mdsplit` / `langfilter` / `mdhtml-rewrite` の 4 コマンドがシェルから直接使えるようになります。
+`mdtools` / `mdsplit` / `langfilter` / `mdhtml-rewrite` / `glossary` の 5 コマンドがシェルから直接使えるようになります。
 コードを変更した場合は `uv tool install . --reinstall` で再インストールしてください。
 
 ### 開発用（エディタブルインストール）
@@ -103,6 +104,31 @@ mdhtml-rewrite rewrite document.md -o document.qmd \
 
 EPS 変換の詳細（`dvisvgm` の注意点など）は [mdhtml_rewrite/README.md](mdhtml_rewrite/README.md) を参照。
 
+### glossary
+
+用語・定数・記号を 1 本の定義ファイル (JSON / YAML) に登録し、本文中の
+Pandoc bracketed span マーカー (`[]{.term id=unit}` 等) を言語別に解決する。
+`langfilter` の後段で走らせる運用が基本。
+
+```bash
+# 英語版: 言語抽出 → 用語解決
+langfilter filter --lang en manuscript.qmd | \
+  glossary resolve --lang en -f defs.json > manuscript.en.md
+
+# 日本語版
+langfilter filter --lang ja manuscript.qmd | \
+  glossary resolve --lang ja -f defs.json > manuscript.ja.md
+
+# 登録済みエントリの一覧 (デフォルト: テキスト表)
+glossary list -f defs.json --kind term
+glossary list -f defs.json --format json
+
+# 本文マーカーの定義漏れを検出 (CI 用, exit code で通知)
+glossary verify manuscript.qmd -f defs.json
+```
+
+詳細とスキーマ定義は [glossary/README.md](glossary/README.md) を参照。
+
 ## 典型的なワークフロー
 
 ```bash
@@ -118,9 +144,11 @@ mdsplit decompose doc/combined.qmd -o work/
 # ... セクションファイルを編集 ...
 mdsplit compose work/hierarchy.json -o doc/combined-edited.qmd
 
-# 言語別バージョンを出力
-langfilter filter --lang en doc/combined-edited.qmd -o doc/en.qmd
-langfilter filter --lang ja doc/combined-edited.qmd -o doc/ja.qmd
+# 言語別バージョンを出力 (必要なら glossary で用語・定数マーカーを解決)
+langfilter filter --lang en doc/combined-edited.qmd | \
+  glossary resolve --lang en -f doc/defs.json > doc/en.qmd
+langfilter filter --lang ja doc/combined-edited.qmd | \
+  glossary resolve --lang ja -f doc/defs.json > doc/ja.qmd
 ```
 
 ## テスト
@@ -152,6 +180,7 @@ MIT
 mdsplit --help
 langfilter --help
 mdhtml-rewrite --help
-git diff -- README.md mdsplit/README.md mdhtml_rewrite/README.md langfilter/README.md \
-  mdsplit/cli.py mdhtml_rewrite/cli.py langfilter/cli.py
+glossary --help
+git diff -- README.md mdsplit/README.md mdhtml_rewrite/README.md langfilter/README.md glossary/README.md \
+  mdsplit/cli.py mdhtml_rewrite/cli.py langfilter/cli.py glossary/cli.py
 ```

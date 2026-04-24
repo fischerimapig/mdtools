@@ -1,0 +1,35 @@
+{
+  "entries": [
+    {
+      "id": "unit",
+      "kind": "term",
+      "names": {"en": "Processing Unit", "ja": "プロセッシングユニット"},
+      "abbr": "PU",
+      "aliases": {"en": ["PU"], "ja": ["ユニット"]},
+      "description": {
+        "en": "One compute element in the D x 4 array.",
+        "ja": "D x 4 アレイを構成する計算要素。"
+      },
+      "source": "sections/01-overview/01-array-topology.md"
+    },
+    {
+      "id": "EMAX_WIDTH",
+      "kind": "const",
+      "value": 4,
+      "description": {
+        "en": "Number of columns per row.",
+        "ja": "1 行あたりの列数。"
+      },
+      "source": "legacy/core/common.vh:43"
+    },
+    {
+      "id": "D",
+      "kind": "symbol",
+      "rtl_macro": "EMAX_DEPTH",
+      "description": {
+        "en": "Number of logical rows in the unit array.",
+        "ja": "ユニットアレイの論理行数。"
+      }
+    }
+  ]
+}
