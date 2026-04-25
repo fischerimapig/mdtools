@@ -9,7 +9,6 @@ fenced divs are passed through untouched (they belong to langfilter).
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 from typing import Callable
 
 from mdtools.core.mdscan import (
@@ -17,23 +16,15 @@ from mdtools.core.mdscan import (
     scan_md_lines_from_list,
     split_text_preserving_trailing_newline,
 )
+from mdtools.core.pandoc import (
+    BRACKETED_SPAN_RE as SPAN_RE,
+    DIV_OPEN_RE,
+    FENCE_CLOSE_RE,
+    PandocAttrs,
+    parse_attrs as _pandoc_parse_attrs,
+)
 
 from .loader import Entry
-
-
-# ── Regex patterns ─────────────────────────────────────────────────
-
-# Pandoc bracketed span:  [label]{.class key=value key="value"}
-SPAN_RE = re.compile(r"\[([^\[\]]*)\]\{([^{}]+)\}")
-
-# Glossary fenced div (block-level only, whole line):
-#   ::: {.glossary filter=term format=dl}
-GLOSSARY_OPEN_RE = re.compile(r"^:::\s*\{\s*\.glossary\b([^}]*)\}\s*$")
-FENCE_CLOSE_RE = re.compile(r"^:::\s*$")
-
-# Attribute tokens inside span/div braces
-ATTR_KV_RE = re.compile(r'(\w+)\s*=\s*("([^"]*)"|(\S+))')
-ATTR_CLASS_RE = re.compile(r"\.(\S+)")
 
 
 MARKER_CLASSES = frozenset({"term", "const", "symbol"})
@@ -42,28 +33,18 @@ MARKER_CLASSES = frozenset({"term", "const", "symbol"})
 # ── Attribute parsing ─────────────────────────────────────────────
 
 
-@dataclass
-class Attrs:
-    classes: list[str]
-    kv: dict[str, str]
+class Attrs(PandocAttrs):
+    """Glossary-specific Pandoc attrs with a marker-class shortcut."""
 
     @property
     def marker_class(self) -> str | None:
-        for cls in self.classes:
-            if cls in MARKER_CLASSES:
-                return cls
-        return None
+        return self.first_class_in(MARKER_CLASSES)
 
 
 def parse_attrs(s: str) -> Attrs:
     """Parse the inside of ``{...}`` in a Pandoc span or fenced div."""
-    classes = ATTR_CLASS_RE.findall(s)
-    kv: dict[str, str] = {}
-    for m in ATTR_KV_RE.finditer(s):
-        key = m.group(1)
-        value = m.group(3) if m.group(3) is not None else m.group(4)
-        kv[key] = value
-    return Attrs(classes=classes, kv=kv)
+    base = _pandoc_parse_attrs(s)
+    return Attrs(classes=base.classes, kv=base.kv)
 
 
 # ── Resolution of one marker to text ──────────────────────────────
@@ -315,10 +296,12 @@ def resolve(
             out.append(line)
             continue
 
-        m_gloss = GLOSSARY_OPEN_RE.match(line)
-        if m_gloss:
-            pending_block_attrs = parse_attrs(m_gloss.group(1))
-            continue
+        m_div = DIV_OPEN_RE.match(line)
+        if m_div:
+            attrs = parse_attrs(m_div.group(1))
+            if attrs.has_class("glossary"):
+                pending_block_attrs = attrs
+                continue
 
         out.append(substitute_spans(line))
 
