@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from typing import Iterator
 
-
-# Promoted to mdtools.core.pandoc in Stage 3.
-_CODE_FENCE_RE = re.compile(r"^(`{3,}|~{3,})")
+from .pandoc import CODE_FENCE_RE as _CODE_FENCE_RE
 
 
 @dataclass(frozen=True)
