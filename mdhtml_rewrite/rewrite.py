@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import json
 import re
 from pathlib import Path
+
+from mdtools.core.io import read_json, write_json
 
 from .eps_png import resolve_display_image
 from .inventory import build_inventory
@@ -145,7 +146,7 @@ def rewrite_file(
     text = p.read_text(encoding="utf-8")
 
     if inventory_path and Path(inventory_path).exists():
-        inventory = json.loads(Path(inventory_path).read_text(encoding="utf-8"))
+        inventory = read_json(inventory_path)
     else:
         inventory = build_inventory(p)
 
@@ -167,6 +168,6 @@ def rewrite_file(
     }
 
     if report_path:
-        Path(report_path).write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+        write_json(report_path, report)
 
     return report

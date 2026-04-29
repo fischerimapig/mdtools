@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import argparse
-import sys
-from pathlib import Path
+
+from mdtools.core.io import read_text_or_stdin, write_text_or_stdout
 
 from .filter import filter_lang
 
@@ -74,21 +74,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.command == "filter":
-        # Read input
-        if args.input == "-":
-            text = sys.stdin.read()
-        else:
-            text = Path(args.input).read_text(encoding="utf-8")
-
-        # Filter
+        text = read_text_or_stdin(args.input)
         result = filter_lang(text, args.lang)
-
-        # Write output
-        if args.output:
-            Path(args.output).write_text(result, encoding="utf-8")
-        else:
-            sys.stdout.write(result)
-
+        write_text_or_stdout(result, args.output)
         return 0
 
     return 1
