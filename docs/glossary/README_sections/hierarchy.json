@@ -1,0 +1,38 @@
+{
+  "source_file": "README.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "mdtools 用語集",
+      "file": "sections/01-mdtools.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "用語管理の目的",
+          "file": "sections/01-mdtools/01-section.md",
+          "order": 0,
+          "children": []
+        },
+        {
+          "title": "主要用語",
+          "file": "sections/01-mdtools/02-section.md",
+          "order": 1,
+          "children": []
+        },
+        {
+          "title": "コマンド例",
+          "file": "sections/01-mdtools/03-section.md",
+          "order": 2,
+          "children": []
+        },
+        {
+          "title": "自動生成される一覧",
+          "file": "sections/01-mdtools/04-section.md",
+          "order": 3,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

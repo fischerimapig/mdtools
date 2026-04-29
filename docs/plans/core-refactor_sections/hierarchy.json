@@ -1,0 +1,39 @@
+{
+  "source_file": "core-refactor.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "mdtools.core リファクタ実施記録",
+      "file": "sections/01-mdtoolscore.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "背景",
+          "file": "sections/01-mdtoolscore/01-section.md",
+          "order": 0,
+          "children": []
+        },
+        {
+          "title": "最終構成",
+          "file": "sections/01-mdtoolscore/02-section.md",
+          "order": 1,
+          "children": [
+            {
+              "title": "core.io",
+              "file": "sections/01-mdtoolscore/02-section/01-coreio.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "core.mdscan",
+              "file": "sections/01-mdtoolscore/02-section/02-coremdscan.md",
+              "order": 1,
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

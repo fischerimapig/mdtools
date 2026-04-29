@@ -1,0 +1,92 @@
+{
+  "source_file": "README.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "langfilter テストプラン",
+      "file": "sections/01-langfilter.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "実行方法",
+          "file": "sections/01-langfilter/01-section.md",
+          "order": 0,
+          "children": []
+        },
+        {
+          "title": "テスト対象",
+          "file": "sections/01-langfilter/02-section.md",
+          "order": 1,
+          "children": []
+        },
+        {
+          "title": "Phase 1: 退化ケース（関数シグネチャの確立）",
+          "file": "sections/01-langfilter/03-phase-1.md",
+          "order": 2,
+          "children": []
+        },
+        {
+          "title": "Phase 2: 単一ブロック — コア動作",
+          "file": "sections/01-langfilter/04-phase-2.md",
+          "order": 3,
+          "children": []
+        },
+        {
+          "title": "Phase 3: 複数ブロック — en/jaペア",
+          "file": "sections/01-langfilter/05-phase-3-enja.md",
+          "order": 4,
+          "children": []
+        },
+        {
+          "title": "Phase 4: 共有コンテンツの保存",
+          "file": "sections/01-langfilter/06-phase-4.md",
+          "order": 5,
+          "children": []
+        },
+        {
+          "title": "Phase 5: コードフェンスとの相互作用",
+          "file": "sections/01-langfilter/07-phase-5.md",
+          "order": 6,
+          "children": []
+        },
+        {
+          "title": "Phase 6: 構文バリエーション",
+          "file": "sections/01-langfilter/08-phase-6.md",
+          "order": 7,
+          "children": []
+        },
+        {
+          "title": "Phase 7: 非lang fenced div",
+          "file": "sections/01-langfilter/09-phase-7-lang-fenced-div.md",
+          "order": 8,
+          "children": []
+        },
+        {
+          "title": "Phase 8: エッジケース",
+          "file": "sections/01-langfilter/10-phase-8.md",
+          "order": 9,
+          "children": []
+        },
+        {
+          "title": "Phase 9: CLI統合テスト",
+          "file": "sections/01-langfilter/11-phase-9-cli.md",
+          "order": 10,
+          "children": []
+        },
+        {
+          "title": "Phase 10: 全体統合テスト",
+          "file": "sections/01-langfilter/12-phase-10.md",
+          "order": 11,
+          "children": []
+        },
+        {
+          "title": "実装順序",
+          "file": "sections/01-langfilter/13-section.md",
+          "order": 12,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

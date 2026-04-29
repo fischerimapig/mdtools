@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import json
 from typing import Iterable
+
+from mdtools.core.io import dumps_json
 
 from .loader import Entry
 
@@ -59,4 +60,4 @@ def format_json(entries: Iterable[Entry]) -> str:
     for e in entries:
         obj = {"id": e.id, "kind": e.kind, **e.data}
         out.append(obj)
-    return json.dumps(out, ensure_ascii=False, indent=2) + "\n"
+    return dumps_json(out) + "\n"

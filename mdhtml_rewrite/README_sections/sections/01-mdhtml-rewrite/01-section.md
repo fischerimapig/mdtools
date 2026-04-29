@@ -1,0 +1,14 @@
+
+- `convert`
+  - EPS ファイルを Web 表示向け形式（SVG / PNG）へ一括変換
+  - ベクター EPS（Tgif 作成）→ SVG を優先し、`auto` では必要に応じて PNG へ退避
+  - ラスター EPS（pnmtops 作成）→ PNG（Ghostscript）
+  - EPS ヘッダの `%%Creator` から自動判別
+- `inventory`
+  - 文書内の主要要素（figure/div/ref）の件数・位置・属性を JSON で出力
+  - 自動変換が危険な要素（例: 画像ソースを持たない figure）を `needs_manual` として抽出
+- `rewrite`
+  - HTML ベースの figure を Markdown 画像またはコードブロックへ変換
+  - `div.screen` を fenced code block へ変換
+  - 一部の表ラッパ `div` を Markdown 表 + キャプション形式へ変換
+  - pandoc の HTML 参照リンクを `@id` 形式へ変換

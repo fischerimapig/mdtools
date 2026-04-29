@@ -6,8 +6,9 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
+from mdtools.core.mdscan import CodeFenceTracker
+
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+)$")
-FENCE_RE = re.compile(r"^(`{3,}|~{3,})")
 PRE_OPEN_RE = re.compile(r"<pre[\s>]", re.IGNORECASE)
 PRE_CLOSE_RE = re.compile(r"</pre>", re.IGNORECASE)
 
@@ -58,41 +59,27 @@ def parse_sections(text: str) -> tuple[FrontMatter | None, list[RawSection]]:
     current_title = ""
     current_line_number = start_idx + 1  # 1-based
 
-    in_code_fence = False
-    fence_marker = ""
     in_pre_block = False
 
-    for i in range(start_idx, len(lines)):
-        line = lines[i]
+    code_fence_tracker = CodeFenceTracker()
 
-        # Track fenced code blocks
+    for offset, line in enumerate(lines[start_idx:]):
+        abs_line_number = start_idx + offset + 1
+
+        if not in_pre_block and code_fence_tracker.classify(line):
+            current_content_lines.append(line)
+            continue
+
+        if PRE_OPEN_RE.search(line):
+            in_pre_block = True
+        if PRE_CLOSE_RE.search(line):
+            in_pre_block = False
+
         if not in_pre_block:
-            fence_match = FENCE_RE.match(line)
-            if fence_match:
-                if not in_code_fence:
-                    in_code_fence = True
-                    fence_marker = fence_match.group(1)[0]  # '`' or '~'
-                elif line.rstrip().startswith(fence_marker):
-                    in_code_fence = False
-                    fence_marker = ""
-                current_content_lines.append(line)
-                continue
-
-        # Track <pre> blocks
-        if not in_code_fence:
-            if PRE_OPEN_RE.search(line):
-                in_pre_block = True
-            if PRE_CLOSE_RE.search(line):
-                in_pre_block = False
-
-        # Check for headings (only outside code/pre blocks)
-        if not in_code_fence and not in_pre_block:
             heading_match = HEADING_RE.match(line)
             if heading_match:
                 # Save previous section
                 content = "\n".join(current_content_lines)
-                # Always add if there's a title; for preamble (no title),
-                # only add if there's non-whitespace content
                 if current_title:
                     sections.append(RawSection(
                         level=current_level,
@@ -111,7 +98,7 @@ def parse_sections(text: str) -> tuple[FrontMatter | None, list[RawSection]]:
                 current_level = len(heading_match.group(1))
                 current_title = heading_match.group(2).strip()
                 current_content_lines = []
-                current_line_number = i + 1  # 1-based
+                current_line_number = abs_line_number
                 continue
 
         current_content_lines.append(line)

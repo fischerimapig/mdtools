@@ -1,0 +1,119 @@
+{
+  "source_file": "README.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "mdtools",
+      "file": "sections/01-mdtools.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "必要環境",
+          "file": "sections/01-mdtools/01-section.md",
+          "order": 0,
+          "children": []
+        },
+        {
+          "title": "インストール",
+          "file": "sections/01-mdtools/02-section.md",
+          "order": 1,
+          "children": [
+            {
+              "title": "グローバルインストール（推奨）",
+              "file": "sections/01-mdtools/02-section/01-section.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "開発用（エディタブルインストール）",
+              "file": "sections/01-mdtools/02-section/02-section.md",
+              "order": 1,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "使い方",
+          "file": "sections/01-mdtools/03-section.md",
+          "order": 2,
+          "children": [
+            {
+              "title": "mdsplit",
+              "file": "sections/01-mdtools/03-section/01-mdsplit.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "langfilter",
+              "file": "sections/01-mdtools/03-section/02-langfilter.md",
+              "order": 1,
+              "children": []
+            },
+            {
+              "title": "mdhtml-rewrite",
+              "file": "sections/01-mdtools/03-section/03-mdhtml-rewrite.md",
+              "order": 2,
+              "children": []
+            },
+            {
+              "title": "glossary",
+              "file": "sections/01-mdtools/03-section/04-glossary.md",
+              "order": 3,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "典型的なワークフロー",
+          "file": "sections/01-mdtools/04-section.md",
+          "order": 3,
+          "children": []
+        },
+        {
+          "title": "mdtools.core",
+          "file": "sections/01-mdtools/05-mdtoolscore.md",
+          "order": 4,
+          "children": []
+        },
+        {
+          "title": "文書管理",
+          "file": "sections/01-mdtools/06-section.md",
+          "order": 5,
+          "children": []
+        },
+        {
+          "title": "テスト",
+          "file": "sections/01-mdtools/07-section.md",
+          "order": 6,
+          "children": []
+        },
+        {
+          "title": "ライセンス",
+          "file": "sections/01-mdtools/08-section.md",
+          "order": 7,
+          "children": []
+        },
+        {
+          "title": "ドキュメント運用ルール（README / --help 同期）",
+          "file": "sections/01-mdtools/09-readme-help.md",
+          "order": 8,
+          "children": [
+            {
+              "title": "基本方針",
+              "file": "sections/01-mdtools/09-readme-help/01-section.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "変更時チェックリスト（簡易運用）",
+              "file": "sections/01-mdtools/09-readme-help/02-section.md",
+              "order": 1,
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
