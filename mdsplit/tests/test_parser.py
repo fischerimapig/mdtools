@@ -53,6 +53,18 @@ def test_parse_pre_block_ignores_headings():
     assert sections[1].title == "Also Real"
 
 
+def test_parse_pre_block_ignores_code_fence_markers():
+    text = "# Real\n\n<pre>\n```\n</pre>\n\n## After Pre\n\ntext"
+    fm, sections = parse_sections(text)
+    assert [s.title for s in sections] == ["Real", "After Pre"]
+
+
+def test_parse_shorter_code_fence_does_not_close():
+    text = "# Real\n\n````\n# Not a heading\n```\n\n## Still code\n````\n\n## After\n\ntext"
+    fm, sections = parse_sections(text)
+    assert [s.title for s in sections] == ["Real", "After"]
+
+
 def test_parse_define_not_heading():
     text = "# Real\n\n#define FOO 1\n\n## Sub\n\ntext"
     fm, sections = parse_sections(text)

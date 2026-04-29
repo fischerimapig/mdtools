@@ -6,7 +6,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-from mdtools.core.mdscan import scan_md_lines_from_list
+from mdtools.core.mdscan import CodeFenceTracker
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+)$")
 PRE_OPEN_RE = re.compile(r"<pre[\s>]", re.IGNORECASE)
@@ -61,11 +61,12 @@ def parse_sections(text: str) -> tuple[FrontMatter | None, list[RawSection]]:
 
     in_pre_block = False
 
-    for md in scan_md_lines_from_list(lines[start_idx:]):
-        line = md.text
-        abs_line_number = start_idx + md.lineno  # 1-based in original `lines`
+    code_fence_tracker = CodeFenceTracker()
 
-        if md.in_code_fence:
+    for offset, line in enumerate(lines[start_idx:]):
+        abs_line_number = start_idx + offset + 1
+
+        if not in_pre_block and code_fence_tracker.classify(line):
             current_content_lines.append(line)
             continue
 

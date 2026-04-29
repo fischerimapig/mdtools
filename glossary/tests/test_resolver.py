@@ -198,6 +198,32 @@ def test_resolve_glossary_block_no_filter_includes_all_kinds(entries):
     assert "D" in out
 
 
+def test_resolve_glossary_class_not_first_renders_block(entries):
+    text = "::: {.note .glossary filter=term}\n:::\n"
+    out = resolve(text, entries, lang="en")
+    assert "| ID | Kind | Name | Description |" in out
+    assert "| unit | term | Processing Unit |" in out
+
+
+def test_resolve_glossary_block_ignores_fence_close_inside_code(entries):
+    text = textwrap.dedent("""\
+        Before.
+
+        ::: {.glossary filter=term}
+        ```
+        :::
+        ```
+        :::
+
+        After.
+    """)
+    out = resolve(text, entries, lang="en")
+    assert "Before." in out
+    assert "| unit | term | Processing Unit |" in out
+    assert "After." in out
+    assert "```" not in out
+
+
 # ── find_missing ────────────────────────────────────────────────────
 
 

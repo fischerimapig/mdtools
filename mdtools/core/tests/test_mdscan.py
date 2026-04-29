@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from mdtools.core.mdscan import (
+    CodeFenceTracker,
     MdLine,
     join_lines_preserving_trailing_newline,
     scan_md_lines,
@@ -82,6 +83,23 @@ def test_shorter_fence_inside_does_not_close():
     text = "````\ncode\n```\nstill code\n````\nafter"
     out = list(scan_md_lines(text))
     assert [md.in_code_fence for md in out] == [True, True, True, True, True, False]
+
+
+def test_code_fence_tracker_keeps_shorter_fence_open():
+    tracker = CodeFenceTracker()
+    assert tracker.classify("````") is True
+    assert tracker.classify("code") is True
+    assert tracker.classify("```") is True
+    assert tracker.classify("still code") is True
+    assert tracker.classify("````") is True
+    assert tracker.classify("after") is False
+
+
+def test_code_fence_tracker_allows_callers_to_skip_owned_blocks():
+    tracker = CodeFenceTracker()
+    assert tracker.classify("before") is False
+    # A caller such as mdsplit can avoid classifying lines owned by <pre>.
+    assert tracker.classify("after skipped fence marker") is False
 
 
 def test_tilde_fence_independent_of_backtick():

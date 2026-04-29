@@ -73,6 +73,12 @@ def test_parse_multiple_kv():
     assert a.kv == {"id": "foo", "lang": "en"}
 
 
+def test_parse_attrs_is_order_independent_for_classes_and_kv():
+    a = parse_attrs(".note lang=en .callout")
+    assert a.classes == ["note", "callout"]
+    assert a.kv == {"lang": "en"}
+
+
 # ---------------------------------------------------------------------------
 # Phase 4: Mixed
 # ---------------------------------------------------------------------------
@@ -146,6 +152,10 @@ def test_div_open_re_captures_attrs():
     m = DIV_OPEN_RE.match("::: {.glossary filter=term}")
     assert m is not None
     assert m.group(1).strip() == ".glossary filter=term"
+
+
+def test_div_open_re_rejects_trailing_text_after_attrs():
+    assert DIV_OPEN_RE.match("::: {lang=en} some text") is None
 
 
 def test_bracketed_span_re_captures_label_and_attrs():

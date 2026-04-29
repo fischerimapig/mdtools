@@ -25,24 +25,42 @@ class MdLine:
     in_code_fence: bool
 
 
-def _scan_lines(lines: list[str]) -> Iterator[MdLine]:
-    fence_char: str | None = None
-    fence_len = 0
+class CodeFenceTracker:
+    """Stateful code-fence classifier for callers with extra block rules."""
 
-    for idx, line in enumerate(lines, start=1):
+    def __init__(self) -> None:
+        self._fence_char: str | None = None
+        self._fence_len = 0
+
+    def classify(self, line: str) -> bool:
+        """Return whether ``line`` is part of a Markdown code fence.
+
+        A fence closes only on a line that starts with the same fence character
+        and is at least as long as the opening fence.
+        """
         m = _CODE_FENCE_RE.match(line)
-        if fence_char is None:
+        if self._fence_char is None:
             if m:
-                fence_char = m.group(1)[0]
-                fence_len = len(m.group(1))
-                yield MdLine(idx, line, in_code_fence=True)
-            else:
-                yield MdLine(idx, line, in_code_fence=False)
-        else:
-            yield MdLine(idx, line, in_code_fence=True)
-            if m and m.group(1)[0] == fence_char and len(m.group(1)) >= fence_len:
-                fence_char = None
-                fence_len = 0
+                self._fence_char = m.group(1)[0]
+                self._fence_len = len(m.group(1))
+                return True
+            return False
+
+        in_code_fence = True
+        if (
+            m
+            and m.group(1)[0] == self._fence_char
+            and len(m.group(1)) >= self._fence_len
+        ):
+            self._fence_char = None
+            self._fence_len = 0
+        return in_code_fence
+
+
+def _scan_lines(lines: list[str]) -> Iterator[MdLine]:
+    tracker = CodeFenceTracker()
+    for idx, line in enumerate(lines, start=1):
+        yield MdLine(idx, line, in_code_fence=tracker.classify(line))
 
 
 def scan_md_lines(text: str) -> Iterator[MdLine]:

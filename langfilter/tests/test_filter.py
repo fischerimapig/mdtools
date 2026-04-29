@@ -175,6 +175,28 @@ def test_lang_block_containing_code_fence_removed():
     assert filter_lang(text, "ja") == ""
 
 
+def test_lang_block_containing_triple_colon_in_code_fence_kept():
+    text = textwrap.dedent("""\
+        ::: {lang=en}
+        ```text
+        :::
+        ```
+        :::
+    """)
+    assert filter_lang(text, "en") == text
+
+
+def test_lang_block_containing_triple_colon_in_code_fence_removed():
+    text = textwrap.dedent("""\
+        ::: {lang=en}
+        ```text
+        :::
+        ```
+        :::
+    """)
+    assert filter_lang(text, "ja") == ""
+
+
 def test_tilde_code_fence_tracked():
     text = textwrap.dedent("""\
         ~~~
@@ -204,9 +226,9 @@ def test_quoted_attribute():
     assert filter_lang(text, "en") == text
 
 
-def test_trailing_text_after_brace():
+def test_trailing_text_after_brace_is_not_lang_block():
     text = "::: {lang=en} some text\nHello\n:::\n"
-    assert filter_lang(text, "en") == text
+    assert filter_lang(text, "ja") == text
 
 
 # ── Phase 7: Non-lang fenced divs ─────────────────────────────────
@@ -219,6 +241,16 @@ def test_non_lang_div_passed_through():
         :::
     """)
     assert filter_lang(text, "en") == text
+
+
+def test_lang_attribute_after_class_is_filtered():
+    text = textwrap.dedent("""\
+        ::: {.note lang=en}
+        English note.
+        :::
+    """)
+    assert filter_lang(text, "en") == text
+    assert filter_lang(text, "ja") == ""
 
 
 def test_non_lang_div_with_lang_blocks():
