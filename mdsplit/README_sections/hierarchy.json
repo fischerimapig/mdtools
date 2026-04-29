@@ -1,0 +1,151 @@
+{
+  "source_file": "README.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "mdsplit",
+      "file": "sections/01-mdsplit.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "必要環境",
+          "file": "sections/01-mdsplit/01-section.md",
+          "order": 0,
+          "children": []
+        },
+        {
+          "title": "クイックスタート",
+          "file": "sections/01-mdsplit/02-section.md",
+          "order": 1,
+          "children": []
+        },
+        {
+          "title": "主要コマンド例（`--help` の epilog と同期）",
+          "file": "sections/01-mdsplit/03-help-epilog.md",
+          "order": 2,
+          "children": []
+        },
+        {
+          "title": "コマンドリファレンス",
+          "file": "sections/01-mdsplit/04-section.md",
+          "order": 3,
+          "children": [
+            {
+              "title": "decompose",
+              "file": "sections/01-mdsplit/04-section/01-decompose.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "compose",
+              "file": "sections/01-mdsplit/04-section/02-compose.md",
+              "order": 1,
+              "children": []
+            },
+            {
+              "title": "verify",
+              "file": "sections/01-mdsplit/04-section/03-verify.md",
+              "order": 2,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "出力ディレクトリ構造",
+          "file": "sections/01-mdsplit/05-section.md",
+          "order": 4,
+          "children": [
+            {
+              "title": "ネスト型（デフォルト）",
+              "file": "sections/01-mdsplit/05-section/01-section.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "フラット型（`--flat`）",
+              "file": "sections/01-mdsplit/05-section/02-flat.md",
+              "order": 1,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "JSON スキーマ（hierarchy.json）",
+          "file": "sections/01-mdsplit/06-json-hierarchyjson.md",
+          "order": 5,
+          "children": [
+            {
+              "title": "トップレベルフィールド",
+              "file": "sections/01-mdsplit/06-json-hierarchyjson/01-section.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "SectionNode フィールド",
+              "file": "sections/01-mdsplit/06-json-hierarchyjson/02-sectionnode.md",
+              "order": 1,
+              "children": []
+            },
+            {
+              "title": "見出しレベルの導出",
+              "file": "sections/01-mdsplit/06-json-hierarchyjson/03-section.md",
+              "order": 2,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "ワークフロー例",
+          "file": "sections/01-mdsplit/07-section.md",
+          "order": 6,
+          "children": [
+            {
+              "title": "セクションの並び替え",
+              "file": "sections/01-mdsplit/07-section/01-section.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "セクションの階層変更",
+              "file": "sections/01-mdsplit/07-section/02-section.md",
+              "order": 1,
+              "children": []
+            },
+            {
+              "title": "ラウンドトリップ検証",
+              "file": "sections/01-mdsplit/07-section/03-section.md",
+              "order": 2,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "Python API としての利用",
+          "file": "sections/01-mdsplit/08-python-api.md",
+          "order": 7,
+          "children": []
+        },
+        {
+          "title": "テスト",
+          "file": "sections/01-mdsplit/09-section.md",
+          "order": 8,
+          "children": []
+        },
+        {
+          "title": "設計上の注意点",
+          "file": "sections/01-mdsplit/10-section.md",
+          "order": 9,
+          "children": [
+            {
+              "title": "パーサーの見出し判定",
+              "file": "sections/01-mdsplit/10-section/01-section.md",
+              "order": 0,
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

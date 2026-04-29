@@ -41,6 +41,21 @@ mdhtml-rewrite --help
 mdhtml-rewrite --help
 ```
 
+```mermaid
+flowchart LR
+    eps["EPS/PS/PDF assets"]
+    convert["convert"]
+    htmlmd["HTML-ish Markdown"]
+    inventory["inventory"]
+    invjson["inventory.json"]
+    rewrite["rewrite"]
+    qmd["Quarto-friendly QMD/MD"]
+
+    eps --> convert
+    htmlmd --> inventory --> invjson --> rewrite
+    htmlmd --> rewrite --> qmd
+```
+
 ## 主要コマンド例（`--help` の epilog と同期）
 
 ```bash
@@ -68,16 +83,16 @@ mdhtml-rewrite convert figures --format png --dpi 300
 
 ```bash
 # dry-run で変換対象を確認
-python3 -m tools.mdhtml_rewrite convert doc/emax6/ --dry-run
+mdhtml-rewrite convert doc/emax6/ --dry-run
 
 # 一括変換（ベクター→SVG, ラスター→PNG を自動判別）
-python3 -m tools.mdhtml_rewrite convert doc/emax6/ --report /tmp/convert-report.json
+mdhtml-rewrite convert doc/emax6/ --report /tmp/convert-report.json
 
 # 強制再変換
-python3 -m tools.mdhtml_rewrite convert doc/emax6/ --force
+mdhtml-rewrite convert doc/emax6/ --force
 
 # PNG のみで変換（SVG 不要の場合）
-python3 -m tools.mdhtml_rewrite convert doc/emax6/ --format png --dpi 200
+mdhtml-rewrite convert doc/emax6/ --format png --dpi 200
 ```
 
 オプション:
@@ -90,7 +105,7 @@ python3 -m tools.mdhtml_rewrite convert doc/emax6/ --format png --dpi 200
 ### 2) inventory（要素調査）
 
 ```bash
-python3 -m tools.mdhtml_rewrite inventory doc/emax6/combined.md \
+mdhtml-rewrite inventory doc/emax6/combined.md \
   -o /tmp/combined.inventory.json
 ```
 
@@ -102,7 +117,7 @@ python3 -m tools.mdhtml_rewrite inventory doc/emax6/combined.md \
 ### 3) rewrite（変換）
 
 ```bash
-python3 -m tools.mdhtml_rewrite rewrite doc/emax6/combined.md \
+mdhtml-rewrite rewrite doc/emax6/combined.md \
   -o /tmp/combined.rewritten.qmd \
   --inventory /tmp/combined.inventory.json \
   --report /tmp/combined.rewrite_report.json
@@ -115,7 +130,7 @@ python3 -m tools.mdhtml_rewrite rewrite doc/emax6/combined.md \
 #### Web 形式優先を無効化したい場合
 
 ```bash
-python3 -m tools.mdhtml_rewrite rewrite doc/emax6/combined.md \
+mdhtml-rewrite rewrite doc/emax6/combined.md \
   -o /tmp/combined.rewritten.qmd \
   --no-prefer-png
 ```

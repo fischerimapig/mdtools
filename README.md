@@ -9,6 +9,20 @@ Markdown 文書の編集を補助するコマンドラインツール集。
 | **mdhtml-rewrite** | pandoc 変換後の HTML 断片を Quarto (.qmd) 互換の記法へ変換する |
 | **glossary** | 用語・定数マーカーを定義ファイルから解決し、一覧表も出力する |
 
+```mermaid
+flowchart LR
+    source["Markdown / QMD source"]
+    rewrite["mdhtml-rewrite<br/>HTML/EPS 整形"]
+    split["mdsplit<br/>section 管理"]
+    filter["langfilter<br/>言語別抽出"]
+    glossary["glossary<br/>用語・定数解決"]
+    output["配布用 Markdown/QMD"]
+
+    source --> rewrite --> split --> filter --> glossary --> output
+    source --> split
+    source --> filter
+```
+
 ## 必要環境
 
 - Python 3.13+
@@ -151,11 +165,53 @@ langfilter filter --lang ja doc/combined-edited.qmd | \
   glossary resolve --lang ja -f doc/defs.json > doc/ja.qmd
 ```
 
+## mdtools.core
+
+`mdtools.core` は、各ツールに重複していた I/O、Markdown スキャン、Pandoc/Quarto 属性処理を集約した内部共通パッケージです。公開 CLI は維持し、内部実装だけを共有しています。
+
+```mermaid
+flowchart TB
+    io["mdtools.core.io"]
+    mdscan["mdtools.core.mdscan"]
+    pandoc["mdtools.core.pandoc"]
+    mdsplit["mdsplit"]
+    langfilter["langfilter"]
+    rewrite["mdhtml-rewrite"]
+    glossary["glossary"]
+
+    io --> mdsplit
+    io --> langfilter
+    io --> rewrite
+    io --> glossary
+    pandoc --> mdscan
+    mdscan --> mdsplit
+    mdscan --> langfilter
+    mdscan --> glossary
+    pandoc --> langfilter
+    pandoc --> glossary
+```
+
+実施記録は [docs/plans/core-refactor.md](docs/plans/core-refactor.md) にあります。用語としての []{.term id=mdtools-core} は `docs/glossary/defs.yaml` でも管理します。
+
+## 文書管理
+
+主要 Markdown 文書は `mdsplit` で section 管理します。canonical `.md` と対応する `*_sections/` は同じ変更として扱い、最後に round-trip を確認します。
+
+```bash
+mdsplit decompose README.md -o README_sections
+mdsplit verify README_sections/hierarchy.json
+mdsplit compose README_sections/hierarchy.json | diff - README.md
+```
+
+用語定義は `docs/glossary/defs.yaml` に置き、マーカーを含む文書は `glossary verify` で検証します。
+
 ## テスト
 
 ```bash
-uv run python -m pytest -q
+uv run pytest -q
 ```
+
+core リファクタ後の現在の基準は `190 passed, 1 skipped` です。
 
 ## ライセンス
 

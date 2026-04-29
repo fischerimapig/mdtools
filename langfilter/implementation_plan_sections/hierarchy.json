@@ -1,0 +1,89 @@
+{
+  "source_file": "implementation_plan.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "langfilter 実装記録",
+      "file": "sections/01-langfilter.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "背景",
+          "file": "sections/01-langfilter/01-section.md",
+          "order": 0,
+          "children": []
+        },
+        {
+          "title": "設計判断",
+          "file": "sections/01-langfilter/02-section.md",
+          "order": 1,
+          "children": []
+        },
+        {
+          "title": "アーキテクチャ",
+          "file": "sections/01-langfilter/03-section.md",
+          "order": 2,
+          "children": [
+            {
+              "title": "モジュール責務",
+              "file": "sections/01-langfilter/03-section/01-section.md",
+              "order": 0,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "アルゴリズム: core 連携の行単位処理",
+          "file": "sections/01-langfilter/04-core.md",
+          "order": 3,
+          "children": [
+            {
+              "title": "状態",
+              "file": "sections/01-langfilter/04-core/01-section.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "正規表現",
+              "file": "sections/01-langfilter/04-core/02-section.md",
+              "order": 1,
+              "children": []
+            },
+            {
+              "title": "遷移ロジック",
+              "file": "sections/01-langfilter/04-core/03-section.md",
+              "order": 2,
+              "children": []
+            },
+            {
+              "title": "エッジケース",
+              "file": "sections/01-langfilter/04-core/04-section.md",
+              "order": 3,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "テスト戦略",
+          "file": "sections/01-langfilter/05-section.md",
+          "order": 4,
+          "children": [
+            {
+              "title": "テストカテゴリ",
+              "file": "sections/01-langfilter/05-section/01-section.md",
+              "order": 0,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "検証",
+          "file": "sections/01-langfilter/06-section.md",
+          "order": 5,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

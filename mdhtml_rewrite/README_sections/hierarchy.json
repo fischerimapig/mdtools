@@ -1,0 +1,107 @@
+{
+  "source_file": "README.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "mdhtml_rewrite",
+      "file": "sections/01-mdhtml-rewrite.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "できること",
+          "file": "sections/01-mdhtml-rewrite/01-section.md",
+          "order": 0,
+          "children": []
+        },
+        {
+          "title": "インストール",
+          "file": "sections/01-mdhtml-rewrite/02-section.md",
+          "order": 1,
+          "children": []
+        },
+        {
+          "title": "使い方",
+          "file": "sections/01-mdhtml-rewrite/03-section.md",
+          "order": 2,
+          "children": []
+        },
+        {
+          "title": "主要コマンド例（`--help` の epilog と同期）",
+          "file": "sections/01-mdhtml-rewrite/04-help-epilog.md",
+          "order": 3,
+          "children": [
+            {
+              "title": "1) convert（EPS 変換）",
+              "file": "sections/01-mdhtml-rewrite/04-help-epilog/01-1-converteps.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "2) inventory（要素調査）",
+              "file": "sections/01-mdhtml-rewrite/04-help-epilog/02-2-inventory.md",
+              "order": 1,
+              "children": []
+            },
+            {
+              "title": "3) rewrite（変換）",
+              "file": "sections/01-mdhtml-rewrite/04-help-epilog/03-3-rewrite.md",
+              "order": 2,
+              "children": [
+                {
+                  "title": "Web 形式優先を無効化したい場合",
+                  "file": "sections/01-mdhtml-rewrite/04-help-epilog/03-3-rewrite/01-web.md",
+                  "order": 0,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "画像形式の扱い（重要）",
+          "file": "sections/01-mdhtml-rewrite/05-section.md",
+          "order": 4,
+          "children": [
+            {
+              "title": "1. 既に表示向きの形式は維持",
+              "file": "sections/01-mdhtml-rewrite/05-section/01-1.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "2. `.eps` / `.ps` / `.pdf` の扱い",
+              "file": "sections/01-mdhtml-rewrite/05-section/02-2-eps-ps-pdf.md",
+              "order": 1,
+              "children": []
+            },
+            {
+              "title": "3. EPS 変換について",
+              "file": "sections/01-mdhtml-rewrite/05-section/03-3-eps.md",
+              "order": 2,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "現在の変換ルール（概要）",
+          "file": "sections/01-mdhtml-rewrite/06-section.md",
+          "order": 5,
+          "children": []
+        },
+        {
+          "title": "注意点",
+          "file": "sections/01-mdhtml-rewrite/07-section.md",
+          "order": 6,
+          "children": []
+        },
+        {
+          "title": "推奨ワークフロー",
+          "file": "sections/01-mdhtml-rewrite/08-section.md",
+          "order": 7,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "source_file": "README.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "langfilter",
+      "file": "sections/01-langfilter.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "記法",
+          "file": "sections/01-langfilter/01-section.md",
+          "order": 0,
+          "children": []
+        },
+        {
+          "title": "使い方",
+          "file": "sections/01-langfilter/02-section.md",
+          "order": 1,
+          "children": []
+        },
+        {
+          "title": "主要コマンド例（`--help` の epilog と同期）",
+          "file": "sections/01-langfilter/03-help-epilog.md",
+          "order": 2,
+          "children": []
+        },
+        {
+          "title": "CLI リファレンス",
+          "file": "sections/01-langfilter/04-cli.md",
+          "order": 3,
+          "children": []
+        },
+        {
+          "title": "動作仕様",
+          "file": "sections/01-langfilter/05-section.md",
+          "order": 4,
+          "children": [
+            {
+              "title": "keep（対象言語ブロック）",
+              "file": "sections/01-langfilter/05-section/01-keep.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "remove（対象外言語ブロック）",
+              "file": "sections/01-langfilter/05-section/02-remove.md",
+              "order": 1,
+              "children": []
+            },
+            {
+              "title": "both モード",
+              "file": "sections/01-langfilter/05-section/03-both.md",
+              "order": 2,
+              "children": []
+            },
+            {
+              "title": "共有コンテンツ",
+              "file": "sections/01-langfilter/05-section/04-section.md",
+              "order": 3,
+              "children": []
+            },
+            {
+              "title": "コードフェンスとの相互作用",
+              "file": "sections/01-langfilter/05-section/05-section.md",
+              "order": 4,
+              "children": []
+            },
+            {
+              "title": "非lang fenced div",
+              "file": "sections/01-langfilter/05-section/06-lang-fenced-div.md",
+              "order": 5,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "構文バリエーション",
+          "file": "sections/01-langfilter/06-section.md",
+          "order": 5,
+          "children": []
+        },
+        {
+          "title": "テスト",
+          "file": "sections/01-langfilter/07-section.md",
+          "order": 6,
+          "children": []
+        },
+        {
+          "title": "要件",
+          "file": "sections/01-langfilter/08-section.md",
+          "order": 7,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

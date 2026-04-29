@@ -6,8 +6,7 @@ t-wada式 TDD に従い、テストを先に全て定義してから実装する
 ## 実行方法
 
 ```bash
-cd tools/mdtools
-python -m pytest langfilter/tests/ -v
+uv run pytest langfilter/tests/ -v
 ```
 
 ---

@@ -1,0 +1,13 @@
+
+- `<figure>` + `<embed src="...">` + `<figcaption>`
+  - Markdown 画像 `![caption](path){#id width=...}` へ
+- `<figure>` 内 `pre/code`（画像なし）
+  - キャプション付きコードブロックへ
+- `<figure>` で画像もコードも無い場合
+  - 変換せず維持（`needs_manual`）
+- `<div class="screen"> ... </div>`
+  - fenced code block へ
+- `<div id="physinterface|logicinterface|lmm-operation|alu-operation">`
+  - 表本文 + キャプション行 `{#id}` へ
+- `<a ... data-reference-type="ref" ...>`
+  - `@id` へ

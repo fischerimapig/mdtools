@@ -1,0 +1,100 @@
+{
+  "source_file": "README.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "glossary",
+      "file": "sections/01-glossary.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "記法",
+          "file": "sections/01-glossary/01-section.md",
+          "order": 0,
+          "children": [
+            {
+              "title": "インラインマーカー (bracketed span)",
+              "file": "sections/01-glossary/01-section/01-bracketed-span.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "一覧ブロック (fenced div)",
+              "file": "sections/01-glossary/01-section/02-fenced-div.md",
+              "order": 1,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "使い方",
+          "file": "sections/01-glossary/02-section.md",
+          "order": 1,
+          "children": []
+        },
+        {
+          "title": "主要コマンド例（`--help` の epilog と同期）",
+          "file": "sections/01-glossary/03-help-epilog.md",
+          "order": 2,
+          "children": []
+        },
+        {
+          "title": "CLI リファレンス",
+          "file": "sections/01-glossary/04-cli.md",
+          "order": 3,
+          "children": []
+        },
+        {
+          "title": "スキーマ",
+          "file": "sections/01-glossary/05-section.md",
+          "order": 4,
+          "children": []
+        },
+        {
+          "title": "動作仕様",
+          "file": "sections/01-glossary/06-section.md",
+          "order": 5,
+          "children": [
+            {
+              "title": "コードフェンスとの相互作用",
+              "file": "sections/01-glossary/06-section/01-section.md",
+              "order": 0,
+              "children": []
+            },
+            {
+              "title": "langfilter との関係",
+              "file": "sections/01-glossary/06-section/02-langfilter.md",
+              "order": 1,
+              "children": []
+            },
+            {
+              "title": "未定義 ID の扱い",
+              "file": "sections/01-glossary/06-section/03-id.md",
+              "order": 2,
+              "children": []
+            },
+            {
+              "title": "クラスと kind のミスマッチ",
+              "file": "sections/01-glossary/06-section/04-kind.md",
+              "order": 3,
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "テスト",
+          "file": "sections/01-glossary/07-section.md",
+          "order": 6,
+          "children": []
+        },
+        {
+          "title": "要件",
+          "file": "sections/01-glossary/08-section.md",
+          "order": 7,
+          "children": []
+        }
+      ]
+    }
+  ]
+}
