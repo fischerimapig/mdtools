@@ -1,6 +1,6 @@
 
 ```bash
-mdhtml-rewrite rewrite doc/emax6/combined.md \
+mdtools rewrite rewrite doc/emax6/combined.md \
   -o /tmp/combined.rewritten.qmd \
   --inventory /tmp/combined.inventory.json \
   --report /tmp/combined.rewrite_report.json

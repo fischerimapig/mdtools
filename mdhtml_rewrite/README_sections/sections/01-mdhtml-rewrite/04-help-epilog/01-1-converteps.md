@@ -1,16 +1,16 @@
 
 ```bash
 # dry-run で変換対象を確認
-mdhtml-rewrite convert doc/emax6/ --dry-run
+mdtools rewrite convert doc/emax6/ --dry-run
 
 # 一括変換（ベクター→SVG, ラスター→PNG を自動判別）
-mdhtml-rewrite convert doc/emax6/ --report /tmp/convert-report.json
+mdtools rewrite convert doc/emax6/ --report /tmp/convert-report.json
 
 # 強制再変換
-mdhtml-rewrite convert doc/emax6/ --force
+mdtools rewrite convert doc/emax6/ --force
 
 # PNG のみで変換（SVG 不要の場合）
-mdhtml-rewrite convert doc/emax6/ --format png --dpi 200
+mdtools rewrite convert doc/emax6/ --format png --dpi 200
 ```
 
 オプション:

@@ -9,39 +9,37 @@ from mdtools.core.io import read_text_or_stdin, write_text_or_stdout
 from .filter import filter_lang
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None, *, prog: str = "langfilter") -> int:
     """Run the langfilter CLI.
 
     Returns:
         Exit code (0 for success, 1 for failure).
     """
     parser = argparse.ArgumentParser(
-        prog="langfilter",
+        prog=prog,
         description="言語ブロック付き Markdown/QMD から必要な言語だけを抽出します。",
         epilog=(
             "最小例:\n"
-            "  langfilter filter manuscript.qmd --lang ja -o manuscript.ja.qmd\n"
+            f"  {prog} filter manuscript.qmd --lang ja -o manuscript.ja.qmd\n"
             "\n"
             "対応記法（lang fenced div）:\n"
+            "  ::: {.note lang=en}\n"
             "  ::: {lang=en}\n"
             "  ::: {lang=\"ja\"}\n"
             "  :::{lang=en}\n"
             "  :::  { lang = ja }\n"
             "  ※ 閉じは `:::`。コードフェンス内の `:::` は対象外。\n"
+            "  ※ 開始行の後ろに本文が続く trailing text は lang fenced div として扱わず通常行として残ります。\n"
             "\n"
             "よく使う例:\n"
-            "  cat manuscript.md | langfilter filter --lang en > manuscript.en.md\n"
-            "  langfilter filter --lang en manuscript.qmd -o manuscript.en.qmd\n"
-            "  langfilter filter --lang ja manuscript.qmd -o manuscript.ja.qmd\n"
-            "  langfilter filter --lang both manuscript.qmd -o manuscript.both.qmd\n"
+            f"  cat manuscript.md | {prog} filter --lang en > manuscript.en.md\n"
+            f"  {prog} filter --lang en manuscript.qmd -o manuscript.en.qmd\n"
+            f"  {prog} filter --lang ja manuscript.qmd -o manuscript.ja.qmd\n"
+            f"  {prog} filter --lang both manuscript.qmd -o manuscript.both.qmd\n"
             "\n"
-            "失敗しやすいケース回避例:\n"
-            "  # パイプ入力時に input 引数は省略可能（- 扱い）\n"
-            "  cat bilingual.md | langfilter filter --lang ja > ja.md\n"
-            "  # --lang を切り替えて出力差分を比較\n"
-            "  langfilter filter manuscript.qmd --lang en > /tmp/en.md && \\\n"
-            "  langfilter filter manuscript.qmd --lang ja > /tmp/ja.md && \\\n"
-            "  langfilter filter manuscript.qmd --lang both > /tmp/both.md"
+            "README 原典:\n"
+            "  README.md「使い方」\n"
+            "  langfilter/README.md「記法」「主要コマンド例（--help の epilog と同期）」"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

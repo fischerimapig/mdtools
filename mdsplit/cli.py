@@ -10,27 +10,23 @@ from .compose import compose
 from .decompose import decompose
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None, *, prog: str = "mdsplit") -> int:
     parser = argparse.ArgumentParser(
-        prog="mdsplit",
+        prog=prog,
         description="Markdown/QMD ドキュメントを分割・再構成するツール。",
         epilog=(
             "最小例:\n"
-            "  mdsplit decompose manuscript.qmd\n"
+            f"  {prog} decompose manuscript.qmd\n"
             "\n"
             "よく使う例:\n"
-            "  mdsplit decompose manuscript.qmd -o manuscript_sections\n"
-            "  mdsplit compose manuscript_sections/hierarchy.json -o rebuilt.qmd\n"
-            "  mdsplit compose manuscript_sections/hierarchy.json > rebuilt.qmd\n"
-            "  mdsplit verify manuscript_sections/hierarchy.json\n"
+            f"  {prog} decompose manuscript.qmd -o manuscript_sections\n"
+            f"  {prog} compose manuscript_sections/hierarchy.json -o rebuilt.qmd\n"
+            f"  {prog} compose manuscript_sections/hierarchy.json > rebuilt.qmd\n"
+            f"  {prog} verify manuscript_sections/hierarchy.json\n"
             "\n"
-            "失敗しやすいケース回避例:\n"
-            "  # 1) decompose -> 2) verify -> 3) compose の順で安全に確認\n"
-            "  mdsplit decompose manuscript.qmd -o manuscript_sections && \\\n"
-            "  mdsplit verify manuscript_sections/hierarchy.json && \\\n"
-            "  mdsplit compose manuscript_sections/hierarchy.json -o rebuilt.qmd\n"
-            "  # compose を標準出力で使うときはリダイレクトを忘れない\n"
-            "  mdsplit compose manuscript_sections/hierarchy.json > rebuilt.qmd"
+            "README 原典:\n"
+            "  README.md「使い方」\n"
+            "  mdsplit/README.md「主要コマンド例（--help の epilog と同期）」"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

@@ -23,6 +23,10 @@ stateDiagram-v2
 The core consists of a D x 4 array of processing units.
 :::
 
+::: {.note lang=en}
+This syntax can combine ordinary classes and a lang attribute.
+:::
+
 ::: {lang=ja}
 コアは D x 4 のプロセッシングユニットアレイで構成される。
 :::
@@ -34,9 +38,10 @@ The core consists of a D x 4 array of processing units.
 
 ## 使い方
 
-まず `--help` でオプションと最小例を確認してください。
+まず `mdtools langfilter --help` でオプションと最小例を確認してください。個別コマンド `langfilter` も同じ機能を呼び出す互換入口です。
 
 ```bash
+mdtools langfilter --help
 langfilter --help
 ```
 
@@ -44,22 +49,24 @@ langfilter --help
 
 ```bash
 # 最小例
-langfilter filter manuscript.qmd --lang ja -o manuscript.ja.qmd
+mdtools langfilter filter manuscript.qmd --lang ja -o manuscript.ja.qmd
 
 # よく使う例
-cat manuscript.md | langfilter filter --lang en > manuscript.en.md
-langfilter filter --lang en manuscript.qmd -o manuscript.en.qmd
-langfilter filter --lang ja manuscript.qmd -o manuscript.ja.qmd
-langfilter filter --lang both manuscript.qmd -o manuscript.both.qmd
+cat manuscript.md | mdtools langfilter filter --lang en > manuscript.en.md
+mdtools langfilter filter --lang en manuscript.qmd -o manuscript.en.qmd
+mdtools langfilter filter --lang ja manuscript.qmd -o manuscript.ja.qmd
+mdtools langfilter filter --lang both manuscript.qmd -o manuscript.both.qmd
 
 # 失敗しやすいケース回避例
 # パイプ入力時に input 引数は省略可能（- 扱い）
-cat bilingual.md | langfilter filter --lang ja > ja.md
+cat bilingual.md | mdtools langfilter filter --lang ja > ja.md
 # --lang を切り替えて出力差分を比較
-langfilter filter manuscript.qmd --lang en > /tmp/en.md && \
-langfilter filter manuscript.qmd --lang ja > /tmp/ja.md && \
-langfilter filter manuscript.qmd --lang both > /tmp/both.md
+mdtools langfilter filter manuscript.qmd --lang en > /tmp/en.md && \
+mdtools langfilter filter manuscript.qmd --lang ja > /tmp/ja.md && \
+mdtools langfilter filter manuscript.qmd --lang both > /tmp/both.md
 ```
+
+個別コマンドとして実行する場合は、上記の `mdtools langfilter` を `langfilter` に置き換えてください。
 
 ## CLI リファレンス
 

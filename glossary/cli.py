@@ -12,14 +12,14 @@ from .loader import GlossaryError, load
 from .resolver import ResolveError, find_missing, resolve
 
 
-def _build_parser() -> argparse.ArgumentParser:
+def _build_parser(prog: str = "glossary") -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="glossary",
+        prog=prog,
         description="Markdown 中の用語・定数マーカーを定義ファイルから解決/一覧化します。",
         epilog=(
             "最小例:\n"
-            "  glossary resolve manuscript.md --lang en -f defs.json -o out.md\n"
-            "  glossary list -f defs.json\n"
+            f"  {prog} resolve manuscript.md --lang en -f defs.json -o out.md\n"
+            f"  {prog} list -f defs.json\n"
             "\n"
             "対応マーカー (Pandoc bracketed span / fenced div):\n"
             "  []{.term id=unit}                   -> names.<lang>\n"
@@ -31,17 +31,22 @@ def _build_parser() -> argparse.ArgumentParser:
             "\n"
             "よく使う例:\n"
             "  # langfilter -> glossary パイプライン (言語別出力)\n"
-            "  langfilter filter --lang en in.qmd | \\\n"
-            "    glossary resolve --lang en -f defs.json > out.en.md\n"
+            "  mdtools langfilter filter --lang en in.qmd | \\\n"
+            f"    {prog} resolve --lang en -f defs.json > out.en.md\n"
             "\n"
             "  # 複数定義ファイルの合成\n"
-            "  glossary resolve in.md --lang ja -f terms.json -f consts.yaml\n"
+            f"  {prog} resolve in.md --lang ja -f terms.json -f consts.yaml\n"
             "\n"
             "  # 一覧 (JSON)\n"
-            "  glossary list -f defs.json --kind term --format json\n"
+            f"  {prog} list -f defs.json --kind term --format json\n"
             "\n"
             "  # CI 用: 未定義 ID の検出 (exit code で通知)\n"
-            "  glossary verify in.md -f defs.json"
+            f"  {prog} verify in.md -f defs.json\n"
+            "\n"
+            "README 原典:\n"
+            "  README.md「使い方」\n"
+            "  glossary/README.md「主要コマンド例（--help の epilog と同期）」\n"
+            "  docs/glossary/README.md"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -129,8 +134,8 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
-    parser = _build_parser()
+def main(argv: list[str] | None = None, *, prog: str = "glossary") -> int:
+    parser = _build_parser(prog)
     args = parser.parse_args(argv)
 
     try:

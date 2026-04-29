@@ -1,7 +1,8 @@
 
-最初に `--help` を確認し、利用可能なサブコマンドとオプションを把握してください。
+最初に `mdtools mdsplit --help` を確認し、利用可能なサブコマンドとオプションを把握してください。個別コマンド `mdsplit` も同じ機能を呼び出す互換入口です。
 
 ```bash
+mdtools mdsplit --help
 mdsplit --help
 ```
 
@@ -9,23 +10,23 @@ mdsplit --help
 
 ```bash
 # 分解: Markdown → セクションファイル + hierarchy.json
-mdsplit decompose doc/emax6/combined.md -o output/
+mdtools mdsplit decompose doc/emax6/combined.md -o output/
 
 # 再構成: hierarchy.json + セクションファイル → Markdown
-mdsplit compose output/hierarchy.json -o reconstructed.md
+mdtools mdsplit compose output/hierarchy.json -o reconstructed.md
 
 # 検証: 参照ファイルの存在チェック
-mdsplit verify output/hierarchy.json
+mdtools mdsplit verify output/hierarchy.json
 ```
 
 ```mermaid
 flowchart LR
     doc["canonical Markdown/QMD"]
-    decompose["mdsplit decompose"]
+    decompose["mdtools mdsplit decompose"]
     hierarchy["hierarchy.json"]
     sections["section files"]
-    verify["mdsplit verify"]
-    compose["mdsplit compose"]
+    verify["mdtools mdsplit verify"]
+    compose["mdtools mdsplit compose"]
     rebuilt["rebuilt Markdown/QMD"]
 
     doc --> decompose

@@ -35,20 +35,21 @@ mdhtml-rewrite --help
 
 ## 使い方
 
-まず `--help` でサブコマンドと主要オプションを確認してください。
+まず `mdtools rewrite --help` でサブコマンドと主要オプションを確認してください。個別コマンド `mdhtml-rewrite` も同じ機能を呼び出す互換入口です。
 
 ```bash
+mdtools rewrite --help
 mdhtml-rewrite --help
 ```
 
 ```mermaid
 flowchart LR
     eps["EPS/PS/PDF assets"]
-    convert["convert"]
+    convert["mdtools rewrite convert"]
     htmlmd["HTML-ish Markdown"]
-    inventory["inventory"]
+    inventory["mdtools rewrite inventory"]
     invjson["inventory.json"]
-    rewrite["rewrite"]
+    rewrite["mdtools rewrite rewrite"]
     qmd["Quarto-friendly QMD/MD"]
 
     eps --> convert
@@ -60,39 +61,41 @@ flowchart LR
 
 ```bash
 # 最小例
-mdhtml-rewrite inventory input.md -o inventory.json
+mdtools rewrite inventory input.md -o inventory.json
 
 # よく使う例
-mdhtml-rewrite inventory input.md -o inventory.json
-mdhtml-rewrite rewrite input.md -o output.qmd --inventory inventory.json --report rewrite_report.json
-mdhtml-rewrite convert figures --dry-run
-mdhtml-rewrite convert figures --format svg --report convert_svg_report.json
-mdhtml-rewrite convert figures --format png --dpi 300 --report convert_png_report.json
+mdtools rewrite inventory input.md -o inventory.json
+mdtools rewrite rewrite input.md -o output.qmd --inventory inventory.json --report rewrite_report.json
+mdtools rewrite convert figures --dry-run
+mdtools rewrite convert figures --format svg --report convert_svg_report.json
+mdtools rewrite convert figures --format png --dpi 300 --report convert_png_report.json
 
 # 失敗しやすいケース回避例
 # inventory を先に生成してから rewrite に渡し、判定の揺れを減らす
-mdhtml-rewrite inventory input.md -o inventory.json && \
-mdhtml-rewrite rewrite input.md -o output.qmd --inventory inventory.json
+mdtools rewrite inventory input.md -o inventory.json && \
+mdtools rewrite rewrite input.md -o output.qmd --inventory inventory.json
 # convert は先に --dry-run で対象確認。SVG 優先か PNG+高DPI かを用途で切り替える
-mdhtml-rewrite convert figures --dry-run && \
-mdhtml-rewrite convert figures --format svg && \
-mdhtml-rewrite convert figures --format png --dpi 300
+mdtools rewrite convert figures --dry-run && \
+mdtools rewrite convert figures --format svg && \
+mdtools rewrite convert figures --format png --dpi 300
 ```
+
+個別コマンドとして実行する場合は、上記の `mdtools rewrite` を `mdhtml-rewrite` に置き換えてください。
 
 ### 1) convert（EPS 変換）
 
 ```bash
 # dry-run で変換対象を確認
-mdhtml-rewrite convert doc/emax6/ --dry-run
+mdtools rewrite convert doc/emax6/ --dry-run
 
 # 一括変換（ベクター→SVG, ラスター→PNG を自動判別）
-mdhtml-rewrite convert doc/emax6/ --report /tmp/convert-report.json
+mdtools rewrite convert doc/emax6/ --report /tmp/convert-report.json
 
 # 強制再変換
-mdhtml-rewrite convert doc/emax6/ --force
+mdtools rewrite convert doc/emax6/ --force
 
 # PNG のみで変換（SVG 不要の場合）
-mdhtml-rewrite convert doc/emax6/ --format png --dpi 200
+mdtools rewrite convert doc/emax6/ --format png --dpi 200
 ```
 
 オプション:
@@ -105,7 +108,7 @@ mdhtml-rewrite convert doc/emax6/ --format png --dpi 200
 ### 2) inventory（要素調査）
 
 ```bash
-mdhtml-rewrite inventory doc/emax6/combined.md \
+mdtools rewrite inventory doc/emax6/combined.md \
   -o /tmp/combined.inventory.json
 ```
 
@@ -117,7 +120,7 @@ mdhtml-rewrite inventory doc/emax6/combined.md \
 ### 3) rewrite（変換）
 
 ```bash
-mdhtml-rewrite rewrite doc/emax6/combined.md \
+mdtools rewrite rewrite doc/emax6/combined.md \
   -o /tmp/combined.rewritten.qmd \
   --inventory /tmp/combined.inventory.json \
   --report /tmp/combined.rewrite_report.json
@@ -130,7 +133,7 @@ mdhtml-rewrite rewrite doc/emax6/combined.md \
 #### Web 形式優先を無効化したい場合
 
 ```bash
-mdhtml-rewrite rewrite doc/emax6/combined.md \
+mdtools rewrite rewrite doc/emax6/combined.md \
   -o /tmp/combined.rewritten.qmd \
   --no-prefer-png
 ```

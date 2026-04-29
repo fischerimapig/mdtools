@@ -9,29 +9,24 @@ from .inventory import build_inventory
 from .rewrite import rewrite_file
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None, *, prog: str = "mdhtml-rewrite") -> int:
     parser = argparse.ArgumentParser(
-        prog="mdhtml-rewrite",
+        prog=prog,
         description="HTML 混在 Markdown/QMD の調査・整形・画像変換を行うユーティリティ。",
         epilog=(
             "最小例:\n"
-            "  mdhtml-rewrite inventory input.md -o inventory.json\n"
+            f"  {prog} inventory input.md -o inventory.json\n"
             "\n"
             "よく使う例:\n"
-            "  mdhtml-rewrite inventory input.md -o inventory.json\n"
-            "  mdhtml-rewrite rewrite input.md -o output.qmd --inventory inventory.json --report rewrite_report.json\n"
-            "  mdhtml-rewrite convert figures --dry-run\n"
-            "  mdhtml-rewrite convert figures --format svg --report convert_svg_report.json\n"
-            "  mdhtml-rewrite convert figures --format png --dpi 300 --report convert_png_report.json\n"
+            f"  {prog} inventory input.md -o inventory.json\n"
+            f"  {prog} rewrite input.md -o output.qmd --inventory inventory.json --report rewrite_report.json\n"
+            f"  {prog} convert figures --dry-run\n"
+            f"  {prog} convert figures --format svg --report convert_svg_report.json\n"
+            f"  {prog} convert figures --format png --dpi 300 --report convert_png_report.json\n"
             "\n"
-            "失敗しやすいケース回避例:\n"
-            "  # inventory を先に生成してから rewrite に渡し、判定の揺れを減らす\n"
-            "  mdhtml-rewrite inventory input.md -o inventory.json && \\\n"
-            "  mdhtml-rewrite rewrite input.md -o output.qmd --inventory inventory.json\n"
-            "  # convert は先に --dry-run で対象確認。SVG 優先か PNG+高DPI かを用途で切り替える\n"
-            "  mdhtml-rewrite convert figures --dry-run && \\\n"
-            "  mdhtml-rewrite convert figures --format svg && \\\n"
-            "  mdhtml-rewrite convert figures --format png --dpi 300"
+            "README 原典:\n"
+            "  README.md「使い方」\n"
+            "  mdhtml_rewrite/README.md「主要コマンド例（--help の epilog と同期）」"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
