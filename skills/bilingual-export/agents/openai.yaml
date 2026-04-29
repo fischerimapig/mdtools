@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bilingual Export"
+  short_description: "Export language-specific Markdown"
+  default_prompt: "Use $bilingual-export to produce English and Japanese outputs from this bilingual Markdown."

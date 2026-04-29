@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML to QMD"
+  short_description: "Convert HTML-ish Markdown to QMD"
+  default_prompt: "Use $html-to-qmd to convert this HTML-heavy Markdown into Quarto-friendly QMD."

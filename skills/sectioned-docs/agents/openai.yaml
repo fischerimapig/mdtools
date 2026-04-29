@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sectioned Docs"
+  short_description: "Edit long Markdown as sections"
+  default_prompt: "Use $sectioned-docs to edit this long Markdown document with mdsplit."

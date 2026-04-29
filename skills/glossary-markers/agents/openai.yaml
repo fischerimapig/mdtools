@@ -1,0 +1,4 @@
+interface:
+  display_name: "Glossary Markers"
+  short_description: "Resolve glossary markers in Markdown"
+  default_prompt: "Use $glossary-markers to validate and resolve the glossary markers in this document."
