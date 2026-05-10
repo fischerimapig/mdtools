@@ -39,9 +39,14 @@ def test_both_mode_preserves_all():
 # ── Phase 2: Single block — core behaviour ─────────────────────────
 
 
-def test_keep_en_block_preserves_fences():
+def test_keep_en_block_strips_fences_by_default():
     text = "::: {lang=en}\nHello\n:::\n"
-    assert filter_lang(text, "en") == text
+    assert filter_lang(text, "en") == "Hello\n"
+
+
+def test_keep_en_block_can_preserve_fences():
+    text = "::: {lang=en}\nHello\n:::\n"
+    assert filter_lang(text, "en", keep_fences=True) == text
 
 
 def test_remove_ja_block_when_lang_en():
@@ -49,9 +54,9 @@ def test_remove_ja_block_when_lang_en():
     assert filter_lang(text, "en") == ""
 
 
-def test_keep_ja_block_preserves_fences():
+def test_keep_ja_block_strips_fences_by_default():
     text = "::: {lang=ja}\nこんにちは\n:::\n"
-    assert filter_lang(text, "ja") == text
+    assert filter_lang(text, "ja") == "こんにちは\n"
 
 
 def test_remove_en_block_when_lang_ja():
@@ -75,7 +80,7 @@ EN_JA_PAIR = textwrap.dedent("""\
 
 def test_en_ja_pair_keep_en():
     result = filter_lang(EN_JA_PAIR, "en")
-    assert "::: {lang=en}" in result
+    assert "::: {lang=en}" not in result
     assert "English text." in result
     assert "日本語テキスト。" not in result
     assert "::: {lang=ja}" not in result
@@ -83,7 +88,7 @@ def test_en_ja_pair_keep_en():
 
 def test_en_ja_pair_keep_ja():
     result = filter_lang(EN_JA_PAIR, "ja")
-    assert "::: {lang=ja}" in result
+    assert "::: {lang=ja}" not in result
     assert "日本語テキスト。" in result
     assert "English text." not in result
     assert "::: {lang=en}" not in result
@@ -160,7 +165,12 @@ def test_lang_block_containing_code_fence_kept():
         :::
     """)
     result = filter_lang(text, "en")
-    assert result == text
+    assert result == textwrap.dedent("""\
+        Here is some code:
+        ```python
+        print("hello")
+        ```
+    """)
 
 
 def test_lang_block_containing_code_fence_removed():
@@ -183,7 +193,7 @@ def test_lang_block_containing_triple_colon_in_code_fence_kept():
         ```
         :::
     """)
-    assert filter_lang(text, "en") == text
+    assert filter_lang(text, "en") == "```text\n:::\n```\n"
 
 
 def test_lang_block_containing_triple_colon_in_code_fence_removed():
@@ -213,17 +223,17 @@ def test_tilde_code_fence_tracked():
 
 def test_no_space_before_brace():
     text = ":::{lang=en}\nHello\n:::\n"
-    assert filter_lang(text, "en") == text
+    assert filter_lang(text, "en") == "Hello\n"
 
 
 def test_extra_spaces():
     text = ":::  { lang = en }\nHello\n:::\n"
-    assert filter_lang(text, "en") == text
+    assert filter_lang(text, "en") == "Hello\n"
 
 
 def test_quoted_attribute():
     text = '::: {lang="en"}\nHello\n:::\n'
-    assert filter_lang(text, "en") == text
+    assert filter_lang(text, "en") == "Hello\n"
 
 
 def test_trailing_text_after_brace_is_not_lang_block():
@@ -249,7 +259,7 @@ def test_lang_attribute_after_class_is_filtered():
         English note.
         :::
     """)
-    assert filter_lang(text, "en") == text
+    assert filter_lang(text, "en") == "English note.\n"
     assert filter_lang(text, "ja") == ""
 
 
@@ -284,7 +294,7 @@ def test_bare_triple_colon_normal():
 
 def test_empty_lang_block_kept():
     text = "::: {lang=en}\n:::\n"
-    assert filter_lang(text, "en") == text
+    assert filter_lang(text, "en") == ""
 
 
 def test_empty_lang_block_removed():
@@ -369,7 +379,23 @@ def test_cli_filter_to_output_file(tmp_path):
     f_in.write_text("::: {lang=en}\nHello\n:::\n", encoding="utf-8")
     rc = cli_main(["filter", "--lang", "en", str(f_in), "-o", str(f_out)])
     assert rc == 0
-    assert "Hello" in f_out.read_text(encoding="utf-8")
+    out = f_out.read_text(encoding="utf-8")
+    assert out == "Hello\n"
+
+
+def test_cli_filter_can_keep_lang_fences(tmp_path):
+    f_in = tmp_path / "input.md"
+    text = "::: {lang=en}\nHello\n:::\n"
+    f_in.write_text(text, encoding="utf-8")
+    captured = io.StringIO()
+    old_stdout = sys.stdout
+    sys.stdout = captured
+    try:
+        rc = cli_main(["filter", "--lang", "en", "--keep-lang-fences", str(f_in)])
+    finally:
+        sys.stdout = old_stdout
+    assert rc == 0
+    assert captured.getvalue() == text
 
 
 def test_cli_default_lang_is_both(tmp_path):
@@ -451,8 +477,8 @@ FULL_DOCUMENT = textwrap.dedent("""\
 
 def test_full_document_en():
     result = filter_lang(FULL_DOCUMENT, "en")
-    # English content present with fences
-    assert "::: {lang=en}" in result
+    # English content present without lang fences
+    assert "::: {lang=en}" not in result
     assert "The EMAX6 core consists of" in result
     assert "The pipeline processes data" in result
     # Japanese content absent
@@ -471,8 +497,8 @@ def test_full_document_en():
 
 def test_full_document_ja():
     result = filter_lang(FULL_DOCUMENT, "ja")
-    # Japanese content present with fences
-    assert "::: {lang=ja}" in result
+    # Japanese content present without lang fences
+    assert "::: {lang=ja}" not in result
     assert "EMAX6コアは" in result
     assert "パイプラインは5つの" in result
     # English content absent

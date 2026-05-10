@@ -6,10 +6,11 @@
 
 ```bash
 mdtools --help
+mdtools build --help
 mdtools mdsplit --help
 mdtools langfilter --help
 mdtools rewrite --help
 mdtools glossary --help
 git diff -- README.md mdsplit/README.md mdhtml_rewrite/README.md langfilter/README.md glossary/README.md \
-  mdtools/main.py mdsplit/cli.py mdhtml_rewrite/cli.py langfilter/cli.py glossary/cli.py
+  mdtools/main.py mdtools/build_cli.py mdsplit/cli.py mdhtml_rewrite/cli.py langfilter/cli.py glossary/cli.py
 ```

@@ -39,27 +39,33 @@
           "order": 2,
           "children": [
             {
+              "title": "build",
+              "file": "sections/01-mdtools/03-section/00-build.md",
+              "order": 0,
+              "children": []
+            },
+            {
               "title": "mdsplit",
               "file": "sections/01-mdtools/03-section/01-mdsplit.md",
-              "order": 0,
+              "order": 1,
               "children": []
             },
             {
               "title": "langfilter",
               "file": "sections/01-mdtools/03-section/02-langfilter.md",
-              "order": 1,
+              "order": 2,
               "children": []
             },
             {
               "title": "mdhtml-rewrite",
               "file": "sections/01-mdtools/03-section/03-mdhtml-rewrite.md",
-              "order": 2,
+              "order": 3,
               "children": []
             },
             {
               "title": "glossary",
               "file": "sections/01-mdtools/03-section/04-glossary.md",
-              "order": 3,
+              "order": 4,
               "children": []
             }
           ]

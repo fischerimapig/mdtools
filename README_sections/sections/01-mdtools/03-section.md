@@ -3,6 +3,8 @@
 まずは `mdtools <tool> --help` でオプション定義と最小実行例を確認し、詳細は各 README の該当節を参照してください。
 
 ```bash
+mdtools build document_sections/hierarchy.json --lang ja -f defs.yaml -o document.ja.qmd
+
 mdtools mdsplit decompose document.md -o work/
 # 上と同じ互換入口
 mdsplit decompose document.md -o work/

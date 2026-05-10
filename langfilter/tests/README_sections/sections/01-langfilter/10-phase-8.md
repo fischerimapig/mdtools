@@ -1,7 +1,7 @@
 
 | # | テスト名 | 概要 | 検証内容 |
 |---|---------|------|---------|
-| 26 | `test_empty_lang_block_kept` | `::: {lang=en}\n:::` (中身なし, keep) | fencesのみ出力 |
+| 26 | `test_empty_lang_block_kept` | `::: {lang=en}\n:::` (中身なし, keep) | 既定では何も出力しない |
 | 27 | `test_empty_lang_block_removed` | `::: {lang=en}\n:::` (中身なし, remove) | 何も出力しない |
 | 28 | `test_consecutive_blocks_no_blank_line` | en/jaブロックが空行なしで連続 | 各ブロック独立にフィルタ |
 | 29 | `test_multiline_content` | 5行以上の内容を持つブロック | 全行が保持/除去される |

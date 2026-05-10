@@ -14,13 +14,16 @@ from mdtools.core.mdscan import (
 from mdtools.core.pandoc import DIV_OPEN_RE, FENCE_CLOSE_RE, parse_attrs
 
 
-def filter_lang(text: str, lang: str) -> str:
+def filter_lang(text: str, lang: str, *, keep_fences: bool = False) -> str:
     """Filter bilingual Markdown text for the specified language.
 
     Args:
         text: Input Markdown text.
         lang: ``"en"``, ``"ja"``, ``"both"``, or any language tag.
               ``"both"`` returns the input unchanged.
+        keep_fences: Keep the selected language block's fenced-div wrapper
+              lines. By default, selected language blocks are unwrapped so
+              exported Markdown does not contain ``lang=...`` markers.
 
     Returns:
         Filtered Markdown text.
@@ -41,7 +44,7 @@ def filter_lang(text: str, lang: str) -> str:
 
         if current_lang is not None:
             if FENCE_CLOSE_RE.match(line) and not md.in_code_fence:
-                if current_lang == lang:
+                if current_lang == lang and keep_fences:
                     out.append(line)
                 current_lang = None
             elif current_lang == lang:
@@ -58,7 +61,7 @@ def filter_lang(text: str, lang: str) -> str:
             lang_value = attrs.kv.get("lang")
             if lang_value is not None:
                 current_lang = lang_value
-                if current_lang == lang:
+                if current_lang == lang and keep_fences:
                     out.append(line)
                 continue
 

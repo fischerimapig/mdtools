@@ -3,7 +3,7 @@
 日英併記の Markdown ソースから、指定言語のブロックのみを残すフィルタツール。
 
 Pandoc/Quarto 互換の fenced div 記法 (`::: {lang=XX}`) を認識し、
-指定言語以外のブロックを除去する。属性順序には依存せず、テーブル・コードブロック・図版などの言語タグを持たないコンテンツはすべて保持される。
+指定言語以外のブロックを除去する。対象言語の fenced div wrapper 行も既定で除去するため、配布用 Markdown に `lang=...` タグは残らない。属性順序には依存せず、テーブル・コードブロック・図版などの言語タグを持たないコンテンツはすべて保持される。
 
 ```mermaid
 stateDiagram-v2
@@ -56,6 +56,7 @@ cat manuscript.md | mdtools langfilter filter --lang en > manuscript.en.md
 mdtools langfilter filter --lang en manuscript.qmd -o manuscript.en.qmd
 mdtools langfilter filter --lang ja manuscript.qmd -o manuscript.ja.qmd
 mdtools langfilter filter --lang both manuscript.qmd -o manuscript.both.qmd
+mdtools langfilter filter --lang en --keep-lang-fences manuscript.qmd -o manuscript.en.debug.qmd
 
 # 失敗しやすいケース回避例
 # パイプ入力時に input 引数は省略可能（- 扱い）
@@ -71,20 +72,22 @@ mdtools langfilter filter manuscript.qmd --lang both > /tmp/both.md
 ## CLI リファレンス
 
 ```
-langfilter filter [--lang {en,ja,both}] [-o OUTPUT] [INPUT]
+langfilter filter [--lang {en,ja,both}] [--keep-lang-fences] [-o OUTPUT] [INPUT]
 ```
 
 | 引数 | 説明 | デフォルト |
 |------|------|-----------|
 | `INPUT` | 入力ファイルパス。`-` で stdin | stdin |
 | `--lang` | 対象言語。`en`, `ja`, `both` | `both` |
+| `--keep-lang-fences` | 対象言語ブロックの fenced div マーカー行も残す | false |
 | `-o`, `--output` | 出力ファイルパス | stdout |
 
 ## 動作仕様
 
 ### keep（対象言語ブロック）
 
-`::: {lang=XX}` または `::: {.note lang=XX}` と閉じ `:::` のマーカー行を **保持** し、内容もそのまま出力する。
+`::: {lang=XX}` または `::: {.note lang=XX}` と閉じ `:::` のマーカー行を既定で除去し、内容だけを出力する。
+検査や互換用途で wrapper 行も残したい場合は `--keep-lang-fences` を指定する。
 
 ### remove（対象外言語ブロック）
 

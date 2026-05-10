@@ -20,8 +20,10 @@ def test_mdtools_top_help_prefers_unified_entrypoint(capsys):
     out = _help_output(capsys, mdtools_main, ["--help"])
 
     assert "通常は mdtools <tool> から使います" in out
+    assert "mdtools build manuscript_sections/hierarchy.json --help" in out
     assert "例: mdtools mdsplit decompose --help" in out
     assert "mdsplit / langfilter / mdhtml-rewrite / glossary" in out
+    assert "build" in out
     assert "rewrite" in out
     assert "mdhtml-rewrite" in out
     assert "mdtools mdsplit split --help" not in out
@@ -34,6 +36,7 @@ def test_mdtools_top_help_prefers_unified_entrypoint(capsys):
         (["langfilter", "--help"], "usage: mdtools langfilter", "mdtools langfilter filter manuscript.qmd"),
         (["rewrite", "--help"], "usage: mdtools rewrite", "mdtools rewrite inventory input.md"),
         (["glossary", "--help"], "usage: mdtools glossary", "mdtools glossary resolve manuscript.md"),
+        (["build", "--help"], "usage: mdtools build", "mdtools build doc_sections/hierarchy.json"),
     ],
 )
 def test_mdtools_delegated_help_uses_unified_prog(capsys, argv, usage, example):

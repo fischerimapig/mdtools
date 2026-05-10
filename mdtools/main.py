@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 
 _TOOLS: dict[str, tuple[str, str]] = {
+    "build":      ("mdtools.build_cli",  "Build staged Markdown/QMD outputs from section sources"),
     "mdsplit":    ("mdsplit.cli",        "Decompose and reassemble Markdown documents"),
     "langfilter": ("langfilter.cli",     "Filter bilingual Markdown by language"),
     "rewrite":    ("mdhtml_rewrite.cli", "Rewrite HTML-ish Markdown to QMD-friendly format (mdhtml-rewrite)"),
@@ -26,6 +27,11 @@ def _print_help(file=None) -> None:
         print(f"  {name:<12} {desc}", file=file)
     print("", file=file)
     print("tool details:", file=file)
+    print("  build", file=file)
+    print("    概要: section 原稿から compose/langfilter/glossary を必要分だけ実行します。", file=file)
+    print("    代表的な利用シーン: 配布用の言語別 Markdown/QMD を公式手順で作りたいとき。", file=file)
+    print("    次のヘルプ: mdtools build --help", file=file)
+    print("", file=file)
     print("  mdsplit", file=file)
     print("    概要: Markdown を章・セクション単位で分割/再結合します。", file=file)
     print("    代表的な利用シーン: 長文ドキュメントをレビュー単位で小さく分けたいとき。", file=file)
@@ -48,7 +54,9 @@ def _print_help(file=None) -> None:
     print("    次のヘルプ: mdtools glossary --help", file=file)
     print("", file=file)
     print("基本形:", file=file)
+    print("  mdtools <tool> --help", file=file)
     print("  mdtools <tool> <subcommand> --help", file=file)
+    print("  例: mdtools build manuscript_sections/hierarchy.json --help", file=file)
     print("  例: mdtools mdsplit decompose --help", file=file)
     print("", file=file)
     print("互換入口:", file=file)

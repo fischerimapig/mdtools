@@ -4,6 +4,7 @@ Markdown 文書の編集を補助するコマンドラインツール集。
 
 | ツール | 概要 |
 |--------|------|
+| **build** | section 原稿から compose / langfilter / glossary を必要分だけ実行して配布用 Markdown/QMD を生成する |
 | **mdsplit** | Markdown/QMD 文書を見出し単位のセクションファイルに分解・再構成する |
 | **langfilter** | 日英併記 Markdown から指定言語のブロックだけを抽出する |
 | **mdhtml-rewrite** | pandoc 変換後の HTML 断片を Quarto (.qmd) 互換の記法へ変換する |
@@ -14,13 +15,15 @@ flowchart LR
     source["Markdown / QMD source"]
     rewrite["mdhtml-rewrite<br/>HTML/EPS 整形"]
     split["mdsplit<br/>section 管理"]
+    build["mdtools build<br/>公式段階ビルド"]
+    compose["mdsplit compose<br/>統合"]
     filter["langfilter<br/>言語別抽出"]
     glossary["glossary<br/>用語・定数解決"]
     output["配布用 Markdown/QMD"]
 
-    source --> rewrite --> split --> filter --> glossary --> output
+    source --> rewrite --> split --> build --> compose --> filter --> glossary --> output
     source --> split
-    source --> filter
+    source --> build
 ```
 
 ## 必要環境
@@ -54,10 +57,35 @@ uv run mdtools mdsplit --help
 まずは `mdtools <tool> --help` でオプション定義と最小実行例を確認し、詳細は各 README の該当節を参照してください。
 
 ```bash
+mdtools build document_sections/hierarchy.json --lang ja -f defs.yaml -o document.ja.qmd
+
 mdtools mdsplit decompose document.md -o work/
 # 上と同じ互換入口
 mdsplit decompose document.md -o work/
 ```
+
+### build
+
+section 管理された原稿や単一 Markdown/QMD から、配布用の統合ファイルを作る公式ビルド入口。
+入力が `hierarchy.json` の場合だけ `mdsplit compose` を先に実行し、`--lang en/ja` が指定された場合だけ `langfilter`、`-f/--defs` が指定された場合だけ `glossary resolve` を実行する。
+各ステージ後の結果は中間ファイルに保存し、次ステージはそのファイルを入力として読む。
+
+```bash
+# section 原稿から英語版を生成
+mdtools build manuscript_sections/hierarchy.json --lang en -f defs.yaml -o manuscript.en.qmd
+
+# 日本語版。中間ファイルも確認したい場合
+mdtools build manuscript_sections/hierarchy.json --lang ja -f defs.yaml -o manuscript.ja.qmd \
+  --work-dir .build/manuscript-ja
+
+# すでに単一ファイルへ統合済みなら compose は省略される
+mdtools build manuscript.qmd --lang en -o manuscript.en.qmd
+```
+
+実行順は `compose → langfilter → glossary` が基本です。
+`mdsplit compose` は小さな原稿ファイル群を単一の文書構造へ戻す段階なので先頭に置く。
+`glossary` は `lang=...` fenced div を解釈しないため、言語別出力では `langfilter` を先に通してから用語を解決する。
+`langfilter` は選択言語の wrapper 行を既定で除去するため、配布物に `::: {lang=...}` は残らない。
 
 ### mdsplit
 
@@ -83,7 +111,7 @@ mdtools mdsplit decompose document.md -o work/ --flat
 ### langfilter
 
 `::: {lang=en}` / `::: {lang=ja}` の fenced div ブロックを認識し、指定言語以外を除去する。
-言語タグを持たないテーブル・コードブロック・図版はすべて保持される。
+対象言語の wrapper 行も既定で除去し、言語タグを持たないテーブル・コードブロック・図版はすべて保持される。
 
 ```bash
 # 英語版を生成（ja ブロックを除去）
@@ -94,6 +122,9 @@ mdtools langfilter filter --lang ja input.md -o output-ja.md
 
 # stdin/stdout パイプライン
 mdtools mdsplit compose work/hierarchy.json | mdtools langfilter filter --lang en > core-en.md
+
+# 検査用に lang fenced div を残す
+mdtools langfilter filter --lang en --keep-lang-fences input.md -o output-en-debug.md
 ```
 
 詳細は [langfilter/README.md](langfilter/README.md) を参照。
@@ -156,13 +187,10 @@ mdtools rewrite rewrite doc/combined.md -o doc/combined.qmd --inventory inv.json
 # 必要に応じてセクション分割して編集
 mdtools mdsplit decompose doc/combined.qmd -o work/
 # ... セクションファイルを編集 ...
-mdtools mdsplit compose work/hierarchy.json -o doc/combined-edited.qmd
 
-# 言語別バージョンを出力 (必要なら glossary で用語・定数マーカーを解決)
-mdtools langfilter filter --lang en doc/combined-edited.qmd | \
-  mdtools glossary resolve --lang en -f doc/defs.json > doc/en.qmd
-mdtools langfilter filter --lang ja doc/combined-edited.qmd | \
-  mdtools glossary resolve --lang ja -f doc/defs.json > doc/ja.qmd
+# 配布用の言語別バージョンを公式ビルド手順で出力
+mdtools build work/hierarchy.json --lang en -f doc/defs.json -o doc/en.qmd
+mdtools build work/hierarchy.json --lang ja -f doc/defs.json -o doc/ja.qmd --work-dir .build/ja
 ```
 
 ## mdtools.core
@@ -234,10 +262,11 @@ MIT
 
 ```bash
 mdtools --help
+mdtools build --help
 mdtools mdsplit --help
 mdtools langfilter --help
 mdtools rewrite --help
 mdtools glossary --help
 git diff -- README.md mdsplit/README.md mdhtml_rewrite/README.md langfilter/README.md glossary/README.md \
-  mdtools/main.py mdsplit/cli.py mdhtml_rewrite/cli.py langfilter/cli.py glossary/cli.py
+  mdtools/main.py mdtools/build_cli.py mdsplit/cli.py mdhtml_rewrite/cli.py langfilter/cli.py glossary/cli.py
 ```

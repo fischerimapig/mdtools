@@ -8,6 +8,7 @@ cat manuscript.md | mdtools langfilter filter --lang en > manuscript.en.md
 mdtools langfilter filter --lang en manuscript.qmd -o manuscript.en.qmd
 mdtools langfilter filter --lang ja manuscript.qmd -o manuscript.ja.qmd
 mdtools langfilter filter --lang both manuscript.qmd -o manuscript.both.qmd
+mdtools langfilter filter --lang en --keep-lang-fences manuscript.qmd -o manuscript.en.debug.qmd
 
 # 失敗しやすいケース回避例
 # パイプ入力時に input 引数は省略可能（- 扱い）

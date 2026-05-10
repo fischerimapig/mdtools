@@ -36,6 +36,7 @@ def main(argv: list[str] | None = None, *, prog: str = "langfilter") -> int:
             f"  {prog} filter --lang en manuscript.qmd -o manuscript.en.qmd\n"
             f"  {prog} filter --lang ja manuscript.qmd -o manuscript.ja.qmd\n"
             f"  {prog} filter --lang both manuscript.qmd -o manuscript.both.qmd\n"
+            f"  {prog} filter --lang en --keep-lang-fences manuscript.qmd\n"
             "\n"
             "README 原典:\n"
             "  README.md「使い方」\n"
@@ -63,6 +64,11 @@ def main(argv: list[str] | None = None, *, prog: str = "langfilter") -> int:
         help="出力に残す言語（en/ja/both）。既定値 both は原文を維持。",
     )
     p_filter.add_argument(
+        "--keep-lang-fences",
+        action="store_true",
+        help="対象言語ブロックの fenced div マーカー行も残す（既定では本文だけ出力）。",
+    )
+    p_filter.add_argument(
         "-o",
         "--output",
         default=None,
@@ -73,7 +79,7 @@ def main(argv: list[str] | None = None, *, prog: str = "langfilter") -> int:
 
     if args.command == "filter":
         text = read_text_or_stdin(args.input)
-        result = filter_lang(text, args.lang)
+        result = filter_lang(text, args.lang, keep_fences=args.keep_lang_fences)
         write_text_or_stdout(result, args.output)
         return 0
 
