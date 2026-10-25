@@ -1,0 +1,92 @@
+{
+  "source_file": "contract-v1.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "mdtools 仕様記述契約 v1",
+      "file": "sections/01-mdtools-v1.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "契約の位置付けと適用範囲",
+          "file": "sections/01-mdtools-v1/01-section.md",
+          "order": 0,
+          "children": []
+        },
+        {
+          "title": "原典と生成物",
+          "file": "sections/01-mdtools-v1/02-section.md",
+          "order": 1,
+          "children": []
+        },
+        {
+          "title": "要件ブロックの最小構文",
+          "file": "sections/01-mdtools-v1/03-section.md",
+          "order": 2,
+          "children": []
+        },
+        {
+          "title": "予約構文と通常のコード例",
+          "file": "sections/01-mdtools-v1/04-section.md",
+          "order": 3,
+          "children": []
+        },
+        {
+          "title": "共有定義と参照",
+          "file": "sections/01-mdtools-v1/05-section.md",
+          "order": 4,
+          "children": []
+        },
+        {
+          "title": "DocumentTreeとSpecGraph",
+          "file": "sections/01-mdtools-v1/06-documenttreespecgraph.md",
+          "order": 5,
+          "children": []
+        },
+        {
+          "title": "状態と検査結果",
+          "file": "sections/01-mdtools-v1/07-section.md",
+          "order": 6,
+          "children": []
+        },
+        {
+          "title": "検査範囲と保証の限界",
+          "file": "sections/01-mdtools-v1/08-section.md",
+          "order": 7,
+          "children": []
+        },
+        {
+          "title": "出典と診断の共通契約",
+          "file": "sections/01-mdtools-v1/09-section.md",
+          "order": 8,
+          "children": []
+        },
+        {
+          "title": "依存方向と既存CLIの互換性",
+          "file": "sections/01-mdtools-v1/10-cli.md",
+          "order": 9,
+          "children": []
+        },
+        {
+          "title": "将来のバックエンドとLSP",
+          "file": "sections/01-mdtools-v1/11-lsp.md",
+          "order": 10,
+          "children": []
+        },
+        {
+          "title": "バージョニングと開発フロー",
+          "file": "sections/01-mdtools-v1/12-section.md",
+          "order": 11,
+          "children": []
+        },
+        {
+          "title": "例と受け入れの対応",
+          "file": "sections/01-mdtools-v1/13-section.md",
+          "order": 12,
+          "children": []
+        }
+      ]
+    }
+  ]
+}
