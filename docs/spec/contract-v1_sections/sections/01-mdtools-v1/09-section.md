@@ -108,7 +108,7 @@ severityは表示上の`error / warning / info / hint`であり、検査の実�
 
 ### 診断JSON v1とテキスト表示
 
-JSONスキーマ版は整数`schema_version: 1`。[機械可読スキーマ](diagnostics-v1.schema.json)も参照する。レポートの必須フィールドは`schema_version / sources / checks / diagnostics`。空一覧も`[]`で残す。未知の版の読込やJSONデシリアライザーは今回実装しない。
+JSONスキーマ版は整数`schema_version: 1`。[機械可読スキーマ](diagnostics-v1.schema.json)も参照する。公開Schemaもmessage・要件ID・理由の空白のみの値を拒否する。空白集合はPythonの`str.strip()`と同じく`U+0009–000D / U+001C–0020 / U+0085 / U+00A0 / U+1680 / U+2000–200A / U+2028–2029 / U+202F / U+205F / U+3000`を明示し、validatorごとに意味が異なる`\s`に依存しない。識別子とsnapshotの終端には`(?![\s\S])`を使い、末尾LFの直前も許す`$`による受理を避ける。開発依存のDraft 2020-12 validatorでSchema自体、生成JSON、不正文字列のモデルとの拒否一致をCIのpytestで検証する。レポートの必須フィールドは`schema_version / sources / checks / diagnostics`。空一覧も`[]`で残す。未知の版の読込やJSONデシリアライザーは今回実装しない。
 
 | オブジェクト | 必須フィールド | 任意フィールド（値なしなら省略） |
 |--------------|----------------|--------------------------------|

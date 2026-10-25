@@ -38,16 +38,14 @@
       "type": "object",
       "properties": {
         "uri": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/$defs/nonblank"
         },
         "snapshot": {
           "type": "string",
-          "pattern": "^[0-9a-f]{64}$"
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
         },
         "path": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/$defs/nonblank"
         }
       },
       "required": [
@@ -122,8 +120,7 @@
               "$ref": "#/$defs/span"
             },
             "reason": {
-              "type": "string",
-              "minLength": 1
+              "$ref": "#/$defs/nonblank"
             }
           },
           "required": [
@@ -142,8 +139,7 @@
               "$ref": "#/$defs/span"
             },
             "reason": {
-              "type": "string",
-              "minLength": 1
+              "$ref": "#/$defs/nonblank"
             }
           },
           "required": [
@@ -170,15 +166,13 @@
       "type": "object",
       "properties": {
         "message": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/$defs/nonblank"
         },
         "location": {
           "$ref": "#/$defs/location"
         },
         "requirement_id": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/$defs/nonblank"
         }
       },
       "required": [
@@ -191,12 +185,10 @@
       "type": "object",
       "properties": {
         "kind": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$"
+          "$ref": "#/$defs/identifier"
         },
         "message": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/$defs/nonblank"
         },
         "location": {
           "$ref": "#/$defs/location"
@@ -212,8 +204,7 @@
       "type": "object",
       "properties": {
         "check_id": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$"
+          "$ref": "#/$defs/identifier"
         },
         "status": {
           "enum": [
@@ -226,8 +217,7 @@
           ]
         },
         "reason": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/$defs/nonblank"
         }
       },
       "required": [
@@ -257,8 +247,7 @@
       "type": "object",
       "properties": {
         "code": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$"
+          "$ref": "#/$defs/identifier"
         },
         "severity": {
           "enum": [
@@ -278,8 +267,7 @@
           ]
         },
         "message": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/$defs/nonblank"
         },
         "primary": {
           "$ref": "#/$defs/location"
@@ -291,8 +279,7 @@
           }
         },
         "requirement_id": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/$defs/nonblank"
         },
         "evidence": {
           "type": "array",
@@ -311,6 +298,16 @@
         "evidence"
       ],
       "additionalProperties": false
+    },
+    "nonblank": {
+      "description": "Contains a character outside the Python str.strip() whitespace set; do not use implementation-dependent \\s.",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "[^\\u0009-\\u000d\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+(?![\\s\\S])"
     }
   }
 }
