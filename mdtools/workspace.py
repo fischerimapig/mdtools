@@ -1,8 +1,8 @@
 """Explicit Workspace registration and source selection (no content analysis).
 
 This assembly layer may use DocumentTree; core and the existing document tools
-do not depend on it. WorkspaceError is local to configuration loading, pending
-the shared source/diagnostic models in M1 #24/#25.
+do not depend on it. WorkspaceError stays local to registration/source loading;
+the shared diagnostic model belongs to M1 #25.
 """
 
 from __future__ import annotations
@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
+from mdtools.core.source import SourceSnapshot
 from mdsplit.schema import DocumentTree, SectionNode
 
 
@@ -287,3 +288,31 @@ def load_workspace(config_path: str | Path) -> Workspace:
 def _check_canonical_extension(path: Path) -> None:
     if path.suffix.lower() not in (".md", ".qmd"):
         raise WorkspaceError("workspace.invalid-extension", path, "canonical must be Markdown/QMD")
+
+
+def snapshot_sources(workspace: Workspace) -> tuple[SourceSnapshot, ...]:
+    """Read selected body originals in analysis order, without transformations.
+
+    Revalidate registration before reading. Each snapshot freezes the bytes read,
+    not the whole filesystem at one instant; concurrent edits are not locked.
+    Definitions can separately be read with SourceSnapshot.from_path().
+    """
+    if load_workspace(workspace.config_path) != workspace:
+        raise WorkspaceError("workspace.changed-input", workspace.config_path,
+                             "registration changed; reload Workspace before snapshotting")
+    snapshots = []
+    for path in workspace.analysis_files:
+        try:
+            if path.resolve() != path:
+                raise WorkspaceError("workspace.changed-input", path,
+                                     "source path changed; reload Workspace")
+            source = SourceSnapshot.from_path(path)
+            if source.path != path:
+                raise WorkspaceError("workspace.changed-input", path,
+                                     "source path changed during snapshot read")
+            snapshots.append(source)
+        except UnicodeError as exc:
+            raise WorkspaceError("workspace.invalid-source", path, "expected UTF-8 text") from exc
+        except OSError as exc:
+            raise WorkspaceError("workspace.read-error", path, str(exc)) from exc
+    return tuple(snapshots)
