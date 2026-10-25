@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "types": {},
+  "variables": {
+    "paid": {"type": "bool", "role": "input"},
+    "shipped": {"type": "bool", "role": "input"},
+    "cancel_allowed": {"type": "bool", "role": "output"}
+  },
+  "constants": {
+    "cancel_window_days": {"type": "int", "min": 0, "max": 30, "value": 14}
+  }
+}

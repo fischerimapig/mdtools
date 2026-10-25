@@ -221,6 +221,11 @@ flowchart TB
 
 実施記録は [docs/plans/core-refactor.md](docs/plans/core-refactor.md) にあります。用語としての []{.term id=mdtools-core} は `docs/glossary/defs.yaml` でも管理します。
 
+仕様管理機能の開発は [仕様記述契約 v1](docs/spec/contract-v1.md) を基準に進めます。
+要件ブロック、共有定義、生成IR、出典・診断と既存CLIの責務境界、およびM1〜M9の対応範囲を記載しています。
+[キャンセル要件の例](docs/spec/examples/cancellation/README.md) も参照してください。
+M1 / #22は契約と例の文書化であり、新しい仕様解析・検査CLIは後続Milestoneで実装します。
+
 ## 文書管理
 
 主要 Markdown 文書は `mdsplit` で section 管理します。canonical `.md` と対応する `*_sections/` は同じ変更として扱い、最後に round-trip を確認します。
