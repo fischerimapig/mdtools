@@ -8,8 +8,9 @@
 | [cancel-deny.md](cancel-deny.md) | 別文書の相反する制約と明示的な要件参照 |
 | [guidance.md](guidance.md) | 自然言語のみの有効な要件。形式化・論理検査は未実施 |
 | [definitions.json](definitions.json) | 共有入力・出力と、型・範囲付きの定数。glossary用の定義ではない |
+| [mdtools.toml](mdtools.toml) | Workspace設定v1。上の3原稿と仕様用共有定義を明示登録する |
 
-将来のWorkspaceでは上の3原稿を文書、definitions.jsonを仕様用共有定義として登録する。このREADMEは解析入力にしない。Workspaceの具体的な設定形式は#23で定める。
+[Workspace設定v1](../../contract-v1.md#workspace設定-v1) に従い、`load_workspace()`で解析対象を決定できる。このREADMEや設定ファイル自体は本文の解析入力にしない。登録とパス検証はM1 / #23の実装範囲であり、要件・定義の内容解析や制約検査はまだ行わない。
 
 `paid`と`shipped`はBoolean入力、`cancel_allowed`はBoolean出力である。支払い済み・未発送の入力ではREQ-CANCEL-ALLOWが出力trueを要求し、REQ-CANCEL-DENYが出力falseを要求する。この入力で出力が存在しないことと、両原稿の要件ID・形式記述位置を報告するのがM3での期待値となる。
 
