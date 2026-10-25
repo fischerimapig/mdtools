@@ -1,0 +1,18 @@
+version = 1
+root = "."
+
+[[documents]]
+kind = "markdown"
+path = "cancel-allow.md"
+
+[[documents]]
+kind = "markdown"
+path = "cancel-deny.md"
+
+[[documents]]
+kind = "markdown"
+path = "guidance.md"
+
+[[definitions]]
+kind = "spec"
+path = "definitions.json"
