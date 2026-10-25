@@ -4,8 +4,8 @@ DocumentTreeは見出し、sectionの順序・入れ子、ファイル参照を�
 ```mermaid
 flowchart LR
     sources["登録された編集原典"] --> tree["DocumentTree: 表示順・階層"]
-    sources --> graph["SpecGraph: 要件・定義・明示参照"]
-    graph --> ir["SpecIR: 版付き生成snapshot"]
+    sources --> spec_graph["SpecGraph: 要件・定義・明示参照"]
+    spec_graph --> ir["SpecIR: 版付き生成snapshot"]
     ir --> checks["検査計画・バックエンド"]
     checks --> results["検査結果・診断"]
     sources --> build["compose / langfilter / glossary"]
