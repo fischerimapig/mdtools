@@ -25,6 +25,7 @@ packages = ["mdtools", "mdsplit", "mdhtml_rewrite", "langfilter", "glossary"]
 
 [dependency-groups]
 dev = [
+    "jsonschema>=4.23",
     "pytest>=9.0.3",
     "pyyaml>=6.0",
 ]

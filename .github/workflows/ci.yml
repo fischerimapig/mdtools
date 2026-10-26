@@ -57,5 +57,11 @@ jobs:
           uv run --locked mdtools mdsplit compose README_sections/hierarchy.json > "${RUNNER_TEMP}/README.composed.md"
           diff -u README.md "${RUNNER_TEMP}/README.composed.md"
 
+      - name: Verify specification contract round-trip
+        run: |
+          uv run --locked mdtools mdsplit verify docs/spec/contract-v1_sections/hierarchy.json
+          uv run --locked mdtools mdsplit compose docs/spec/contract-v1_sections/hierarchy.json > "${RUNNER_TEMP}/contract-v1.composed.md"
+          diff -u docs/spec/contract-v1.md "${RUNNER_TEMP}/contract-v1.composed.md"
+
       - name: Verify glossary references
         run: uv run --locked mdtools glossary verify README.md -f docs/glossary/defs.yaml
