@@ -49,19 +49,26 @@ jobs:
           uv run --locked mdtools --help
           uv run --locked mdtools build --help
           uv run --locked mdtools mdsplit --help
+          uv run --locked mdtools langfilter --help
+          uv run --locked mdtools rewrite --help
           uv run --locked mdtools glossary --help
+          uv run --locked mdsplit --help
+          uv run --locked langfilter --help
+          uv run --locked mdhtml-rewrite --help
+          uv run --locked glossary --help
 
       - name: Verify Markdown round-trip
         run: |
-          uv run --locked mdtools mdsplit verify README_sections/hierarchy.json
-          uv run --locked mdtools mdsplit compose README_sections/hierarchy.json > "${RUNNER_TEMP}/README.composed.md"
-          diff -u README.md "${RUNNER_TEMP}/README.composed.md"
-
-      - name: Verify specification contract round-trip
-        run: |
-          uv run --locked mdtools mdsplit verify docs/spec/contract-v1_sections/hierarchy.json
-          uv run --locked mdtools mdsplit compose docs/spec/contract-v1_sections/hierarchy.json > "${RUNNER_TEMP}/contract-v1.composed.md"
-          diff -u docs/spec/contract-v1.md "${RUNNER_TEMP}/contract-v1.composed.md"
+          for document in README.md mdsplit/README.md docs/spec/contract-v1.md docs/plans/core-refactor.md; do
+            hierarchy="${document%.md}_sections/hierarchy.json"
+            uv run --locked mdtools mdsplit verify "$hierarchy"
+            uv run --locked mdtools mdsplit compose "$hierarchy" > "${RUNNER_TEMP}/composed.md"
+            diff -u "$document" "${RUNNER_TEMP}/composed.md"
+            uv run --locked mdtools mdsplit decompose "$document" -o "${RUNNER_TEMP}/roundtrip"
+            uv run --locked mdtools mdsplit verify "${RUNNER_TEMP}/roundtrip/hierarchy.json"
+            uv run --locked mdtools mdsplit compose "${RUNNER_TEMP}/roundtrip/hierarchy.json" > "${RUNNER_TEMP}/recomposed.md"
+            diff -u "$document" "${RUNNER_TEMP}/recomposed.md"
+          done
 
       - name: Verify glossary references
         run: uv run --locked mdtools glossary verify README.md -f docs/glossary/defs.yaml

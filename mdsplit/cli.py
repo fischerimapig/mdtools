@@ -8,6 +8,7 @@ from mdtools.core.io import write_text_or_stdout
 
 from .compose import compose
 from .decompose import decompose
+from .verify import verify
 
 
 def main(argv: list[str] | None = None, *, prog: str = "mdsplit") -> int:
@@ -102,35 +103,12 @@ def _count_sections(sections) -> int:
 
 
 def _verify(hierarchy_path: str) -> int:
-    from pathlib import Path
-    from .schema import DocumentTree
-
-    path = Path(hierarchy_path)
-    base_dir = path.parent
-    doc_tree = DocumentTree.load(path)
-
-    missing = []
-    _check_files(doc_tree.sections, base_dir, missing)
-
-    # Check preamble
-    preamble_file = doc_tree.metadata.get("preamble_file")
-    if preamble_file and not (base_dir / preamble_file).exists():
-        missing.append(preamble_file)
-
-    if missing:
-        print(f"Missing {len(missing)} file(s):")
-        for f in missing:
+    result = verify(hierarchy_path)
+    if result.missing_files:
+        print(f"Missing {len(result.missing_files)} file(s):")
+        for f in result.missing_files:
             print(f"  - {f}")
         return 1
     else:
-        total = _count_sections(doc_tree.sections)
-        print(f"All {total} section files verified OK.")
+        print(f"All {result.section_count} section files verified OK.")
         return 0
-
-
-def _check_files(sections, base_dir, missing: list) -> None:
-    from pathlib import Path
-    for s in sections:
-        if not (base_dir / s.file).exists():
-            missing.append(s.file)
-        _check_files(s.children, base_dir, missing)
