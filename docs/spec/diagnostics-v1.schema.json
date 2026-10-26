@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "mdtools diagnostic report v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/check"
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "sources",
+    "checks",
+    "diagnostics"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "source": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "$ref": "#/$defs/nonblank"
+        },
+        "snapshot": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+        },
+        "path": {
+          "$ref": "#/$defs/nonblank"
+        }
+      },
+      "required": [
+        "uri",
+        "snapshot"
+      ],
+      "additionalProperties": false
+    },
+    "position": {
+      "type": "object",
+      "properties": {
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "column": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "line",
+        "column"
+      ],
+      "additionalProperties": false
+    },
+    "span": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "start": {
+          "$ref": "#/$defs/position"
+        },
+        "end": {
+          "$ref": "#/$defs/position"
+        }
+      },
+      "required": [
+        "source",
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "location": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "original"
+            },
+            "span": {
+              "$ref": "#/$defs/span"
+            }
+          },
+          "required": [
+            "kind",
+            "span"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "synthetic"
+            },
+            "span": {
+              "$ref": "#/$defs/span"
+            },
+            "reason": {
+              "$ref": "#/$defs/nonblank"
+            }
+          },
+          "required": [
+            "kind",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "unmapped"
+            },
+            "span": {
+              "$ref": "#/$defs/span"
+            },
+            "reason": {
+              "$ref": "#/$defs/nonblank"
+            }
+          },
+          "required": [
+            "kind",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "none"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "related": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "$ref": "#/$defs/nonblank"
+        },
+        "location": {
+          "$ref": "#/$defs/location"
+        },
+        "requirement_id": {
+          "$ref": "#/$defs/nonblank"
+        }
+      },
+      "required": [
+        "message",
+        "location"
+      ],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/identifier"
+        },
+        "message": {
+          "$ref": "#/$defs/nonblank"
+        },
+        "location": {
+          "$ref": "#/$defs/location"
+        }
+      },
+      "required": [
+        "kind",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "check": {
+      "type": "object",
+      "properties": {
+        "check_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "status": {
+          "enum": [
+            "not-run",
+            "passed",
+            "failed",
+            "unknown",
+            "unsupported",
+            "error"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/nonblank"
+        }
+      },
+      "required": [
+        "check_id",
+        "status"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "not-run",
+              "unknown",
+              "unsupported",
+              "error"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "reason"
+        ]
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/identifier"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning",
+            "info",
+            "hint"
+          ]
+        },
+        "category": {
+          "enum": [
+            "user",
+            "unsupported",
+            "unknown",
+            "not-run",
+            "tool-error"
+          ]
+        },
+        "message": {
+          "$ref": "#/$defs/nonblank"
+        },
+        "primary": {
+          "$ref": "#/$defs/location"
+        },
+        "related": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/related"
+          }
+        },
+        "requirement_id": {
+          "$ref": "#/$defs/nonblank"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "category",
+        "message",
+        "primary",
+        "related",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "nonblank": {
+      "description": "Contains a character outside the Python str.strip() whitespace set; do not use implementation-dependent \\s.",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "[^\\u0009-\\u000d\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+(?![\\s\\S])"
+    }
+  }
+}

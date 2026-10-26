@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - master
+      - spec-integration
+      - "milestone/**"
+  push:
+    branches:
+      - master
+      - spec-integration
+      - "milestone/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-docs:
+    name: test-and-docs (py3.13)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.5"
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: Install locked dependencies
+        run: uv sync --locked --group dev --extra yaml
+
+      - name: Run test suite
+        run: uv run --locked pytest -q
+
+      - name: CLI smoke checks
+        run: |
+          uv run --locked mdtools --help
+          uv run --locked mdtools build --help
+          uv run --locked mdtools mdsplit --help
+          uv run --locked mdtools langfilter --help
+          uv run --locked mdtools rewrite --help
+          uv run --locked mdtools glossary --help
+          uv run --locked mdsplit --help
+          uv run --locked langfilter --help
+          uv run --locked mdhtml-rewrite --help
+          uv run --locked glossary --help
+
+      - name: Verify Markdown round-trip
+        run: |
+          for document in README.md mdsplit/README.md docs/spec/contract-v1.md docs/plans/core-refactor.md; do
+            hierarchy="${document%.md}_sections/hierarchy.json"
+            uv run --locked mdtools mdsplit verify "$hierarchy"
+            uv run --locked mdtools mdsplit compose "$hierarchy" > "${RUNNER_TEMP}/composed.md"
+            diff -u "$document" "${RUNNER_TEMP}/composed.md"
+            uv run --locked mdtools mdsplit decompose "$document" -o "${RUNNER_TEMP}/roundtrip"
+            uv run --locked mdtools mdsplit verify "${RUNNER_TEMP}/roundtrip/hierarchy.json"
+            uv run --locked mdtools mdsplit compose "${RUNNER_TEMP}/roundtrip/hierarchy.json" > "${RUNNER_TEMP}/recomposed.md"
+            diff -u "$document" "${RUNNER_TEMP}/recomposed.md"
+          done
+
+      - name: Verify glossary references
+        run: uv run --locked mdtools glossary verify README.md -f docs/glossary/defs.yaml

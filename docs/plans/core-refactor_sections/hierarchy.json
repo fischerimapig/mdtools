@@ -32,6 +32,12 @@
               "children": []
             }
           ]
+        },
+        {
+          "title": "M1 / #26 責務境界の整理",
+          "file": "sections/01-mdtoolscore/03-m1-boundaries.md",
+          "order": 2,
+          "children": []
         }
       ]
     }

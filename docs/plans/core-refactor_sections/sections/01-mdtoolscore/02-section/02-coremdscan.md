@@ -58,7 +58,7 @@ flowchart LR
 
 ## テスト結果
 
-現在の基準は次の通りです。
+初回coreリファクタ時の検証結果は次の通りです。
 
 ```bash
 uv run pytest -q
@@ -78,7 +78,7 @@ uv run pytest -q
 
 ## 今後の候補
 
-- `mdtools.core.cli`: help epilog や argparse 設定の共通化
+- help epilogやargparse設定の共通化（必要ならCLI側に置き、coreへ処理からの逆依存を作らない）
 - `mdtools.core.tree`: `mdsplit` の tree traversal helper の切り出し
 - `mdtools.core.html`: `mdhtml-rewrite` の HTML 正規表現と model helper の整理
 
