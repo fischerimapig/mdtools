@@ -31,3 +31,5 @@ API・分類・位置なし診断・根拠・表示規則は契約の「M1 / #25
 #31の断片末尾CR＋次断片先頭LFによるmap構築失敗は未解消で、この経路の正確な原稿追跡は保証しません。通常のCRLF本文全般の問題ではありません。
 
 M1 / #26ではCLI内のbuild本体を`mdtools.build.build_document()`へ、mdsplitの存在チェックを`mdsplit.verify.verify()`へ分離しました。例えば`build_document(input_text="本文", lang="ja")`はCLI・stdinを経由せず文字列を返し、`verify(hierarchy_path)`はsection数と欠落参照を返します。既存の独立した処理APIと互換入口は維持します。責務表、将来の解析サービス・backend・CLI・LSPホストの境界、例外と互換性の詳細は契約の「依存方向と既存CLIの互換性」を参照してください。
+
+M2 / #35では`mdtools.spec.model` / `mdtools.spec.results`に要件・共有宣言・明示参照・ローカル/全体解析結果の不変データ契約を追加しました。M1の出典・診断を再利用し、部分結果と式未検査を保持します。契約の「M2 / #35 仕様モデルと解析結果」「M2 index/showの入出力・診断契約」と[小さなfixture](docs/spec/examples/model-contract/README.md)を参照してください。抽出器・厳格ローダー・Graph構築器・解析サービス・spec CLIは後続Issueで実装します。

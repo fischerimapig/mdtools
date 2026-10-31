@@ -193,7 +193,7 @@ M2では式文字列と出典を保持する構造検査までを行い、型・
 
 複数の仕様定義ファイルでの重複名、同一JSON/YAML文書内の重複キーはエラーとし、後勝ちで制約を消さない。仕様から利用するglossary IDも読み込み時に衝突を診断し、既存glossary CLIの「警告して後勝ち」と区別する。
 
-glossaryの表示文字列を式・型・数値へ暗黙変換しない。仕様用の定数には明示型が必要であり、既存glossary定義に型を追加する移行は要求しない。glossaryとの明示的な関連付けの追加形式はM2で定める。
+glossaryの表示文字列を式・型・数値へ暗黙変換しない。仕様用の定数には明示型が必要であり、既存glossary定義に型を追加する移行は要求しない。M2 / #35で留保した関連付けを具体化し、型・変数・定数宣言に任意の文字列glossaryを1件指定できる。「M2 / #35 仕様モデルと解析結果」の名前空間・能力・出典規則に従う。
 
 ## DocumentTreeとSpecGraph
 
@@ -213,6 +213,117 @@ flowchart LR
 SpecIRはSpecGraphを機械可読に出力する生成snapshotとする。契約版・IRスキーマ版・入力の識別と内容hash、要件ID・本文・形式記述・定義・出典・参照を保持し、同じ入力と設定から決定的な順序で生成する。式が未解析ならその文字列と未検査状態を保持し、型検査済みASTのように表示しない。
 
 原稿の移動は出典の変更として表現し、要件IDは保つ。文書順序の変更と仕様内容の変更は区別する。IRや配布文書だけを編集しても原典の更新にはならず、再生成時に派生物が変わる。
+
+## M2 / #35 仕様モデルと解析結果
+
+M2 / [#35](https://github.com/fischerimapig/mdtools/issues/35)は`mdtools.spec.model`と`mdtools.spec.results`に、抽出器・共有定義ローダー・名前解決器が共有する不変の内部データ契約を追加する。原稿のパース、定義の読み込み、Graphの構築、サービス・IR生成・CLIの本体は追加しない。各constructorは渡された表現の不変条件を検証し、不正な組合せに`ValueError`を返す。原稿の不正をconstructorの例外だけで報告せず、後続のproducerが共通診断と部分結果へ変換する。
+
+**モデルと出現の識別**
+
+| 型 | 内容とproducerの責務 |
+|----|-----------------------|
+| `NodeKey(namespace, name, source, ordinal)` | 原稿内の出現。nameは人が記述したID/宣言名、sourceはM1のSourceRef。ordinalは同一snapshot内の全ノード種別を横断した0-based原稿順で一意にする。重複名も別出現として保持する |
+| `FieldSource(path, location, container=None)` | 正規化モデル内のJSON Pointer、M1のDiagnosticLocation、任意の既知の原稿包含範囲。別の座標型は作らない |
+| `Body(language, text, span)` | 言語（未指定はNone）、原稿のMarkdown断片とその正確な範囲。wrapper、mdspecを除いた本文断片を原稿順に保持し、複数断片を架空の連続範囲へ結合しない |
+| `Expression(text, origin)` | JSONデコード後の式文字列と、元のフィールドの出典。式ASTではない |
+| `FormalModel` | key/span/fields、uses、when/must、version=1、kind=constraint、4件のM3未検査結果 |
+| `Requirement` | key/span/fields、bodies、structure、formalization、任意のmodel、refs、version=1、status=draft/active/deprecated |
+| `Declaration` | type/variable/constantの区別、名前・出典、型参照、role、整数上下限、列挙値、定数リテラル、任意のglossary関連付け |
+| `GlossaryEntry` | 独立したkey/span/fields、既存のterm/const/symbol、表示用データ。仕様型を付加しない |
+| `JsonObject(items)` | glossary表示データの不変JSON object。文字列キーと値のpairのtupleを使い、配列はtuple、入れ子objectはJsonObjectで区別する。可変dict/list、重複キー、非有限数を受け付けない |
+| `Reference(kind, name, origin)` | refs/uses/type/glossaryの明示参照。未解決の段階で対象を推定しない |
+| `RejectedFragment(kind, span, text, diagnostic_codes)` | 正常な型へ変換できなかった予約構文の原文、範囲、対応する診断コード。ID等を捏造して正常ノードにしない |
+
+ordinalは同一snapshot内の出現を区別する補助キーであり、仕様の永続IDではない。移動・並べ替えでURI/hash/ordinalが変わっても要件IDとモデルIDは原稿から保持する。Graphを名前だけのdictへ変換して重複を消さない。DocumentTreeの親子・章番号から依存・継承・制約を生成しない。
+
+本文は未言語指定の断片と各lang divの断片を混在して保持できる。同じ言語の離れた断片も原稿順に残す。形式記述は言語共通で一つだけとし、言語別本文へ複製しない。本文全体として空白だけの要件は不正とする。本文textとRejectedFragment.textはsnapshotのsliceと一致しなければならない。
+
+**出典の粒度**
+
+FieldSource.pathは正規化したモデル内の位置であり、原稿の座標や入力JSON全体の絶対pointerではない。RFC 6901の`~0`/`~1`を使う。要件属性は`/id`、`/spec-version`、`/status`、任意の`/refs`と`/refs/0`等。モデルは7必須フィールドのpointerと、`/uses/0`等の各参照を持つ。宣言は`/name`、`/kind`、`/values`、`/type`、`/role`、`/min`、`/max`、`/value`、`/glossary`のうち存在するものを持つ。`/name`は元のmapping keyに対応する正規化フィールドである。glossaryは`/id`、`/kind`と表示データ内のフィールドを対象とする。
+
+producerは属性値、宣言名、JSON/YAMLのフィールドと各明示参照に、特定できる最小の原稿トークン範囲を付ける。オブジェクト・配列しか特定できない場合、その範囲をフィールドそのものの精密位置と偽らずcontainerへ保持し、locationは理由付き・spanなしのunmappedにする。containerは実原稿だけを指す。既知のcontainerは診断のRelatedLocationとして利用できる。
+
+省略したstatusのdraftには原稿トークンがないため、理由付きunmappedと要件のcontainerを付ける。JSONの`"\u0070aid"`、改行escape、YAMLの引用符・block scalar等ではデコード後の文字offsetと原稿列を対応付けない。tokenを正確に特定できれば引用符やescapeを含む原稿範囲をoriginalとして保持し、内部文字へ分割する対応が不明なら分割しない。合成・unmappedのspanはM1契約どおり生成物のみを指し、近傍の原稿を代用しない。
+
+LocalAnalysisは全モデルのspan、field/container、参照、拒否断片と診断を同じSourceSnapshotで検証する。範囲外・別snapshot・raw本文不一致を拒否する。Unicode code point、半開範囲、LF/CRLF/単独CRはM1の規則を使う。#31の断片連結修正は含めず、元の各snapshotを直接解析する。
+
+**名前空間と参照**
+
+| 名前空間 | 名前と衝突規則 | 参照先 |
+|----------|----------------|--------|
+| requirement | 大文字小文字を区別する既存ID形式。Workspace全体で一意 | refs |
+| model | 同じID形式。要件IDとは別に一意 | 要件内のmodel所属。v1にモデル名での参照構文は追加しない |
+| declaration | types/variables/constantsを横断して一意。型名は既存ID形式、変数/定数名は既存の識別子・予約語規則。bool/intは組み込み型として予約 | usesはvariable/constant、typeはtypeまたは組み込み型 |
+| glossary | 既存entriesの空でない文字列IDを大小文字・空白を含めそのまま保持。Workspaceの仕様解析経路では一意 | glossary |
+
+名前空間が異なれば同じ綴りを許す。同じ空間の重複は後勝ちにも先勝ちにもせず、全候補と両宣言位置を診断する。別空間の同名を参照先へ代用しない。未定義・種別不一致・曖昧な参照を区別する。
+
+usesは従来どおり一意な名前の配列とする。refsにはv1で新たな重複禁止を設けず、同じIDが繰り返されても各出現のoriginを保持する。
+
+M1が留保したglossary関連付けは、仕様の型・変数・定数宣言に任意の文字列`glossary`を1件指定する形とする。要件属性・モデルの7フィールドへ新しい項目を加えない。対象はterm/const/symbolのいずれでもよく、仕様宣言の種別・型・値と表示用途を同一視しない。
+
+```json
+{"type": "bool", "role": "input", "glossary": "paid label"}
+```
+
+上例はvariablesの一宣言の値である。仕様用ローダーはglossaryを明示参照として残し、全体解決時に未定義なら`spec.undefined-glossary`、重複対象なら`spec.ambiguous-reference`を参照位置付きで返す。複数の仕様宣言から同じglossary IDへの関連付けは許す。glossary CLI、entriesスキーマ、表示文字列から仕様定数への変換は変更しない。
+
+この追加はM1契約がM2へ留保した能力の具体化であり、契約・要件・モデル・共有定義の版は1を維持する。既存v1入力の意味・必須項目は変えず、移行作業は不要。能力として`declaration-glossary-link`を明記し、対応しない古い実装は新フィールドを未知フィールドとして拒否する。既知でない拡張を無視して成功させない。既存入力の意味を変える将来変更には新契約版と移行手順を必要とする。
+
+**宣言値とYAMLの対応範囲**
+
+型宣言はkind=enumと空でない一意な文字列valuesを持つ。variableにはtypeとinput/outputのrole、constantにはtypeとリテラルvalueが必須。intには整数min/maxとmin <= maxを要求し、boolをintとして受け付けない。bool定数はbool、int定数は範囲内のint、名前付き列挙型の定数は文字列を保持する。別ファイルの型や列挙値への所属はローカル収集で断定せず、#38の全体解決後に宣言値検査を完成する。これをM3の式型検査とは区別する。
+
+JSON/YAMLの未知フィールド・重複mapping key・重複glossary entry IDを黙って上書きしない。名前を持つ個々の宣言の列挙値等の位置もFieldSourceで保持できる。仕様解析用の読み込みに、既存glossary.loader.load()で上書きされたdictを使わない。
+
+初期の厳格YAML能力は単一文書のmapping/sequence/scalarと通常の引用・block scalarとする。仕様の型付きリテラルはJSONと同じbool、10進整数、文字列で表す。Booleanはtrue/false、整数はJSONの10進表記を使い、yes/no、日付、自動的な型変換で型を推測しない。文字列として使う値が曖昧な場合は引用する。anchor、alias、merge key、明示tag、複数文書は`spec.unsupported-syntax`と理由付きunsupportedで拒否する。任意tagを実行せず、safeな読込とノード単位の重複・位置検証を行う。これはv1のYAML対応能力の明示であり、既存表示用glossaryのYAML挙動を狭めない。実装は#37で行い、JSONだけの利用にはPyYAMLを要求しない。
+
+**結果と状態**
+
+| 型 | 契約 |
+|----|------|
+| `AnalysisChecks` | structure/declarations/referencesのCheckResultと、expression-syntax/expression-types/expression-uses/logicの4件のCheckResult。check_idは全てspec.* |
+| `LocalAnalysis` | 1個の元snapshot、収集したrequirements/declarations/glossary、rejected、diagnostics、checks、completeness。referencesは必ずnot-run。構造・その場で確定する宣言値の検査を終えてもWorkspace参照の成否は未確定 |
+| `ReferenceResolution` | ownerのNodeKey、元のReference、pending/resolved/undefined/ambiguous/wrong-kind、候補のNodeKey一覧、または組み込み型bool/int |
+| `SpecGraph` | 渡された全出現nodesと明示参照edges。グラフ構築器ではなく値。自己参照・循環を許す |
+| `ResolvedAnalysis` | Workspace順のLocalAnalysis一覧、Graph、全体checks/completeness、全体段階で追加したdiagnostics。ローカル診断とsnapshotを欠落させずreportへ集約する |
+
+両解析結果のreportプロパティは既存DiagnosticReportを返す。診断JSON版・ソート・表示を再実装しない。Graphは全入力の全出現を一度ずつ含み、全明示参照に解決結果を持たせる。曖昧な辺には同じ名前空間の全候補を残し、重複名のうち一つだけをresolvedにしない。built-inはtype参照だけに許し、原稿に架空の組み込み型宣言を作らない。
+
+completenessはローカルならそのsnapshotの構造・ローカル宣言検査、全体ならM2の構造・宣言値・参照解決の完了範囲を示す。
+
+| 値 | 意味 |
+|----|------|
+| complete | 当該範囲のM2検査が全てpassed。拒否断片・error診断なし。全体では全ローカル結果もcomplete、衝突なし、全辺resolved |
+| partial | 原稿を保持し一部収集・解析できたが、不正・未対応・未実行・実行失敗等が残る。対応するM2チェックをfailed/unsupported/not-run/error/unknownで示す。ノード0件でも失敗を隠さない |
+| unavailable | 当該結果としてノードを収集できなかった。構造等の検査状態と理由を残す。Workspace読込前の失敗ではResolvedAnalysisのinputs/Graphを空にできる |
+
+constructorは成功を自動推定せず、producerが検査範囲と結果を明示する。診断0件でも未実行検査をpassedにしない。共通チェック状態と従来の説明上の構造状態は、not-run→not-checked、passed→valid、failed→invalid、unsupported→unsupportedと対応する。error/unknownは妥当性を確定できない実行状態として別に残す。
+
+Requirement.formalizationはnatural-onlyまたはpresentで、構造状態とは独立する。壊れたモデルがある場合もpresentを保持し、model=None、structure=failed/unsupported等、RejectedFragmentと診断を残す。natural-onlyへの格下げは禁止する。ID等すら安全に保持できない要件全体はRejectedFragmentへ残す。
+
+全ての式の構文・式型・識別子とusesの照合・論理検査はM2では理由付きnot-runで固定する。形式記述がなくても論理成功を表示しない。構造のcompleteはM3の検査成功、本文と形式の意味的一致、人の確認、M4の鮮度の保証ではない。M4用の確認・鮮度状態を自動生成しない。
+
+**診断コードと後続実装**
+
+| コード | 意味と分類 |
+|--------|------------|
+| spec.invalid-requirement / spec.invalid-model | 属性・本文・予約構文またはモデルJSONの構造不正。user / failed |
+| spec.invalid-definition / spec.invalid-glossary | 宣言・表示定義の不正、文書内重複キー等。user / failed |
+| spec.unsupported-version / spec.unsupported-syntax | 未知版・未対応予約構文やYAML能力。unsupported / unsupported |
+| spec.duplicate-id / spec.duplicate-name / spec.duplicate-glossary | 要件/モデルID、仕様宣言名、glossary IDの衝突。user / failed。両位置を付ける |
+| spec.undefined-reference / spec.undefined-glossary | 明示参照またはglossary関連付けの未定義。user / failed |
+| spec.ambiguous-reference / spec.wrong-reference-kind | 曖昧な対象または型/変数等の種別不一致。user / failed |
+| spec.read-error / spec.execution-error | I/Oや内部処理の失敗。tool-error / error |
+| spec.missing-dependency | 入力に必要な任意依存不足。unsupported / unsupported。依存名と理由を付ける |
+| spec.unknown-id | CLI showの対象要件IDが存在しない。user。参照解決失敗とは区別する |
+
+コードは安定識別子、messageは人向け説明とする。主位置は該当する元原稿の属性・参照・宣言等、重複や型参照の宣言先はRelatedLocationにする。正確な位置が不明ならunmappedと理由・既知containerを使う。Workspaceの既存workspace.*コードは改名しない。
+
+この契約はspec→core/標準ライブラリだけに依存する。core・既存文書処理・Workspaceからspecへ逆依存せず、specモデルからCLI、LSP、backend、既存glossaryの可変Entryへ依存しない。#36は抽出器、#37は定義ローダー、#38は名前解決とGraph、#39は設定・hierarchyを含む入力manifest/版付きIR/サービス/Schema、#40はCLIを担当する。時刻・乱数・一時パスを結果の意味へ混ぜず、入力のWorkspace順と各snapshot内の原稿順を保持する。IRの完全なJSON表現と決定的ソートは#39で実装する。
+
+[契約fixture](examples/model-contract/README.md)は正常・natural-only・多言語・壊れた構造と回復・未知版・式未検査・glossary関連付けを示す。単体テストはこれらの原稿に対して手で構築したモデルと出典・状態の契約を検証するもので、抽出器・ローダー・Graph構築器の実装や通過を意味しない。
 
 ## 状態と検査結果
 
@@ -427,7 +538,7 @@ print(render_json(report), end="")
 
 ## 依存方向と既存CLIの互換性
 
-矢印はimport・API利用の方向を表す。実線はM1の実装、点線は後続Milestoneの設計であり、未実装パッケージや新しいCLIは追加しない。
+矢印はimport・API利用の方向を表す。実線はM1の実装、点線は後続Milestoneの設計を示す。M2 / #35でspecのモデル・結果型を追加したが、抽出器・Graph構築器・解析サービス・新しいCLIはまだ存在しない。
 
 ```mermaid
 flowchart TB
@@ -457,7 +568,7 @@ flowchart TB
 | `mdtools.diagnostics` | Workspace固有の例外を共通診断と明示的な検査状態へ変換する組立て層。workspaceとcore診断に依存する。汎用モデル・ソート・JSON/テキスト表示は`core.diagnostics`に残す |
 | `mdtools.build` | compose・言語抽出・表示用glossaryを順に呼ぶ文書生成の組立て層。各処理APIへ依存し、coreから各ツールを呼ばせない。Workspaceの登録や仕様検査は暗黙に実行しない |
 | 既存CLIと互換入口 | 引数、stdin、最終出力先、表示、終了コードを担当し、上記の処理APIを呼ぶ。ファイルを扱う処理APIの読書きやbuildの中間ファイルは本体側の責務として維持する |
-| 将来のspec層 | 要件抽出、要件ID・参照の解決、要件/制約の意味、IRと検査計画を担当し、coreのsnapshot・位置・診断を再利用する。既存文書処理の意味や出力規則を書き換えない |
+| spec層 | M2 / #35でモデル・結果型を実装。要件抽出、要件ID・参照の解決、要件/制約の意味、IRと検査計画は後続で実装し、coreのsnapshot・位置・診断を再利用する。既存文書処理の意味や出力規則を書き換えない |
 | 将来の解析サービス・host・adapter | 解析サービスがWorkspace入力とspec処理を組み立て、外側で選択したadapterを渡す。CLI・LSPホストは同じサービス/APIと共通の診断結果を利用する。adapterはspecの入出力契約とcoreに依存し、外部backendの実行依存を閉じ込める |
 
 coreと既存文書処理からCLI、workspace、診断組立て、build、spec、backendへ逆依存しない。coreから文書処理への依存、workspaceから診断組立てへの依存も作らない。specの処理本体はCLIや特定backend実装をimportせず、将来必要になった時点で外側から能力を渡す。汎用診断の`requirement_id`は不透明な付帯文字列で、IDの存在・一意性・意味をcoreで解決しない。severity、診断分類、検査状態は独立して維持し、診断0件から成功を推定しない。
@@ -492,6 +603,57 @@ assert text_from_memory == "Hello\n"
 - `mdtools spec index/show/check/context`は後続Milestoneの予定であり、M1には存在しない。M5の選択的な検査ゲートも先取りしない。
 
 依存方向は`mdtools/tests/test_boundaries.py`で本体の相対・関数内importと既存CLI dispatch表を含むグラフ、循環の不在、CLIを禁止した直接API呼出を検証する。`python -S`でsite packagesを除き、PyYAML・dev validator・backendなしのJSON/既存経路を検証する。PyYAMLは任意のYAML入力用、jsonschemaは公開Schema回帰のdev用のままで、必須実行時依存にしない。
+
+## M2 index/showの入出力・診断契約
+
+M2 / #35は#39の共通解析サービスと#40のCLIが共有する外部契約を定める。本節のコマンドは将来の入口であり、#35時点では実行できない。既存CLIの引数・表示・終了コード・helpは変更しない。
+
+```bash
+mdtools spec index --project mdtools.toml --format json
+mdtools spec show REQ-NORMAL --project mdtools.toml --format text
+```
+
+`--project PATH`は必須で、既存Workspace設定を明示指定する。暗黙の探索、stdin原稿、生成IRを第二の原典とする入力は設けない。`--format`はtext/json、既定値はtext。showの位置引数は要件IDを1個だけ受け付け、モデル・宣言・glossaryの同名で代用しない。ID形式の不備は引数エラー、形式上正しいが不存在のIDはunknown-idとする。設定内のパス解決・原典選択はWorkspace v1の規則を使う。
+
+index/showは同じWorkspace全体の解析サービスを一度利用する。indexは要件・モデル・宣言・glossary・明示参照とIR、showは指定要件の各言語本文・形式記述・明示参照・出典・状態を取得する。showはusesが直接指す宣言とその型依存・glossary関連付けを含める。refsの先はIDと解決結果を示し、他要件本文を循環して展開しない。表示選択で全体の診断・部分結果・失敗を隠さず、名前衝突時は候補を残す。
+
+**JSONと診断の出力先**
+
+JSONモードではstdoutは末尾LF付きの単一JSON objectだけにする。最上位フィールドは次のとおりとする。
+
+| フィールド | 内容 |
+|------------|------|
+| schema_version | 整数1。CLI envelopeの版。契約版・IRスキーマ版・診断JSON版とは別に管理 |
+| command | indexまたはshow |
+| status | 解析のcomplete/partial/unavailable。プロセス全体の成功フラグではない |
+| exit_code | 本節の終了コードと同じ整数 |
+| result | indexでは#39のSpecIR、showでは対象requirementと関連models/declarations/glossary/references。生成不能・未知対象はnull |
+| report | M1のreport_to_dict()と同じ診断JSON v1 object。入力snapshot、全体checks、診断を含む |
+
+indexのIRは契約版・IRスキーマ版・manifest・requirements/models/declarations/glossary/references・出典・状態を持つ。manifestは本文と共有定義だけでなく、選択・順序に影響する設定とhierarchyも記録する。正確なIR Schemaと各フィールドのJSON表現は#39で追加し、#35ではIRシリアライザーを作らない。showの内容は同じIRからの選択結果とし、別パーサーを作らない。
+
+診断はreportに集約し、JSONモードのstderrへ重複表示しない。stderrは予期せぬ実行時ログ用であり、通常の正常/原稿不正/未知ID経路では空とする。既存glossaryローダー等の警告やデバッグprintをstdoutへ流入させない。引数解析に失敗して実行を開始できない場合だけstdoutを空にしてstderrへusageと理由を出す。helpはstdout、終了0とする。
+
+textモードは同じ要件・出典・参照・検査状態と全体診断をstdoutへ表示する。診断の座標・quote・内容はM1のテキストrendererに従う。壊れた入力の部分結果にもpartialと理由を示す。式未検査・論理未実行を省略せず、「無矛盾」「verified」等の全体保証へ置き換えない。
+
+入力順に依存する文書/本文一覧と、IDによる意味上の同一性を分ける。繰り返し出力は同じsnapshot・設定・実装版から決定的とし、診断の順序はM1、IRの順序は#39の契約に従う。環境の現在時刻やランダム値を追加しない。
+
+**終了コードとエラー優先順位**
+
+| コード | 意味 |
+|--------|------|
+| 0 | 対象範囲のM2解析と要求された表示が成功。M3の式/論理検査は未実行でもよい |
+| 1 | Workspace設定、原稿構造、宣言値、参照の不正、未知版・未対応構文等。部分結果を出しても0にしない |
+| 2 | CLI引数不備。stdoutは空、stderrにusageと理由 |
+| 3 | 全体解析がcompleteであるがshowの要件IDが存在しない。spec.unknown-id、result=null。解析のstatus自体はcompleteを保持する |
+| 4 | I/O、文字コード読込、内部処理等の実行失敗。tool-error/errorと理由 |
+| 5 | 実際の入力に必要な任意依存（例: YAML用PyYAML）がない。spec.missing-dependencyと依存名・理由 |
+
+複数問題があれば`2 → 4 → 5 → 1 → 3 → 0`の順で最初に該当する分類を選ぶ。引数不備は解析前に確定し、その後は実行失敗・依存不足を原稿の不正と区別する。WorkspaceErrorのread-errorは4、他の設定・登録不正は1とする。ソース内容の不正な構造と、入力をUTF-8で読み取れない失敗は区別する。警告だけでは非0にしないが、未対応・未実行がM2必須検査に残る結果は0にしない。
+
+Workspace全体がpartial/unavailableの場合、showの対象が見つからなくても3へ置き換えず、元の1/4/5を返す。対象が見つかっても全体の失敗を成功へ変更しない。unknown-idは解析済み要件集合に対する問い合わせの診断であり、解析のcompleteを取り消すものではない。reportには解析診断にこの問い合わせ診断を追加する。
+
+0は宣言したM2検査範囲の成功に限り、式の文法・型・usesとの完全一致・論理整合性・本文との意味的一致を保証しない。パース前に失敗した場合も、実施していない各チェックへ理由付きnot-runを残す。どの失敗でも架空の原稿位置を生成しない。
 
 ## 将来のバックエンドとLSP
 

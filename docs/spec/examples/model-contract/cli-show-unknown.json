@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "command": "show",
+  "status": "complete",
+  "exit_code": 3,
+  "result": null,
+  "report": {
+    "schema_version": 1,
+    "sources": [
+      {
+        "uri": "memory:cli-contract",
+        "snapshot": "5db5de731ce1f11f4628233fd2dbb8d0d982aaa9c472dccb21b280fdc4cf3d51"
+      }
+    ],
+    "checks": [
+      {
+        "check_id": "spec.declarations",
+        "status": "passed"
+      },
+      {
+        "check_id": "spec.expression-syntax",
+        "status": "not-run",
+        "reason": "M3 check; not executed by M2"
+      },
+      {
+        "check_id": "spec.expression-types",
+        "status": "not-run",
+        "reason": "M3 check; not executed by M2"
+      },
+      {
+        "check_id": "spec.expression-uses",
+        "status": "not-run",
+        "reason": "M3 check; not executed by M2"
+      },
+      {
+        "check_id": "spec.logic",
+        "status": "not-run",
+        "reason": "M3 check; not executed by M2"
+      },
+      {
+        "check_id": "spec.references",
+        "status": "passed"
+      },
+      {
+        "check_id": "spec.structure",
+        "status": "passed"
+      }
+    ],
+    "diagnostics": [
+      {
+        "code": "spec.unknown-id",
+        "severity": "error",
+        "category": "user",
+        "message": "Unknown requirement ID: REQ-MISSING",
+        "primary": {
+          "kind": "none"
+        },
+        "related": [],
+        "evidence": [],
+        "requirement_id": "REQ-MISSING"
+      }
+    ]
+  }
+}

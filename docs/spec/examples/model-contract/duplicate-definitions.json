@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "types": {},
+  "variables": {
+    "duplicate": {"type": "bool", "role": "input"},
+    "duplicate": {"type": "bool", "role": "output"}
+  },
+  "constants": {}
+}

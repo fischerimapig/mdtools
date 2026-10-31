@@ -1,0 +1,8 @@
+version: 1
+types: {}
+variables:
+  first: &shared
+    type: bool
+    role: input
+  second: *shared
+constants: {}

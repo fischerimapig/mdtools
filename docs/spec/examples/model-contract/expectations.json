@@ -1,0 +1,9 @@
+{
+  "normal.md": {"completeness": "complete", "formalization": "present", "languages": [null], "diagnostic": null},
+  "natural-only.md": {"completeness": "complete", "formalization": "natural-only", "languages": [null], "diagnostic": null},
+  "multilingual.md": {"completeness": "complete", "formalization": "natural-only", "languages": ["ja", "en"], "diagnostic": null},
+  "unchecked.md": {"completeness": "complete", "formalization": "present", "languages": [null], "diagnostic": null},
+  "invalid.md": {"completeness": "partial", "formalization": "natural-only", "languages": [null], "diagnostic": "spec.invalid-requirement"},
+  "broken-model.md": {"completeness": "partial", "formalization": "present", "languages": [null], "diagnostic": "spec.invalid-model"},
+  "unsupported.md": {"completeness": "partial", "formalization": null, "languages": [], "diagnostic": "spec.unsupported-version"}
+}
