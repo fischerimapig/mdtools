@@ -44,5 +44,5 @@ def test_repository_document_preserves_structure_and_text(document, tmp_path):
     assert actual.base_level == expected.base_level
     assert heading_structure(actual.sections) == heading_structure(expected.sections)
     if document == "docs/spec/contract-v1.md":
-        # The original hierarchy also swallowed three H3 headings into a body.
-        assert verify(output / "hierarchy.json").section_count == 18
+        # #34 restored 18 headings; #35 adds two explicit M2 contract sections.
+        assert verify(output / "hierarchy.json").section_count == 20

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "command": "index",
+  "status": "unavailable",
+  "exit_code": 5,
+  "result": null,
+  "report": {
+    "schema_version": 1,
+    "sources": [],
+    "checks": [
+      {
+        "check_id": "spec.declarations",
+        "status": "unsupported",
+        "reason": "PyYAML is required for YAML input"
+      },
+      {
+        "check_id": "spec.expression-syntax",
+        "status": "not-run",
+        "reason": "M3 check; not executed by M2"
+      },
+      {
+        "check_id": "spec.expression-types",
+        "status": "not-run",
+        "reason": "M3 check; not executed by M2"
+      },
+      {
+        "check_id": "spec.expression-uses",
+        "status": "not-run",
+        "reason": "M3 check; not executed by M2"
+      },
+      {
+        "check_id": "spec.logic",
+        "status": "not-run",
+        "reason": "M3 check; not executed by M2"
+      },
+      {
+        "check_id": "spec.references",
+        "status": "not-run",
+        "reason": "Declarations unavailable"
+      },
+      {
+        "check_id": "spec.structure",
+        "status": "not-run",
+        "reason": "Analysis did not start"
+      }
+    ],
+    "diagnostics": [
+      {
+        "code": "spec.missing-dependency",
+        "severity": "error",
+        "category": "unsupported",
+        "message": "PyYAML is required for YAML input",
+        "primary": {
+          "kind": "none"
+        },
+        "related": [],
+        "evidence": []
+      }
+    ]
+  }
+}

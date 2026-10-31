@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "types": {},
+  "variables": {
+    "unlinked": {"type": "bool", "role": "input", "glossary": "missing-entry"}
+  },
+  "constants": {}
+}

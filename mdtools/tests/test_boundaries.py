@@ -61,6 +61,8 @@ def allowed_import(source, target):
         return target == 'mdtools' or (target == source.split('.')[0] and target != 'mdtools')
     if source.startswith('mdtools.core'):
         return target.startswith('mdtools.core.')
+    if source == 'mdtools.spec' or source.startswith('mdtools.spec.'):
+        return target == 'mdtools.spec' or target.startswith(('mdtools.spec.', 'mdtools.core.'))
     if source == 'mdtools.workspace':
         return target.startswith('mdtools.core.') or target == 'mdsplit.schema'
     if source == 'mdtools.diagnostics':
@@ -115,6 +117,12 @@ def test_boundary_policy_rejects_reverse_and_external_dependencies():
     assert not allowed_import('mdsplit.compose', 'mdtools.workspace')
     assert not allowed_import('mdsplit.compose', 'mdtools.diagnostics')
     assert not allowed_import('glossary.loader', 'mdtools.build')
+    for target in ('mdtools.main', 'mdtools.build_cli', 'mdtools.workspace', 'mdtools.diagnostics',
+                   'glossary.loader', 'mdsplit.schema', 'mdtools.backends.z3', 'z3', 'pygls', 'jsonschema', 'pytest'):
+        assert not allowed_import('mdtools.spec.model', target)
+    assert allowed_import('mdtools.spec.results', 'mdtools.spec.model')
+    assert allowed_import('mdtools.spec.model', 'mdtools.core.source')
+    assert allowed_import('mdtools.spec.results', 'mdtools.core.diagnostics')
 
 
 def test_processing_apis_without_cli_or_optional_dependencies(tmp_path):
@@ -130,7 +138,10 @@ class BlockImports(importlib.abc.MetaPathFinder):
             raise AssertionError('forbidden import: ' + fullname)
 sys.meta_path.insert(0, BlockImports())
 from mdtools.build import build_document
-from mdtools.core.diagnostics import render_json
+from mdtools.core.diagnostics import CheckResult, DiagnosticLocation, render_json
+from mdtools.core.source import SourceSnapshot
+from mdtools.spec.model import Body, FieldSource, NodeKey, Requirement
+from mdtools.spec.results import AnalysisChecks, LocalAnalysis
 from mdtools.diagnostics import inspect_workspace
 from mdtools.workspace import load_workspace, snapshot_sources
 from mdsplit.decompose import decompose
@@ -145,6 +156,16 @@ from mdhtml_rewrite.rewrite import rewrite_file
 from mdhtml_rewrite.convert import convert_single
 
 root = Path(sys.argv[1])
+snapshot = SourceSnapshot('memory:spec-smoke', '日本語📚\r\n')
+span = snapshot.span()
+fields = tuple(FieldSource(path, DiagnosticLocation('unmapped', reason='smoke test has no attribute token'), span)
+               for path in ('/id', '/spec-version', '/status'))
+requirement = Requirement(NodeKey('requirement', 'REQ-SMOKE', snapshot.ref, 0), span, fields,
+                          (Body(None, snapshot.text, span),), CheckResult('spec.structure', 'passed'), 'natural-only')
+checks = AnalysisChecks(CheckResult('spec.structure', 'passed'), CheckResult('spec.declarations', 'passed'),
+                        CheckResult('spec.references', 'not-run', 'Workspace resolution deferred'))
+local = LocalAnalysis(snapshot, checks, 'complete', (requirement,))
+assert json.loads(render_json(local.report))['checks']
 source = root / 'input.md'
 text = '# Title\n\n::: {lang=en}\nHello []{.term id=unit}\n:::\n\n::: {lang=ja}\n日本語\n:::\n'
 source.write_text(text, encoding='utf-8')

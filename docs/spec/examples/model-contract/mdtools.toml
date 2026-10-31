@@ -1,0 +1,25 @@
+version = 1
+
+[[documents]]
+kind = "markdown"
+path = "normal.md"
+
+[[documents]]
+kind = "markdown"
+path = "natural-only.md"
+
+[[documents]]
+kind = "markdown"
+path = "multilingual.md"
+
+[[documents]]
+kind = "markdown"
+path = "unchecked.md"
+
+[[definitions]]
+kind = "spec"
+path = "definitions.json"
+
+[[definitions]]
+kind = "glossary"
+path = "glossary.json"
