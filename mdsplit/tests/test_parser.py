@@ -1,5 +1,7 @@
 """Tests for the markdown parser."""
 
+import pytest
+
 from mdsplit.parser import (
     RawSection,
     build_tree,
@@ -57,6 +59,81 @@ def test_parse_pre_block_ignores_code_fence_markers():
     text = "# Real\n\n<pre>\n```\n</pre>\n\n## After Pre\n\ntext"
     fm, sections = parse_sections(text)
     assert [s.title for s in sections] == ["Real", "After Pre"]
+
+
+@pytest.mark.parametrize("literal", [
+    "`<pre>` を説明する。",
+    "``<pre> with `backticks` ``",
+    "説明中の <pre> タグ",
+    r"\<pre>",
+    "&lt;pre&gt;",
+    "| HTML | description |\n| --- | --- |\n| <pre> | literal |",
+    "| HTML | description |\n| --- | --- |\n| `<pre>` | literal |",
+    "    <pre>",
+    "\t<pre>",
+    "<prefix>",
+    "<pre-formatted>",
+    "<pre/>",
+    "<pre\u00a0class=example>",
+    "<!-- <pre> -->",
+    "```html\n<pre>\n# Code\n```",
+    "~~~~html\n<pre>\n# Code\n~~~\n~~~~",
+])
+def test_parse_literal_pre_preserves_following_headings(literal):
+    text = f"# A\n\n{literal}\n\n## B\n本文\n"
+    _, sections = parse_sections(text)
+    assert [(s.level, s.title) for s in sections] == [(1, "A"), (2, "B")]
+    assert literal in sections[0].content
+
+
+def test_parse_heading_mentioning_pre():
+    _, sections = parse_sections("# A <pre>\n\ntext\n\n## B\ntext")
+    assert [s.title for s in sections] == ["A <pre>", "B"]
+
+
+@pytest.mark.parametrize("opening", [
+    "<pre>",
+    '<pre class="example">',
+    "<PRE>",
+    " <pre>",
+    "  <pre>",
+    "   <pRe data-lang='md'>",
+    "<pre\tclass=example>",
+    "<pre\nclass=example>",
+    "<pre>text",
+    "<pre>\r",  # Raw CRLF input remains supported.
+    "<pre\r\nclass=example>",
+])
+def test_parse_html_pre_block_preserves_content(opening):
+    body = f"\n{opening}\n# Hidden\n\n## Also hidden\n```\n  </PRE>\n"
+    text = f"# A\n{body}\n## B\n本文\n"
+    _, sections = parse_sections(text)
+    assert [(s.level, s.title) for s in sections] == [(1, "A"), (2, "B")]
+    assert sections[0].content == body
+    assert sections[1].line_number == text.split("\n").index("## B") + 1
+
+
+@pytest.mark.parametrize("body", [
+    "<pre>one line</pre>",
+    "<pre>\n# Still raw HTML </pre>",
+    "<pre>\n# Hidden\n</pre><pre>",  # The closing line ends the raw block.
+])
+def test_parse_pre_closing_line_is_always_content(body):
+    _, sections = parse_sections(f"# A\n\n{body}\n\n## B\ntext")
+    assert [s.title for s in sections] == ["A", "B"]
+    assert body in sections[0].content
+
+
+def test_parse_unclosed_pre_block_ignores_headings_until_eof():
+    _, sections = parse_sections("# A\n\n<pre>\n\n## Hidden\ntext")
+    assert [s.title for s in sections] == ["A"]
+    assert "## Hidden" in sections[0].content
+
+
+def test_parse_fence_after_pre_block_is_tracked_normally():
+    text = "# A\n\n<pre>\n```\n</pre>\n\n~~~\n<pre>\n# Hidden\n~~~\n\n## B\ntext"
+    _, sections = parse_sections(text)
+    assert [s.title for s in sections] == ["A", "B"]
 
 
 def test_parse_shorter_code_fence_does_not_close():

@@ -41,7 +41,8 @@ jobs:
       - name: Install locked dependencies
         run: uv sync --locked --group dev --extra yaml
 
-      - name: Run test suite
+      # Includes test_document_structure.py: text equality alone can hide lost headings.
+      - name: Run tests and Markdown heading structure checks
         run: uv run --locked pytest -q
 
       - name: CLI smoke checks

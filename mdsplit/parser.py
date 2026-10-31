@@ -9,7 +9,10 @@ from typing import Any
 from mdtools.core.mdscan import CodeFenceTracker
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+)$")
-PRE_OPEN_RE = re.compile(r"<pre[\s>]", re.IGNORECASE)
+# A raw HTML block starts at the beginning of a line (up to three spaces),
+# not at a tag mentioned in prose, a code span, a table cell, or an escape.
+# The tag may continue on the next line; do not require a closing '>' here.
+PRE_OPEN_RE = re.compile(r"^ {0,3}<pre(?=[ \t>]|\r?$)", re.IGNORECASE)
 PRE_CLOSE_RE = re.compile(r"</pre>", re.IGNORECASE)
 
 
@@ -70,10 +73,11 @@ def parse_sections(text: str) -> tuple[FrontMatter | None, list[RawSection]]:
             current_content_lines.append(line)
             continue
 
-        if PRE_OPEN_RE.search(line):
-            in_pre_block = True
-        if PRE_CLOSE_RE.search(line):
-            in_pre_block = False
+        if in_pre_block or PRE_OPEN_RE.match(line):
+            in_pre_block = PRE_CLOSE_RE.search(line) is None
+            # The closing line is still raw HTML, even if it starts with '#'.
+            current_content_lines.append(line)
+            continue
 
         if not in_pre_block:
             heading_match = HEADING_RE.match(line)

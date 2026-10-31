@@ -9,3 +9,4 @@ uv run pytest mdsplit/tests/ -v
 - **test_decompose.py** — ファイル生成、JSON構造、フラット/ネスト対応
 - **test_compose.py** — 再構成、並び順、base_level 上書き
 - **test_roundtrip.py** — 分解→再構成の完全一致テスト（`doc/emax6/combined.md` 含む）
+- **test_document_structure.py** — リポジトリ文書の既存 hierarchy との見出し構造比較と本文の完全一致
