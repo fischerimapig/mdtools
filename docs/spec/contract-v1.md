@@ -139,7 +139,7 @@ for path in workspace.analysis_files:
 - IDは大文字小文字を区別する`[A-Za-z][A-Za-z0-9_.-]*`とする。要件IDはWorkspace全体で一意。ファイル名・見出し・章番号から生成し直さず、移動・並べ替えでも保持する。
 - 本文は空にしない。本文だけの要件も有効であり、`mdspec`は任意。形式記述の省略は検査成功を意味しない。
 - v1では要件に直接属する`mdspec`を最大1個とする。モデルIDはWorkspaceのモデル名前空間で一意とし、要件IDと区別する。複数のモデルを要する構文は将来の拡張として診断する。
-- `mdspec`の内容はUTF-8のJSON objectとする。上の7フィールドを必須とし、`version`は整数`1`、`kind`は`constraint`、`uses`は一意な共有定義名の配列、`when`と`must`は空でない式文字列とする。未知の必須構文やフィールドを黙って捨てない。
+- `mdspec`の内容はUTF-8のJSON objectとする。上の6フィールドを必須とし、`version`は整数`1`、`kind`は`constraint`、`uses`は一意な共有定義名の配列、`when`と`must`は空でない式文字列とする。未知の必須構文やフィールドを黙って捨てない。
 
 この例で使う式の最小語彙はBooleanリテラル`true`/`false`、宣言した識別子、`not`、`and`、`==`である。演算子の結合は`not`、`==`、`and`の順とし、`when`と`must`はいずれもBooleanを要求する。`when`成立時に`must`を満たす条件付き制約として解釈する。自然言語から式を補完しない。
 
@@ -240,7 +240,7 @@ ordinalは同一snapshot内の出現を区別する補助キーであり、仕�
 
 **出典の粒度**
 
-FieldSource.pathは正規化したモデル内の位置であり、原稿の座標や入力JSON全体の絶対pointerではない。RFC 6901の`~0`/`~1`を使う。要件属性は`/id`、`/spec-version`、`/status`、任意の`/refs`と`/refs/0`等。モデルは7必須フィールドのpointerと、`/uses/0`等の各参照を持つ。宣言は`/name`、`/kind`、`/values`、`/type`、`/role`、`/min`、`/max`、`/value`、`/glossary`のうち存在するものを持つ。`/name`は元のmapping keyに対応する正規化フィールドである。glossaryは`/id`、`/kind`と表示データ内のフィールドを対象とする。
+FieldSource.pathは正規化したモデル内の位置であり、原稿の座標や入力JSON全体の絶対pointerではない。RFC 6901の`~0`/`~1`を使う。要件属性は`/id`、`/spec-version`、`/status`、任意の`/refs`と`/refs/0`等。モデルは6必須フィールドのpointerと、`/uses/0`等の各参照を持つ。宣言は`/name`、`/kind`、`/values`、`/type`、`/role`、`/min`、`/max`、`/value`、`/glossary`のうち存在するものを持つ。`/name`は元のmapping keyに対応する正規化フィールドである。glossaryは`/id`、`/kind`と表示データ内のフィールドを対象とする。
 
 producerは属性値、宣言名、JSON/YAMLのフィールドと各明示参照に、特定できる最小の原稿トークン範囲を付ける。オブジェクト・配列しか特定できない場合、その範囲をフィールドそのものの精密位置と偽らずcontainerへ保持し、locationは理由付き・spanなしのunmappedにする。containerは実原稿だけを指す。既知のcontainerは診断のRelatedLocationとして利用できる。
 
@@ -261,7 +261,7 @@ LocalAnalysisは全モデルのspan、field/container、参照、拒否断片と
 
 usesは従来どおり一意な名前の配列とする。refsにはv1で新たな重複禁止を設けず、同じIDが繰り返されても各出現のoriginを保持する。
 
-M1が留保したglossary関連付けは、仕様の型・変数・定数宣言に任意の文字列`glossary`を1件指定する形とする。要件属性・モデルの7フィールドへ新しい項目を加えない。対象はterm/const/symbolのいずれでもよく、仕様宣言の種別・型・値と表示用途を同一視しない。
+M1が留保したglossary関連付けは、仕様の型・変数・定数宣言に任意の文字列`glossary`を1件指定する形とする。要件属性・モデルの6フィールドへ新しい項目を加えない。対象はterm/const/symbolのいずれでもよく、仕様宣言の種別・型・値と表示用途を同一視しない。
 
 ```json
 {"type": "bool", "role": "input", "glossary": "paid label"}
