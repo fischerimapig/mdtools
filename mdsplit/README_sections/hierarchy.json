@@ -142,8 +142,26 @@
               "file": "sections/01-mdsplit/10-section/01-section.md",
               "order": 0,
               "children": []
+            },
+            {
+              "title": "ファイル命名",
+              "file": "sections/01-mdsplit/10-section/02-section.md",
+              "order": 1,
+              "children": []
+            },
+            {
+              "title": "セクションファイルの内容",
+              "file": "sections/01-mdsplit/10-section/03-section.md",
+              "order": 2,
+              "children": []
             }
           ]
+        },
+        {
+          "title": "今後の拡張予定",
+          "file": "sections/01-mdsplit/11-section.md",
+          "order": 10,
+          "children": []
         }
       ]
     }

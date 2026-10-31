@@ -237,6 +237,10 @@ mdtools mdsplit compose work/hierarchy.json -o roundtrip.md
 diff document.md roundtrip.md  # 差分なしが期待値
 ```
 
+本文の完全一致だけでは、見出しが前のセクション本文へ取り込まれる不具合を検出できない。構造も保存したい場合は、再分解した hierarchy の見出し件数・タイトル・順序・親子関係・基準レベルを、正しい既存 hierarchy と比較する。自動生成されるファイル名は構造比較の対象にしない。`verify` は参照先の存在チェックであり、この構造比較を代替しない。
+
+このリポジトリのCIでは、README、mdsplit README、仕様記述契約、coreリファクタ実施記録について、`test_document_structure.py` が文字列一致と見出し構造の両方を検証する。
+
 ## Python API としての利用
 
 ```python
@@ -285,6 +289,7 @@ uv run pytest mdsplit/tests/ -v
 - **test_decompose.py** — ファイル生成、JSON構造、フラット/ネスト対応
 - **test_compose.py** — 再構成、並び順、base_level 上書き
 - **test_roundtrip.py** — 分解→再構成の完全一致テスト（`doc/emax6/combined.md` 含む）
+- **test_document_structure.py** — リポジトリ文書の既存 hierarchy との見出し構造比較と本文の完全一致
 
 ## 設計上の注意点
 
@@ -296,6 +301,10 @@ uv run pytest mdsplit/tests/ -v
 
 - **フェンスドコードブロック内** (` ``` ` で囲まれた領域)
 - **HTML `<pre>` ブロック内**
+
+`<pre>` ブロックの開始は、行頭から0〜3個の半角スペースの後に `<pre` があり、直後が半角スペース、タブ、`>`、または行末の場合に認識する。属性付き・複数行の開始タグと大文字小文字の違いにも対応する。コードスパン、表の説明、エスケープ表記、通常の文章に現れる `<pre>` はブロックを開始しない。4スペース以上またはタブで字下げされたタグも開始対象外とする。
+
+開始後は空行やコードフェンス記号も本文として扱い、大文字小文字を問わず `</pre>` を含む行まで見出し判定をスキップする。閉じタグの行も本文に含み、閉じタグがない場合は文書末尾まで継続する。
 
 `#define` のような行は `#` の直後にスペースがないため、正規表現にマッチせず自動的に除外される。
 
