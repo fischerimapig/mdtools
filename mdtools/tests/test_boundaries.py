@@ -142,6 +142,7 @@ from mdtools.core.diagnostics import CheckResult, DiagnosticLocation, render_jso
 from mdtools.core.source import SourceSnapshot
 from mdtools.spec.model import Body, FieldSource, NodeKey, Requirement
 from mdtools.spec.results import AnalysisChecks, LocalAnalysis
+from mdtools.spec.parser import parse_requirements
 from mdtools.diagnostics import inspect_workspace
 from mdtools.workspace import load_workspace, snapshot_sources
 from mdsplit.decompose import decompose
@@ -166,6 +167,12 @@ checks = AnalysisChecks(CheckResult('spec.structure', 'passed'), CheckResult('sp
                         CheckResult('spec.references', 'not-run', 'Workspace resolution deferred'))
 local = LocalAnalysis(snapshot, checks, 'complete', (requirement,))
 assert json.loads(render_json(local.report))['checks']
+raw = '::: {.requirement #REQ-EXTRACT spec-version=1}\n日本語📚\n```mdspec\n{"version":1,"id":"MODEL-EXTRACT","kind":"constraint","uses":[],"when":"true","must":"true"}\n```\n:::\n'
+extracted = parse_requirements(SourceSnapshot('memory:extracted', raw))
+assert extracted.completeness == 'complete'
+assert extracted.requirements[0].model.key.name == 'MODEL-EXTRACT'
+assert all(c.status == 'not-run' for c in extracted.requirements[0].model.checks)
+assert json.loads(render_json(extracted.report))['sources'][0]['uri'] == 'memory:extracted'
 source = root / 'input.md'
 text = '# Title\n\n::: {lang=en}\nHello []{.term id=unit}\n:::\n\n::: {lang=ja}\n日本語\n:::\n'
 source.write_text(text, encoding='utf-8')

@@ -106,4 +106,26 @@ Requirement.formalizationはnatural-onlyまたはpresentで、構造状態とは
 
 この契約はspec→core/標準ライブラリだけに依存する。core・既存文書処理・Workspaceからspecへ逆依存せず、specモデルからCLI、LSP、backend、既存glossaryの可変Entryへ依存しない。#36は抽出器、#37は定義ローダー、#38は名前解決とGraph、#39は設定・hierarchyを含む入力manifest/版付きIR/サービス/Schema、#40はCLIを担当する。時刻・乱数・一時パスを結果の意味へ混ぜず、入力のWorkspace順と各snapshot内の原稿順を保持する。IRの完全なJSON表現と決定的ソートは#39で実装する。
 
-[契約fixture](examples/model-contract/README.md)は正常・natural-only・多言語・壊れた構造と回復・未知版・式未検査・glossary関連付けを示す。単体テストはこれらの原稿に対して手で構築したモデルと出典・状態の契約を検証するもので、抽出器・ローダー・Graph構築器の実装や通過を意味しない。
+[契約fixture](examples/model-contract/README.md)は正常・natural-only・多言語・壊れた構造と回復・未知版・式未検査・glossary関連付けを示す。#35の単体テストは手で構築したモデルの契約検証として維持する。#36では同じMarkdown原稿とキャンセル例を実際の抽出器へ入力し、出典・状態・回復を別のテストで検証する。定義ローダー・Graph構築器の動作確認は後続Issueで行う。
+
+**M2 / #36 抽出APIと出典**
+
+`mdtools.spec.parser.parse_requirements(source: SourceSnapshot) -> LocalAnalysis`は一つの元Markdown/QMD snapshotを受け取る。読込・標準入出力・終了コードを扱わず、Workspace選択済みの各原稿を呼出側が個別に渡す。原稿の不正は共通診断とpartialへ変換する。引数がSourceSnapshotでなければTypeErrorとする。
+
+```python
+from mdtools.workspace import load_workspace, snapshot_sources
+from mdtools.spec.parser import parse_requirements
+
+workspace = load_workspace("docs/spec/examples/cancellation/mdtools.toml")
+local_results = tuple(parse_requirements(source) for source in snapshot_sources(workspace))
+assert all(result.completeness == "complete" for result in local_results)
+assert all(result.checks.references.status == "not-run" for result in local_results)
+```
+
+attributesは`core.pandoc.tokenize_attrs()`の全出現トークンから検査する。属性順序、裸の値、単一・二重引用符を扱い、引用内のbackslash escapeはデコード値と元範囲を分ける。既存`parse_attrs()`の後勝ちや既存Markdown走査の挙動は変更しない。仕様固有の属性名・値・重複禁止はspec側で判定する。
+
+要件spanは開始divから終了行まで、モデルspanとモデル拒否断片はcode fence全体とする。閉じ忘れではsnapshot末尾までを指す。属性FieldSourceは値トークン（引用符があれば含む）、JSONフィールドは値トークン、refs/usesは各要素を指す。JSONのkeyは重複・未知フィールド診断に使用し、重複キーとusesの重複には先行トークンの関連位置を付ける。JSON escape後の文字offsetを原稿列へ流用しない。
+
+Bodyはwrapperとmdspecを除いた連続する原文断片で、同じ言語でも離れた範囲は結合しない。空白だけの断片は省略できるが、保持する断片の前後空白・改行は加工しない。本文全体が空なら要件全体を拒否する。status省略時のdraftは理由付きunmappedと要件containerを持ち、存在しないトークン位置を作らない。
+
+このMarkdown入力範囲に共有宣言がないことを明示してdeclarationsをpassedとする。これは別の共有定義ファイルの検査成功を意味しない。referencesとM3の4検査は常に理由付きnot-run。重複した要件ID・モデルIDは原稿順の別NodeKeyとして残す。全体の衝突診断は#38で行い、ローカル抽出時に参照先や一意性を断定しない。

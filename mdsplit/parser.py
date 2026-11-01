@@ -6,14 +6,9 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-from mdtools.core.mdscan import CodeFenceTracker
+from mdtools.core.mdscan import CodeFenceTracker, PRE_OPEN_RE, PRE_CLOSE_RE
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+)$")
-# A raw HTML block starts at the beginning of a line (up to three spaces),
-# not at a tag mentioned in prose, a code span, a table cell, or an escape.
-# The tag may continue on the next line; do not require a closing '>' here.
-PRE_OPEN_RE = re.compile(r"^ {0,3}<pre(?=[ \t>]|\r?$)", re.IGNORECASE)
-PRE_CLOSE_RE = re.compile(r"</pre>", re.IGNORECASE)
 
 
 @dataclass
