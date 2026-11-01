@@ -25,4 +25,6 @@ Issue #35のデータ契約の小さな原典例です。#36の抽出器はMarkd
 
 `mdtools/spec/tests/test_parser.py`は`parse_requirements(SourceSnapshot.from_path(...))`を通して全Markdown fixtureを解析します。`expectations.json`の状態・言語・診断コードを照合し、追加の出典・異常・回復テストを実行します。同じコードの複数診断が出る場合もあります。例えばbroken-model.mdは欠落するwhen/mustそれぞれの診断を持ちます。
 
+追加テストは文脈・回復の`test_parser_contexts.py`と出典・Workspaceの`test_parser_sources.py`へ整理しています。初期実装・レビュー修正を含む検証項目と再現結果は[チェックリスト](../../../../mdtools/spec/tests/README.md)を参照してください。
+
 契約は[仕様記述契約v1](../../contract-v1.md)の「M2 / #35 仕様モデルと解析結果」「M2 index/showの入出力・診断契約」を参照してください。厳格JSON/YAML・glossary読み込みテストは#37、衝突診断・参照解決・列挙型定数の所属検査は#38、IR Schema/シリアライズは#39、コマンドの実行と出力検証は#40で追加します。

@@ -191,6 +191,8 @@ JSONデコーダーの深さ・整数変換の処理限界は、JSON文法違反
 
 front matterの終了区切りは行頭の`---`または`...`とし、後ろの空白は許容する。block scalar等の内部で字下げされた同じ文字列は終了区切りにせず、後続する例示要件もメタデータ内に留める。
 
+コードスパンの先読みで、番号付き行を一律に段落中断としない。`2.`等の継続行や空の項目では先読みを続け、非空の1始まりの項目では従来の境界を維持する。この境界はCommonMark型の段落中断判定であり、Pandoc既定markdown readerの全構文を再現するものではない。reader差異と再現・回帰の確認項目は[抽出器のチェックリスト](../../mdtools/spec/tests/README.md)に記録する。
+
 ## 共有定義と参照
 
 表示用の用語・定数・記号は既存glossaryの`entries`スキーマを維持する。仕様用宣言は別のJSON/YAML文書とし、整数の`version: 1`と、`types`、`variables`、`constants`の4フィールドを必須とする。各宣言は名前から宣言内容へのmappingで、空の場合も`{}`を指定する。未知のフィールドや版は診断する。JSONでは追加依存を要求しない。YAMLは既存と同じ任意依存を利用する。
@@ -757,3 +759,5 @@ M1 / #22の検証は文書のリンク・例のJSON・既存CLIでの文書round
 M2 / #36では`mdtools/spec/tests/test_parser.py`でキャンセル例3原稿とmodel-contractのMarkdown fixtureを実際に抽出する。本文・多言語・6フィールド・refs/usesの元位置、誤抽出防止、不正属性/JSON、未知版、複数モデル、閉じ忘れ、section境界、回復後のpartialを確認する。Unicode・絵文字・結合文字・LF/CRLF/単独CR・JSON escapeを含む元ファイルのbytes/hashとspanを検証する。Workspace結合テストでは生成canonical・未参照原稿を入力に加えず、言語・glossary置換前のsection本文を保つ。
 
 import境界とCLI・任意依存を禁止した`python -S`のテストにも抽出APIを含める。既存全テストと、文字列round-tripに加えた#34の基準レベル・見出しタイトル・順序・親子構造比較を維持する。式構文・型・usesとの照合・論理の検証はM3へ残し、キャンセル例の論理矛盾を今回検出済みとは扱わない。
+
+抽出テストは構造・fixture（`test_parser.py`）、Markdown文脈・回復（`test_parser_contexts.py`）、出典・Workspace（`test_parser_sources.py`）へ役割別に整理する。[チェックリスト](../../mdtools/spec/tests/README.md)は初期実装とレビュー修正の対応、再現例、修正前後の結果、実行コマンドをまとめる。

@@ -79,7 +79,11 @@ _HTML_TAG = re.compile(
 )
 _BLOCK_START = re.compile(
     r"^ {0,3}(?:\#{1,6}(?:[ \t]|$)|:{3,}|`{3,}|~{3,}|>"
-    r"|[-+*][ \t]|[0-9]+[.)][ \t]|(?:-\s*){3,}$|(?:_\s*){3,}$|(?:\*\s*){3,}$)"
+    # Use CommonMark's nonempty start-one interruption for ordered markers,
+    # preserving the scanner's existing first-item boundary. Pandoc markdown
+    # can require a preceding blank line; this is not a full reader dialect.
+    # Other numbers and empty items can be soft-line continuations.
+    r"|[-+*][ \t]|0{0,8}1[.)][ \t]+(?=\S)|(?:-\s*){3,}$|(?:_\s*){3,}$|(?:\*\s*){3,}$)"
 )
 
 
