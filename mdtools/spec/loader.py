@@ -351,4 +351,8 @@ def load_definitions(source: SourceSnapshot, *, kind: Literal['spec', 'glossary'
         loader.reject(root, (diagnostic,))
         collected = False
     loader.remaining_duplicates(root)
+    # Known limitation: LocalAnalysis validates provenance through recursive
+    # walk_values outside the collect() guard. Glossary data with hundreds of
+    # nested objects (limit depends on the runtime) can still raise RecursionError
+    # here instead of returning unsupported/partial.
     return loader.result(collected=collected)

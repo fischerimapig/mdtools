@@ -48,6 +48,9 @@ def parse_structured_text(raw: str, *, format: str) -> Token:
         for event in yaml.parse(raw, Loader=yaml.BaseLoader):
             if isinstance(event, yaml.DocumentStartEvent):
                 documents += 1
+                # Known limitation: PyYAML discards unknown directives (e.g.
+                # %FOO) before these events. version/tags detect %YAML/%TAG only;
+                # rejecting every directive would require scanner-token checks.
                 if documents > 1 or event.version is not None or event.tags:
                     fail('Multiple YAML documents and directives are unsupported', event, unsupported=True)
             if (isinstance(event, yaml.AliasEvent) or getattr(event, 'anchor', None) is not None
