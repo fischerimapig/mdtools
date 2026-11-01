@@ -145,7 +145,9 @@ def scan(text: str) -> list[Text | Code | Div]:
     front_end = -1
     if lines and lines[0][0].rstrip('\r\n').rstrip() == '---':
         front_end = next((j for j in range(1, len(lines))
-                          if lines[j][0].strip() in ('---', '...')), -1)
+                          # A metadata delimiter starts in column 1. Leading
+                          # indentation belongs to YAML content/block scalars.
+                          if lines[j][0].rstrip(' \t\r\n') in ('---', '...')), -1)
 
     def append(block):
         (stack[-1].children if stack else root).append(block)

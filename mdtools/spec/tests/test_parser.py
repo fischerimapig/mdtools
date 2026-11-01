@@ -532,3 +532,17 @@ def test_unmatched_code_delimiter_does_not_cross_requirement_block_boundary():
     raw = 'Unmatched `\n' + requirement('本文と `<!--` の例\n')
     result = parse(raw)
     assert result.completeness == 'complete' and len(result.requirements) == 1
+
+
+@pytest.mark.parametrize('literal_marker', ['---', '...'])
+@pytest.mark.parametrize('ending', ['---', '...  '])
+@pytest.mark.parametrize('newline', ['\n', '\r\n', '\r'])
+def test_front_matter_scalar_delimiters_do_not_end_metadata(literal_marker, ending, newline):
+    hidden = requirement(attrs='.requirement #REQ-HIDDEN spec-version=1')
+    scalar = ''.join('  ' + line for line in hidden.splitlines(keepends=True))
+    raw = ('---\nexample: |\n  ' + literal_marker + '\n' + scalar
+           + ending + '\n' + requirement()).replace('\n', newline)
+    result = parse(raw)
+    assert result.completeness == 'complete' and result.diagnostics == ()
+    assert [q.key.name for q in result.requirements] == ['REQ-A']
+    assert_provenance(result)
