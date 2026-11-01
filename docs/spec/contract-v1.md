@@ -374,6 +374,35 @@ Bodyはwrapperとmdspecを除いた連続する原文断片で、同じ言語で
 
 このMarkdown入力範囲に共有宣言がないことを明示してdeclarationsをpassedとする。これは別の共有定義ファイルの検査成功を意味しない。referencesとM3の4検査は常に理由付きnot-run。重複した要件ID・モデルIDは原稿順の別NodeKeyとして残す。全体の衝突診断は#38で行い、ローカル抽出時に参照先や一意性を断定しない。
 
+**M2 / #37 厳格ローダーAPI・回復・状態**
+
+`mdtools.spec.loader.load_definitions(source: SourceSnapshot, *, kind="spec" | "glossary", format="json" | "yaml" | "yml") -> LocalAnalysis`は、Workspaceへ明示登録した一つの共有定義snapshotを解析する。kindとformatは呼出側が登録情報から渡し、内容・URIから推測しない。I/O・標準入出力・終了コード・Workspaceのimport・参照解決を含まない。SourceSnapshot以外はTypeError、不正なkind/formatはValueErrorとし、原稿の不正は診断と拒否断片へ返す。
+
+汎用の原文トークン走査は`core._structured`と`core.io.parse_structured_text()`へ置く。mappingは全key/value出現を原稿順に保持し、strict経路のToken.valueはmapping種別を示す空dictで、内容はmembersから読む。#36の`spec._json`は互換importとして維持し、parse_jsonの既定経路は従来どおり重複キーで停止する。既存coreファイル読込・glossary.loader.load()のsafe_load/後勝ちをstrict入力には使わない。
+
+YAMLはBaseLoaderのイベント・ノードだけを利用し、暗黙resolverやオブジェクトconstructorを使わない。引用・block scalarは文字列、plain scalarのtrue/false/nullとJSON表記の10進整数・有限小数だけをJSONの値に変換し、値省略はnullとする。それ以外のplain scalar（yes/no、日付、01、+1、0x10、~等）は文字列のまま保持する。仕様のbool/int定数に文字列を指定しても補正しない。glossary表示データはJSON相当のnull・bool・int・有限float・文字列・配列・objectを保持する。mapping keyは文字列を要求するため、trueや数値等の文字列キーは引用する。anchor/alias/明示tag/複数文書・YAML directivesはイベント段階で、未引用のmerge keyはノード段階で文書全体をunsupportedとする。引用された"<<"は通常の文字列キーとして扱う。
+
+strict glossaryのトップレベルはentriesだけとし、entryのid/kind以外は任意の表示データとして保持する。既存CLIが許す表示用の追加フィールドを仕様の未知フィールドとして拒否せず、表示値を仕様リテラルへ変換しない。CLI側の入力許容・上書き・警告・表示・終了コードは変更しない。
+
+| 状況 | 結果・回復境界 |
+|------|----------------|
+| 正常な単一文書 | 原稿順の全宣言/entryと明示参照を収集。ローカルstructure/declarationsはpassed、complete |
+| 不正JSON/YAML、版の欠落・型不正・重複 | 文書全体を拒否。structure=failed、declarations=not-run、partial。構文を推測して後半へ復帰しない |
+| 未知の整数version | v1フィールド契約を適用せず文書全体を拒否。structure=unsupported、declarations=not-run、partial。重複キーの構文検査は版に依存しない |
+| 必須の区分mapping欠落・型不正、未知トップレベル項目 | 診断と拒否断片を保持。解釈可能な他の区分は収集しpartial |
+| 宣言/entryの未知・欠落・重複フィールド、不正な名前/値 | 該当する完全な宣言/entryを拒否し、次の完全な要素へ回復。entry内の表示データの重複キーもentry全体を拒否 |
+| 宣言名を表すmapping key、区分mapping、entriesの重複 | 全出現を走査し、正常に表せる候補はすべて保持。宣言名/entry IDの衝突も両位置付きで診断しpartial |
+| 未対応YAML、走査の深さ・整数変換容量超過 | 推測せず理由付きunsupported・partial。保持できない原文を拒否断片へ残す |
+| YAML依存不足 | spec.missing-dependencyとPyYAMLの根拠、元snapshotと拒否断片を保持。structure=unsupported、declarations=not-run、unavailable |
+
+フィールド構造違反・文書内キー重複はstructure、名前・role・型名・値領域・宣言名/entry ID重複はdeclarationsへ記録する。構造的に拒否された宣言の値は推測しない。構造不正の兄弟を拒否した結果、収集済み候補のdeclarationsだけがpassedでも、結果全体はpartialを維持する。各check内で不正と未対応が混在する場合はfailedを優先し、両方の診断を残す。未知フィールド・拒否範囲内を含む全mappingの重複キーも検査する。
+
+宣言spanは名前トークンから宣言値の末尾まで、entry spanはentry object全体とする。/nameは元mapping key、各フィールドと/values/N、表示データ内の各pointerは元の値トークンを指す。JSON escapeやYAML引用・block scalarのデコード値と原文範囲を分離し、元トークン内部をデコード後offsetで分割しない。正確な座標が得られなければspanなしunmappedと理由・既知containerを使う。拒否断片のtextはsnapshot.slice(span)と一致する。
+
+ファイル取得は外側の`mdtools.diagnostics.read_definition_source(path)`で行える。WorkspaceのDefinitionInput.pathだけを渡し、得たsnapshotを上のAPIへ渡す。OSError/UTF-8デコード失敗は`DefinitionReadError(ValueError)`となり、reportにspec.read-error / tool-errorとstructure=error、宣言・参照・M3のnot-runを持つ既存DiagnosticReportを保持する。読めなかったpathはEvidenceへ残し、sourcesは空で架空のsnapshotや行列を作らない。これは単一ファイルの読込境界であり、Workspaceの原典選択・全体サービス・IRは実装しない。
+
+型名・glossary関連付けはReferenceのまま全出現を残す。名前付き型の定数は文字列の形式までをローカル検査し、別ファイルを含む型解決と列挙値所属は#38で完成する。referencesとM3の4検査は理由付きnot-runで固定する。キャンセルとmodel-contractの定義原稿を実際にローダーへ入力し、#35の手構築モデルテストとは別に[チェックリスト](../../mdtools/spec/tests/README.md#issue-37-厳格ローダーの検証チェックリスト)で再現・期待結果・診断・状態・出典を管理する。
+
 ## 状態と検査結果
 
 一つの「verified」フラグで状態を集約しない。次の軸を独立して保持・表示する。
@@ -587,7 +616,7 @@ print(render_json(report), end="")
 
 ## 依存方向と既存CLIの互換性
 
-矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器を追加した。Graph構築器・解析サービス・新しいCLIは後続Issueで実装する。
+矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器、#37で共有定義の厳格ローダーを追加した。Graph構築器・解析サービス・新しいCLIは後続Issueで実装する。
 
 ```mermaid
 flowchart TB
@@ -614,10 +643,10 @@ flowchart TB
 | `mdtools.core` | 汎用I/O、Markdown走査、Pandoc属性、SourceRef / SourceSpan / SourceSnapshot / SourceMap、診断のモデル・表示。core内と標準ライブラリに依存し、`core.io`だけがYAML入力時に任意のPyYAMLを遅延importする |
 | `mdsplit` / `langfilter` / `glossary` / `mdhtml_rewrite`の処理本体 | 自ツールのモデル・変換・検証とcoreを利用する。文書階層は`mdsplit.schema`に残し、要件の依存関係モデルと分ける |
 | `mdtools.workspace` | 設定・hierarchy登録を検証し、原典と生成物を区別して本文snapshotを取得する組立て層。`mdsplit.schema`と`core.source`を利用するためcoreへ移さない。定義のkind=specは登録分類だけで、内容の解析・要件ID解決を行わない |
-| `mdtools.diagnostics` | Workspace固有の例外を共通診断と明示的な検査状態へ変換する組立て層。workspaceとcore診断に依存する。汎用モデル・ソート・JSON/テキスト表示は`core.diagnostics`に残す |
+| `mdtools.diagnostics` | Workspace固有の例外と定義snapshot取得前の読込失敗を共通診断と明示的な検査状態へ変換する組立て層。workspaceとcore診断に依存する。汎用モデル・ソート・JSON/テキスト表示は`core.diagnostics`に残す |
 | `mdtools.build` | compose・言語抽出・表示用glossaryを順に呼ぶ文書生成の組立て層。各処理APIへ依存し、coreから各ツールを呼ばせない。Workspaceの登録や仕様検査は暗黙に実行しない |
 | 既存CLIと互換入口 | 引数、stdin、最終出力先、表示、終了コードを担当し、上記の処理APIを呼ぶ。ファイルを扱う処理APIの読書きやbuildの中間ファイルは本体側の責務として維持する |
-| spec層 | M2 / #35のモデル・結果型、#36の要件抽出器。coreのsnapshot・位置・診断を再利用し、spec/core/標準ライブラリにのみ依存する。要件ID・参照の解決、要件/制約の意味、IRと検査計画は後続Issue。既存文書処理の意味や出力規則を書き換えない |
+| spec層 | M2 / #35のモデル・結果型、#36の要件抽出器、#37の共有定義ローダー。coreのsnapshot・位置・診断を再利用し、spec/core/標準ライブラリにのみ依存する。要件ID・参照の解決、要件/制約の意味、IRと検査計画は後続Issue。既存文書処理の意味や出力規則を書き換えない |
 | 将来の解析サービス・host・adapter | 解析サービスがWorkspace入力とspec処理を組み立て、外側で選択したadapterを渡す。CLI・LSPホストは同じサービス/APIと共通の診断結果を利用する。adapterはspecの入出力契約とcoreに依存し、外部backendの実行依存を閉じ込める |
 
 coreと既存文書処理からCLI、workspace、診断組立て、build、spec、backendへ逆依存しない。coreから文書処理への依存、workspaceから診断組立てへの依存も作らない。specの処理本体はCLIや特定backend実装をimportせず、将来必要になった時点で外側から能力を渡す。汎用診断の`requirement_id`は不透明な付帯文字列で、IDの存在・一意性・意味をcoreで解決しない。severity、診断分類、検査状態は独立して維持し、診断0件から成功を推定しない。

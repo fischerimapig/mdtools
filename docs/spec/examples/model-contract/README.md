@@ -1,6 +1,6 @@
 # M2モデル契約fixture
 
-Issue #35のデータ契約の小さな原典例です。#36の抽出器はMarkdown原稿を実際のテスト入力として使います。定義ローダー・Graph構築器・spec CLIの実装は後続Issueです。
+Issue #35のデータ契約の小さな原典例です。#36の抽出器はMarkdown原稿を実際のテスト入力として使います。#37の厳格ローダーは共有定義原稿も実際のテスト入力として使います。Graph構築器・spec CLIの実装は後続Issueです。
 
 | ファイル | 期待する扱い |
 |----------|--------------|
@@ -27,4 +27,6 @@ Issue #35のデータ契約の小さな原典例です。#36の抽出器はMarkd
 
 追加テストは文脈・回復の`test_parser_contexts.py`と出典・Workspaceの`test_parser_sources.py`へ整理しています。初期実装・レビュー修正を含む検証項目と再現結果は[チェックリスト](../../../../mdtools/spec/tests/README.md)を参照してください。
 
-契約は[仕様記述契約v1](../../contract-v1.md)の「M2 / #35 仕様モデルと解析結果」「M2 index/showの入出力・診断契約」を参照してください。厳格JSON/YAML・glossary読み込みテストは#37、衝突診断・参照解決・列挙型定数の所属検査は#38、IR Schema/シリアライズは#39、コマンドの実行と出力検証は#40で追加します。
+契約は[仕様記述契約v1](../../contract-v1.md)の「M2 / #35 仕様モデルと解析結果」「M2 index/showの入出力・診断契約」を参照してください。厳格JSON/YAML・glossary読み込みテストは#37で追加済みです。衝突診断・参照解決・列挙型定数の所属検査は#38、IR Schema/シリアライズは#39、コマンドの実行と出力検証は#40で追加します。
+
+#37の実入力テストは`mdtools/spec/tests/test_loader*.py`です。definitions.json/yamlの同じ宣言・明示参照、glossary.jsonの表示データ、duplicate-definitions.jsonの全候補と両位置、unsupported.yamlの拒否を確認します。missing-glossary.jsonはローカルではcomplete・references=not-runで、未定義診断は#38に残します。YAML依存不足は既存の元snapshotを保持したunavailable、ファイル取得失敗はsnapshotを捏造せずDefinitionReadError.reportへ返します。

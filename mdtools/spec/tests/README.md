@@ -83,3 +83,44 @@ git diff --check
 ## 今回の確認範囲
 
 抽出器の段落先読み境界とテスト整理のローカル検証まで。全Markdown方言との同値性、後続Issueの機能、コミット・push・最新差分のCI確認は、このチェックリストの成功項目に含めない。
+
+## Issue #37 厳格ローダーの検証チェックリスト
+
+分岐元はPR #44・#45を含むM2の`8d6e6ea`。変更前の全テストを再実行し、820 passed, 1 skippedを確認した。以下はローダーへ実原稿を渡す検証であり、#35の手構築モデルテストとは別に維持する。
+
+| 再現入力・責務 | 期待結果・診断・状態 | 出典の確認 | テスト |
+|---|---|---|---|
+| cancellationのdefinitions.json | paid/shipped/cancel_allowedと範囲内の定数14、complete | 元ファイルsnapshotと全フィールド | test_loader.py: test_real_cancellation_and_model_contract_definitions |
+| model-contractのdefinitions.json/yaml | 型・変数・定数・6明示参照が等価。別snapshotを維持、complete | 宣言名・型・値・glossaryの元トークン | 同上 |
+| glossary.json / JSON-YAML等価表示データ | IDの空白、term/const/symbolと任意表示データを保持。式・型へ変換しない | ネストした表示フィールドもpointerで保持 | test_loader_glossary.py |
+| duplicate-definitions.json、重複区分、types/variables/constants同名 | 全候補を保持。spec.invalid-definition / spec.duplicate-name、partial | 主位置と先行位置を保持 | test_loader.py: duplicate各テスト |
+| glossary entry ID重複、entry内/表示データ内キー重複 | ID重複は両候補保持、spec.duplicate-glossary。フィールド重複は該当entry拒否、spec.invalid-glossary。partial | 両位置・拒否原文slice | test_loader_glossary.py / test_loader_yaml.py |
+| 未知版、version欠落/誤型/重複、未知フィールド、区分誤型 | 未知版はv1を適用せずunsupported。他はfailed。partial、拒否原文保持 | version/問題のkey・値、既知container | test_loader.py |
+| 不正名/予約語、type/role、int境界/bool、列挙、定数値 | spec.invalid-definition。最小/最大/単一点/大きな整数は受理。boolをintとしない | 不正値と上下限・列挙重複の両位置 | test_loader.py |
+| missing-glossary.json、未収集の名前付き型 | ローカルcomplete。参照と名前付き型所属検査を#38へ留保 | 型/glossaryのReference.origin | test_loader.py |
+| 不正宣言・entryの後の正常要素 | 不正一件だけ拒否し正常兄弟を保持。全体partial。構文破損は文書全体拒否 | 各拒否断片とsnapshot.sliceが一致 | test_loader.py / test_loader_glossary.py |
+| unsupported.yaml、anchor/alias/merge/tag/複数文書/directive | spec.unsupported-syntax、structure=unsupported、declarations=not-run、partial。実行・展開しない | 問題の構文トークンと文書全体の拒否断片 | test_loader_yaml.py |
+| 引用/block scalar、yes/no/日付/01/hex、true/false/null/有限数 | 引用・blockは文字列、plainは契約のJSON scalar規則。型を推測せず必要なら宣言不正 | デコード値と元トークンを分離 | test_loader_yaml.py / test_loader_sources.py |
+| PyYAMLをimportできない環境 | JSON complete。YAMLはspec.missing-dependency、unsupported/unavailable、依存名保持 | 元snapshot保持、架空の解析位置なし | test_loader_yaml.py |
+| ファイル未存在・UTF-8不正・ディレクトリ | DefinitionReadError.reportにspec.read-error/tool-error、structure=error、他6検査not-run | sources空、pathをEvidenceへ保持 | test_loader_sources.py |
+| Unicode・絵文字・結合文字・LF/CRLF/単独CR・JSON/YAML escape | 値と原文が一致し、デコード後offsetを位置に流用しない | 元bytes/hash/URI/path、各fieldのslice | test_loader_sources.py |
+| JSON Pointerにslash/tilde・表示配列 | RFC 6901のpointerと正確な元値 | /a~1b~0c/ja/0等 | test_loader_sources.py |
+| Workspaceの明示登録と未登録/生成物 | definitionsだけを登録順に解析。未登録や生成物を走査しない | 各結果のsource.pathが登録pathと一致 | test_loader_sources.py |
+| 共通レポートと副作用 | 正常/不正/unsupported/読込失敗を既存診断Schemaで検証。stdout/stderr出力なし | reportのsnapshot検証 | test_loader_sources.py |
+| CLIと任意依存を禁止したpython -S | 新ローダーのJSON利用が成功、参照とM3は理由付きnot-run | 共通診断JSONへ元snapshotを保持 | mdtools/tests/test_boundaries.py |
+| 既存glossary CLIと#36 | 後勝ち・警告・表示・終了コード、JSON重複で停止する既定動作を維持 | 既存の出典・回復テストを維持 | test_loader_glossary.py、既存全テスト |
+
+ローダーテストは`test_loader.py`（構造・宣言・fixture・回復）、`test_loader_yaml.py`（YAML能力・依存不足）、`test_loader_glossary.py`（表示データ・重複・既存CLI）、`test_loader_sources.py`（出典・Workspace・読込失敗）へ分ける。`_loader_helpers.py`は原文builderと出典assertionだけを持ち、型モデルを手構築しない。
+
+- [x] 追加107件が成功。固定seed 37による6,000件の不正JSONレコードでも未処理例外なし（補助確認であり、受け入れテストの代替ではない）。
+- [x] 変更後の全テスト：927 passed, 1 skipped。CLI help 10経路、文書round-trip/見出し構造、README glossary参照検証が成功。
+- コミット・push・M2向けPRと最新pushコミットのCI照合結果はPRへ記載する。このチェックリストのローカル検証とは区別する。
+
+```bash
+.venv/bin/python -m pytest mdtools/spec/tests/test_loader.py mdtools/spec/tests/test_loader_yaml.py mdtools/spec/tests/test_loader_glossary.py mdtools/spec/tests/test_loader_sources.py -q
+.venv/bin/python -m pytest -q
+.venv/bin/mdtools mdsplit verify docs/spec/contract-v1_sections/hierarchy.json
+git diff --check
+```
+
+参照解決・ファイル間衝突・名前付き型の値所属は#38、サービス/IR/Schemaは#39、spec CLIは#40へ残す。M3・LLM・#31の変更、マージ・Issue Closeは行わない。

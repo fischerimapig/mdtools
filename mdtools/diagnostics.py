@@ -3,7 +3,38 @@
 from pathlib import Path
 
 from mdtools.core.diagnostics import CheckResult, Diagnostic, DiagnosticReport, Evidence
+from mdtools.core.source import SourceSnapshot
 from mdtools.workspace import WorkspaceError, load_workspace, snapshot_sources
+
+
+class DefinitionReadError(ValueError):
+    """Pre-snapshot read failure, carrying the existing common report type."""
+
+    def __init__(self, path, detail):
+        message = f'{path}: {detail}'
+        super().__init__(message)
+        self.report = DiagnosticReport(
+            (Diagnostic('spec.read-error', 'error', 'tool-error', message,
+                        evidence=(Evidence('spec.path', str(path)),)),),
+            (CheckResult('spec.structure', 'error', message),
+             CheckResult('spec.declarations', 'not-run', 'Definition snapshot could not be read'),
+             CheckResult('spec.references', 'not-run', 'Workspace resolution belongs to #38'),
+             *(CheckResult('spec.' + name, 'not-run', 'M3 check; not executed by M2')
+               for name in ('expression-syntax', 'expression-types', 'expression-uses', 'logic'))),
+        )
+
+
+def read_definition_source(path: str | Path) -> SourceSnapshot:
+    """Read a Workspace-selected definition without inventing a failed snapshot.
+
+    This thin host boundary does not parse content or import spec. Registration
+    and selection belong to Workspace; callers pass its DefinitionInput.path.
+    """
+    try:
+        source = SourceSnapshot.from_path(path)
+    except (OSError, UnicodeError) as exc:
+        raise DefinitionReadError(path, str(exc)) from exc
+    return source
 
 
 def inspect_workspace(config_path: str | Path) -> DiagnosticReport:
