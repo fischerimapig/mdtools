@@ -495,3 +495,40 @@ def test_comments_after_div_headers_hide_reserved_syntax(header):
 def test_comment_literal_inside_quoted_div_attribute_does_not_open_comment():
     result = parse('::: {.note title="<!--"}\n' + requirement() + ':::\n')
     assert result.completeness == 'complete' and len(result.requirements) == 1
+
+
+@pytest.mark.parametrize('prefix', [
+    'The comment marker is `<!--\nnot a real comment`.\n\n',
+    'The marker is ``<!-- `\nnot a comment``.\n\n',
+    '<span title="<!--">example</span>\n\n',
+    "<span title='<!--'>example</span>\n\n",
+    '<span title="<!--\ncontinued">example</span>\n\n',
+    ' \t<!-- an indented literal\n\n',
+    '  \t<!-- an indented literal\n\n',
+])
+@pytest.mark.parametrize('newline', ['\n', '\r\n'])
+def test_comment_literals_in_multiline_code_html_attributes_and_tab_indentation(prefix, newline):
+    raw = (prefix + requirement()).replace('\n', newline)
+    result = parse(raw)
+    assert result.completeness == 'complete' and result.diagnostics == ()
+    assert [q.key.name for q in result.requirements] == ['REQ-A']
+    assert_provenance(result)
+
+
+@pytest.mark.parametrize('prefix', [
+    'Unmatched ` then <!--\n',
+    'Unmatched `\n\n<!--\n',
+    '<span title="literal"> <!--\n',
+    '`literal\nends here` <!--\n',
+])
+def test_real_comments_after_literals_still_hide_requirements(prefix):
+    result = parse(prefix + requirement(attrs='.requirement #REQ-HIDDEN spec-version=1')
+                   + '-->\n' + requirement())
+    assert result.completeness == 'complete'
+    assert [q.key.name for q in result.requirements] == ['REQ-A']
+
+
+def test_unmatched_code_delimiter_does_not_cross_requirement_block_boundary():
+    raw = 'Unmatched `\n' + requirement('本文と `<!--` の例\n')
+    result = parse(raw)
+    assert result.completeness == 'complete' and len(result.requirements) == 1

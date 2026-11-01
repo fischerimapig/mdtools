@@ -46,7 +46,7 @@ def _attributes(tail: str, offset: int):
     tail = tail[leading:]
     offset += leading
     if not tail.startswith('{'):
-        return offset, tokenize_attrs(tail), False, _comments(tail, False)
+        return offset, tokenize_attrs(tail), False, offset
     quote = None
     escaped = False
     for i in range(1, len(tail)):
@@ -62,34 +62,65 @@ def _attributes(tail: str, offset: int):
             quote = c
         elif c == '}':
             suffix = tail[i + 1:]
-            return offset + 1, tokenize_attrs(tail[1:i]), not suffix.strip(), _comments(suffix, False)
+            return offset + 1, tokenize_attrs(tail[1:i]), not suffix.strip(), offset + i + 1
         elif tail.startswith('<!--', i):
             # Outside a quoted value this is a real comment, even after a
             # malformed header. Do not tokenize its contents as attributes.
-            return offset + 1, tokenize_attrs(tail[1:i]), False, _comments(tail[i:], False)
-    return offset + 1, tokenize_attrs(tail[1:]), False, False
+            return offset + 1, tokenize_attrs(tail[1:i]), False, offset + i
+    return offset + 1, tokenize_attrs(tail[1:]), False, None
 
 
-def _comments(line: str, active: bool) -> bool:
-    """Track actual comments, skipping escaped markers and inline code spans."""
-    i = 0
-    while i < len(line):
-        if active:
-            end = line.find('-->', i)
-            if end < 0:
-                return True
-            i, active = end + 3, False
-        elif line[i] == '\\':
-            i += 2
-        elif line.startswith('<!--', i):
-            i, active = i + 4, True
-        elif line[i] == '`':
-            run = re.match(r'`+', line[i:])[0]
-            end = re.search(r'(?<!`)' + re.escape(run) + r'(?!`)', line[i + len(run):])
-            i += len(run) + (end.end() if end else 0)
-        else:
-            i += 1
-    return active
+# HTML tags are tokens: comment-looking text inside quoted values is literal.
+_HTML_TAG = re.compile(
+    r"</?[A-Za-z][A-Za-z0-9-]*"
+    r"(?:[ \t\r\n]+[A-Za-z_:][A-Za-z0-9_.:-]*"
+    r"(?:[ \t\r\n]*=[ \t\r\n]*(?:\"[^\"]*\"|'[^']*'|[^ \t\r\n\"'=<>`]+))?)*"
+    r"[ \t\r\n]*/?>"
+)
+_BLOCK_START = re.compile(
+    r"^ {0,3}(?:\#{1,6}(?:[ \t]|$)|:{3,}|`{3,}|~{3,}|>"
+    r"|[-+*][ \t]|[0-9]+[.)][ \t]|(?:-\s*){3,}$|(?:_\s*){3,}$|(?:\*\s*){3,}$)"
+)
+
+
+class _Inline:
+    """Track literal tokens across soft line breaks, within a paragraph only.
+
+    An unmatched backtick remains prose. A matched token protects its complete
+    raw range, so continuation lines cannot start blocks or HTML comments.
+    """
+
+    def __init__(self, text):
+        self.text = text
+        self.protected_until = 0
+
+    def comments(self, start, end, active, limit):
+        i = max(start, self.protected_until)
+        while i < end:
+            if active:
+                closing = self.text.find('-->', i, end)
+                if closing < 0:
+                    return True
+                i, active = closing + 3, False
+            elif self.text[i] == '\\':
+                i += 2
+            elif self.text.startswith('<!--', i):
+                i, active = i + 4, True
+            elif self.text[i] == '`':
+                run = re.match(r'`+', self.text[i:end])[0]
+                closing = re.compile(r'(?<!`)' + re.escape(run) + r'(?!`)').search(
+                    self.text, i + len(run), limit)
+                if closing:
+                    self.protected_until = closing.end()
+                    i = closing.end()
+                else:
+                    i += len(run)
+            elif self.text[i] == '<' and (tag := _HTML_TAG.match(self.text, i, limit)):
+                self.protected_until = tag.end()
+                i = tag.end()
+            else:
+                i += 1
+        return active
 
 
 def scan(text: str) -> list[Text | Code | Div]:
@@ -97,6 +128,16 @@ def scan(text: str) -> list[Text | Code | Div]:
     lines = list(re.finditer(r'[^\r\n]*(?:\r\n|\r|\n|\Z)', text))
     if lines and not lines[-1][0]:
         lines.pop()
+    # Cache each line's paragraph limit; lookahead never crosses a blank line
+    # or a Markdown block opener (including requirement and code fences).
+    limits = [len(text)] * len(lines)
+    for j in range(len(lines) - 2, -1, -1):
+        following = lines[j + 1][0].rstrip('\r\n')
+        if not following.strip() or _BLOCK_START.match(following) or PRE_OPEN_RE.match(following):
+            limits[j] = lines[j].end()
+        else:
+            limits[j] = limits[j + 1]
+    inline = _Inline(text)
     root = []
     stack: list[Div] = []
     comment = pre = False
@@ -122,13 +163,17 @@ def scan(text: str) -> list[Text | Code | Div]:
             append(Text(start, end))
             continue
         if comment:
-            comment = _comments(line, True)
+            comment = inline.comments(start, end, True, limits[i - 1])
+            append(Text(start, end))
+            continue
+        if inline.protected_until > start:
+            comment = inline.comments(start, end, False, limits[i - 1])
             append(Text(start, end))
             continue
         # Up to three leading spaces are ordinary Markdown block positions.
         # Four spaces or a tab introduce literal indented code instead.
         stripped = line.lstrip(' ')
-        indent = len(line) - len(stripped)
+        indent = len(line[:len(line) - len(line.lstrip(' \t'))].expandtabs(4))
         fence = CODE_FENCE_RE.match(stripped) if indent <= 3 else None
         if fence:
             marker = fence[1]
@@ -165,13 +210,15 @@ def scan(text: str) -> list[Text | Code | Div]:
                 else:
                     append(Text(start, end))
                 continue
-            offset, attrs, valid, comment = _attributes(tail, start + div.start(2))
+            offset, attrs, valid, suffix = _attributes(tail, start + div.start(2))
+            comment = (inline.comments(suffix, end, False, limits[i - 1])
+                       if suffix is not None else False)
             current = Div(start, len(text), end, offset, attrs, valid and marker == ':::')
             append(current)
             stack.append(current)
             continue
         # Indented prose/code cannot create multiline HTML comment state.
-        if indent < 4 and not line.startswith('\t'):
-            comment = _comments(line, False)
+        if indent < 4:
+            comment = inline.comments(start, end, False, limits[i - 1])
         append(Text(start, end))
     return root
