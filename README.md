@@ -243,7 +243,27 @@ assert [req.key.name for result in results for req in result.requirements] == [
 ]
 ```
 
-このAPIはCLI・任意依存・ファイルI/Oを必要としません。上例の読込はWorkspace側で行います。厳格ローダー（#37）、Workspace全体の衝突検査・Graph（#38）、共通サービス・SpecIR（#39）、spec CLI（#40）は後続Issueです。
+このAPIはCLI・任意依存・ファイルI/Oを必要としません。上例の読込はWorkspace側で行います。Workspace全体の衝突検査・Graph（#38）、共通サービス・SpecIR（#39）、spec CLI（#40）は後続Issueです。
+
+M2 / #37の`mdtools.spec.loader.load_definitions(snapshot, kind=..., format=...)`は、明示登録したspec/glossaryの元snapshotから共有宣言・表示データ・明示参照・出典・診断を`LocalAnalysis`へ収集します。重複候補を上書きせず、不正な宣言やentryを原文の拒否断片へ残します。JSONは追加依存不要、YAMLは任意のPyYAMLを使い、anchor/alias/merge/tag/複数文書は未対応とします。既存glossary CLIの後勝ち・警告は変更しません。
+
+```python
+from mdtools.diagnostics import read_definition_source
+from mdtools.spec.loader import load_definitions
+from mdtools.workspace import load_workspace
+
+workspace = load_workspace("docs/spec/examples/model-contract/mdtools.toml")
+results = tuple(
+    load_definitions(read_definition_source(item.path), kind=item.kind,
+                     format=item.path.suffix.lower().removeprefix("."))
+    for item in workspace.definitions
+)
+assert [len(result.nodes) for result in results] == [4, 2]
+assert all(result.completeness == "complete" for result in results)
+assert all(result.checks.references.status == "not-run" for result in results)
+```
+
+読込失敗は`DefinitionReadError.report`の共通診断へ返し、存在しないsnapshotを作りません。構造・ローカル宣言値がcompleteでも、名前付き型の値所属・参照解決は#38、式・論理はM3の未検査です。対応能力、回復境界、読込失敗の扱いは契約、実fixtureと出典の検証は[チェックリスト](mdtools/spec/tests/README.md#issue-37-厳格ローダーの検証チェックリスト)を参照してください。
 
 ## 文書管理
 

@@ -1,5 +1,5 @@
-"""M2 specification contracts and original-snapshot requirement extraction.
+"""M2 contracts, original-snapshot extraction and strict definition loading.
 
-The CLI-independent entry point is mdtools.spec.parser.parse_requirements.
-Definition loading, reference resolution and graph building follow separately.
+CLI-independent entry points: parser.parse_requirements and loader.load_definitions.
+Reference resolution and graph building follow separately in #38.
 """

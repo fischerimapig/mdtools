@@ -143,6 +143,7 @@ from mdtools.core.source import SourceSnapshot
 from mdtools.spec.model import Body, FieldSource, NodeKey, Requirement
 from mdtools.spec.results import AnalysisChecks, LocalAnalysis
 from mdtools.spec.parser import parse_requirements
+from mdtools.spec.loader import load_definitions
 from mdtools.diagnostics import inspect_workspace
 from mdtools.workspace import load_workspace, snapshot_sources
 from mdsplit.decompose import decompose
@@ -173,6 +174,13 @@ assert extracted.completeness == 'complete'
 assert extracted.requirements[0].model.key.name == 'MODEL-EXTRACT'
 assert all(c.status == 'not-run' for c in extracted.requirements[0].model.checks)
 assert json.loads(render_json(extracted.report))['sources'][0]['uri'] == 'memory:extracted'
+definitions = SourceSnapshot('memory:definitions', '{"version":1,"types":{},"variables":{"paid":{"type":"bool","role":"input"}},"constants":{}}')
+loaded = load_definitions(definitions, kind='spec', format='json')
+assert loaded.completeness == 'complete'
+assert loaded.declarations[0].key.name == 'paid'
+assert loaded.references[0][1].name == 'bool'
+assert all(check.status == 'not-run' for check in (loaded.checks.references, *loaded.checks.expressions))
+assert json.loads(render_json(loaded.report))['sources'][0]['uri'] == 'memory:definitions'
 source = root / 'input.md'
 text = '# Title\n\n::: {lang=en}\nHello []{.term id=unit}\n:::\n\n::: {lang=ja}\n日本語\n:::\n'
 source.write_text(text, encoding='utf-8')
