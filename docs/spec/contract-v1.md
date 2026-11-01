@@ -314,9 +314,13 @@ JSON/YAMLの未知フィールド・重複mapping key・重複glossary entry ID�
 | `LocalAnalysis` | 1個の元snapshot、収集したrequirements/declarations/glossary、rejected、diagnostics、checks、completeness。referencesは必ずnot-run。構造・その場で確定する宣言値の検査を終えてもWorkspace参照の成否は未確定 |
 | `ReferenceResolution` | ownerのNodeKey、元のReference、pending/resolved/undefined/ambiguous/wrong-kind、候補のNodeKey一覧、または組み込み型bool/int |
 | `SpecGraph` | 渡された全出現nodesと明示参照edges。グラフ構築器ではなく値。自己参照・循環を許す |
-| `ResolvedAnalysis` | Workspace順のLocalAnalysis一覧、Graph、全体checks/completeness、全体段階で追加したdiagnostics。ローカル診断とsnapshotを欠落させずreportへ集約する |
+| `ResolvedAnalysis` | 入力順のLocalAnalysis一覧、Graph、全体checks/completeness、全体段階で追加したdiagnostics。ローカル診断とsnapshotを欠落させずreportへ集約する。registriesはGraph.nodesから導出する読み取り専用property |
 
-両解析結果のreportプロパティは既存DiagnosticReportを返す。診断JSON版・ソート・表示を再実装しない。Graphは全入力の全出現を一度ずつ含み、全明示参照に解決結果を持たせる。曖昧な辺には同じ名前空間の全候補を残し、重複名のうち一つだけをresolvedにしない。built-inはtype参照だけに許し、原稿に架空の組み込み型宣言を作らない。
+両解析結果のreportプロパティは既存DiagnosticReportを返す。診断JSON版・ソート・表示を再実装しない。Graphは全入力の全出現を一度ずつ含み、全明示参照に解決結果を持たせる。曖昧な辺には同じ名前空間の全候補を残し、重複名のうち一つだけをresolvedにしない。
+
+ReferenceResolution.builtinは参照名がbool/intと一致し、candidatesが空で、type/resolvedまたはuses/wrong-kindのときだけ許す。後者は変数・定数を要求するusesへ組み込み型を指定した誤りを表す。架空のNodeKey・宣言位置を作らない。refs/glossaryには組み込み型の特例を適用しない。
+
+ResolvedAnalysis.registriesの型は`Mapping[Namespace, Mapping[str, tuple[NodeKey, ...]]]`で、requirement/model/declaration/glossaryの4空間を常に持つ。名前・候補はGraph.nodesの出現順、外側・内側mappingは読み取り専用、候補はtupleとする。constructor引数や保存フィールドを増やさず、組み込み型を登録しない。
 
 completenessはローカルならそのsnapshotの構造・ローカル宣言検査、全体ならM2の構造・宣言値・参照解決の完了範囲を示す。
 
@@ -327,6 +331,8 @@ completenessはローカルならそのsnapshotの構造・ローカル宣言検
 | unavailable | 当該結果としてノードを収集できなかった。構造等の検査状態と理由を残す。Workspace読込前の失敗ではResolvedAnalysisのinputs/Graphを空にできる |
 
 constructorは成功を自動推定せず、producerが検査範囲と結果を明示する。診断0件でも未実行検査をpassedにしない。共通チェック状態と従来の説明上の構造状態は、not-run→not-checked、passed→valid、failed→invalid、unsupported→unsupportedと対応する。error/unknownは妥当性を確定できない実行状態として別に残す。
+
+ResolvedAnalysisのconstructorは非pending辺の候補欠落、誤った状態、種別不一致の隠蔽を拒否する。references=passedには空でない全入力のcomplete、全辺resolved、全名前空間の衝突なしを要求する。declarations=passedはローカル宣言検査の未完了、宣言/glossary衝突、名前付き定数の未解決型・列挙値不所属を許さない。pendingは未実行の値表現として維持するが、resolverは返さない。constructorは診断・検査成功を自動生成しない。
 
 Requirement.formalizationはnatural-onlyまたはpresentで、構造状態とは独立する。壊れたモデルがある場合もpresentを保持し、model=None、structure=failed/unsupported等、RejectedFragmentと診断を残す。natural-onlyへの格下げは禁止する。ID等すら安全に保持できない要件全体はRejectedFragmentへ残す。
 
@@ -402,6 +408,46 @@ strict glossaryのトップレベルはentriesだけとし、entryのid/kind以�
 ファイル取得は外側の`mdtools.diagnostics.read_definition_source(path)`で行える。WorkspaceのDefinitionInput.pathだけを渡し、得たsnapshotを上のAPIへ渡す。OSError/UTF-8デコード失敗は`DefinitionReadError(ValueError)`となり、reportにspec.read-error / tool-errorとstructure=error、宣言・参照・M3のnot-runを持つ既存DiagnosticReportを保持する。読めなかったpathはEvidenceへ残し、sourcesは空で架空のsnapshotや行列を作らない。これは単一ファイルの読込境界であり、Workspaceの原典選択・全体サービス・IRは実装しない。
 
 型名・glossary関連付けはReferenceのまま全出現を残す。名前付き型の定数は文字列の形式までをローカル検査し、別ファイルを含む型解決と列挙値所属は#38で完成する。referencesとM3の4検査は理由付きnot-runで固定する。キャンセルとmodel-contractの定義原稿を実際にローダーへ入力し、#35の手構築モデルテストとは別に[チェックリスト](../../mdtools/spec/tests/README.md#issue-37-厳格ローダーの検証チェックリスト)で再現・期待結果・診断・状態・出典を管理する。
+
+**M2 / #38 参照解決API・Graph・全体状態**
+
+`mdtools.spec.resolver.resolve_analyses(inputs: Iterable[LocalAnalysis]) -> ResolvedAnalysis`は全入力をtupleへ保持してから、全ノードと宣言種別を収集し、各明示参照を判定する。不正な要素はTypeError、同一SourceRefの二重入力はValueErrorとする。ファイル再読込、Workspace選択、標準入出力、CLI処理を含めない。
+
+```python
+from mdtools.spec.resolver import resolve_analyses
+
+# 各snapshotをparse_requirements/load_definitionsで収集した結果を渡す。
+resolved = resolve_analyses(local_results)
+assert all(edge.status != "pending" for edge in resolved.graph.edges)
+assert all(check.status == "not-run" for check in resolved.checks.expressions)
+```
+
+| 判定順 | 収集済み候補に対する条件 | 結果 |
+|--------|------------------------|------|
+| 1 | type/usesの参照名がbool/int | builtinによるtype/resolvedまたはuses/wrong-kind |
+| 2 | 対象名前空間に同名が2件以上 | ambiguous。宣言種別で絞らず全候補を保持 |
+| 3 | 対象名前空間に1件 | 許可種別ならresolved、他はwrong-kind |
+| 4 | 対象空間になく、別空間に同名が存在 | wrong-kind。別空間の全同名候補をGraph順に保持 |
+| 5 | 全空間に存在しない | undefined |
+
+usesの許可種別はvariable/constant、typeはtypeとする。別空間の候補が複数でも対象空間に候補がなければwrong-kindであり、ambiguousとしない。拒否断片から候補を推定せず、個別の辺は収集できたノード集合に対する結果とする。入力登録漏れの検出は#39の責務である。全ノード・全明示参照を保持し、モデル所属・文書階層から追加辺を作らない。自己参照・循環の再帰展開や論理判定を行わない。
+
+名前付き列挙型定数はtype辺が一意にresolvedの場合だけ所属を検査する。不所属はspec.invalid-definitionとし、主位置は値、関連位置は型宣言と列挙値集合とする。型未解決なら所属を実行せず、型参照診断のspec.enum-membership Evidenceへ対象値・値位置・未実行理由を残す。declarationsの集約理由にも未実行を残し、他の失敗を優先しても消さない。
+
+各チェックの同じ範囲内で`error → failed → unsupported → unknown → not-run → passed`の優先順位を使い、全理由を保持する。
+
+| チェック | 集約範囲 |
+|----------|----------|
+| structure | 各ローカルstructure |
+| declarations | 各ローカルdeclarations、宣言/glossary衝突、列挙値所属とその未実行 |
+| references | ローカルreferences=not-runを除外して独自算出。参照不正または全名前空間の衝突でfailed。その他は不完全な入力があればunknown、全入力complete・全辺resolved・衝突なしでpassed |
+| M3の4検査 | 常に理由付きnot-run |
+
+入力0件または全入力unavailableならreferencesは理由付きnot-run、全体completenessはunavailableとする。それ以外で全入力complete、M2の3検査passed、拒否・error診断・衝突・未解決なしならcomplete、その他はpartialとする。正常原稿のノード0件はcompleteにできる。読めた入力を全て拒否した場合はノード0件でもpartialで、正常な空入力とunavailable入力の混在もpartialである。
+
+ローカル診断・snapshot・拒否断片を変更せずinputs/reportへ全件保持する。同一snapshot内の衝突の追加診断は、対応する衝突コードと両定義の正確な位置がローカル診断で既報告と確認できる場合だけ抑制する。コードがあるだけでは抑制せず、診断抑制後もレジストリの衝突とfailed状態を維持する。別snapshotとの衝突は必ず追加し、後続の各出現を主位置、先行する別snapshotの全同名候補を関連位置にする。正確な位置がない場合は理由付きunmappedと既知containerを使い、重複と証明できない診断を抑制しない。
+
+契約値の不変条件、解決規則、状態集約、衝突診断、実fixture・出典の責務別テストと確認手順は[検証チェックリスト](../../mdtools/spec/tests/README.md#issue-38-specgraphの検証チェックリスト)を参照する。#37の既知のP3制限、#39のサービス/IR/Schema、#40のCLI、M3、LLM、#31は変更しない。
 
 ## 状態と検査結果
 

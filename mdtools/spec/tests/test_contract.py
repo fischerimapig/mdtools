@@ -205,17 +205,15 @@ def test_local_and_resolved_results_have_distinct_contracts():
         replace(result, graph=replace(result.graph, edges=result.graph.edges[1:]))
 
 
-@pytest.mark.parametrize('status', ['pending', 'undefined', 'wrong-kind'])
-def test_unresolved_states_never_pass_as_a_complete_graph(status):
+def test_pending_edges_never_pass_as_a_complete_graph():
     result = complete_example()
     edge = result.graph.edges[0]
-    candidate = result.inputs[1].declarations[1].key
-    replacement = replace(edge, status=status, candidates=(candidate,) if status == 'wrong-kind' else ())
+    replacement = replace(edge, status='pending', candidates=())
     graph = replace(result.graph, edges=(replacement, *result.graph.edges[1:]))
     with pytest.raises(ValueError, match='unresolved'):
         replace(result, graph=graph)
     partial = replace(result, graph=graph, completeness='partial', checks=checks(references='failed'))
-    assert partial.graph.edges[0].status == status
+    assert partial.graph.edges[0].status == 'pending'
 
 
 def test_name_collisions_retain_all_occurrences_and_both_diagnostic_locations():
@@ -240,12 +238,13 @@ def test_name_collisions_retain_all_occurrences_and_both_diagnostic_locations():
     diagnostic = Diagnostic('spec.duplicate-name', 'error', 'user', 'Duplicate paid declaration',
                             DiagnosticLocation('original', duplicate.span),
                             (RelatedLocation('Previous declaration', DiagnosticLocation('original', original.span)),))
-    partial = ResolvedAnalysis((*result.inputs, duplicate_local), graph, checks(references='failed'), 'partial', (diagnostic,))
+    partial = ResolvedAnalysis((*result.inputs, duplicate_local), graph,
+                               checks(declarations='failed', references='failed'), 'partial', (diagnostic,))
     assert len(partial.graph.edges[0].candidates) == 2
     assert len(partial.report.sources) == 4
-    with pytest.raises(ValueError, match='hides a name collision'):
+    with pytest.raises(ValueError, match='name collision'):
         replace(partial, graph=replace(graph, edges=(edge, *graph.edges[1:])))
-    with pytest.raises(ValueError, match='complete'):
+    with pytest.raises(ValueError, match='unresolved'):
         replace(partial, completeness='complete', checks=checks(references='passed'))
 
 
