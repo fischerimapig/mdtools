@@ -16,6 +16,7 @@ from .model import (
     Reference, REFERENCE_NAMESPACES, RejectedFragment, Requirement,
     expression_checks, typed_tuple, walk_values,
 )
+from ._resolution import Registries, ResolutionIndex
 
 Completeness = Literal['complete', 'partial', 'unavailable']
 
@@ -164,17 +165,17 @@ class ReferenceResolution:
         if any(key.name != self.reference.name for key in self.candidates):
             raise ValueError('candidate name differs from reference')
         if self.builtin is not None:
-            if (self.status != 'resolved' or self.reference.kind != 'type'
+            if ((self.reference.kind, self.status) not in (('type', 'resolved'), ('uses', 'wrong-kind'))
                     or self.builtin not in ('bool', 'int') or self.reference.name != self.builtin
                     or self.candidates):
-                raise ValueError('builtin resolution is only for builtin type references')
+                raise ValueError('builtin requires a resolved type or wrong-kind uses reference')
         elif self.status == 'resolved' and len(self.candidates) != 1:
             raise ValueError('resolved reference needs exactly one candidate')
         if self.status in ('pending', 'undefined') and (self.candidates or self.builtin is not None):
             raise ValueError('unresolved reference must not pretend to have a target')
         if self.status == 'ambiguous' and len(self.candidates) < 2:
             raise ValueError('ambiguous reference must preserve all candidate occurrences')
-        if self.status == 'wrong-kind' and not self.candidates:
+        if self.status == 'wrong-kind' and not self.candidates and self.builtin is None:
             raise ValueError('wrong-kind reference requires conflicting candidates')
         if self.status in ('resolved', 'ambiguous') and any(
             key.namespace != REFERENCE_NAMESPACES[self.reference.kind] for key in self.candidates
@@ -221,29 +222,41 @@ class ResolvedAnalysis:
         if set(refs) != {(e.owner, e.reference) for e in self.graph.edges}:
             raise ValueError('graph must represent every explicit reference')
         _provenance(self.graph, report.sources)
-        declarations = {d.key: d for item in self.inputs for d in item.declarations}
+        index = ResolutionIndex(self.graph.nodes, (d for item in self.inputs for d in item.declarations))
         for edge in self.graph.edges:
-            matches = tuple(key for key in self.graph.nodes
-                            if key.namespace == REFERENCE_NAMESPACES[edge.reference.kind]
-                            and key.name == edge.reference.name)
-            if edge.status == 'resolved' and edge.candidates and matches != edge.candidates:
-                raise ValueError('resolved reference hides a name collision')
-            if edge.status == 'ambiguous' and set(matches) != set(edge.candidates):
-                raise ValueError('ambiguous reference must retain all name candidates')
-            if edge.status == 'resolved' and edge.candidates and edge.reference.kind in ('uses', 'type'):
-                target = declarations.get(edge.candidates[0])
-                allowed = ('variable', 'constant') if edge.reference.kind == 'uses' else ('type',)
-                if target is None or target.kind not in allowed:
-                    raise ValueError('resolved declaration has the wrong kind')
-        if self.completeness == 'complete':
-            if any(item.completeness != 'complete' for item in self.inputs):
-                raise ValueError('complete graph cannot hide incomplete local input')
+            if edge.status != 'pending' and (edge.status, edge.candidates, edge.builtin) != index.classify(edge.reference):
+                raise ValueError('reference state or candidates hide a name collision, target, or wrong kind')
+        if self.checks.references.status == 'passed':
+            if not self.inputs or any(item.completeness != 'complete' for item in self.inputs):
+                raise ValueError('passed references require complete local inputs')
             if any(edge.status != 'resolved' for edge in self.graph.edges):
-                raise ValueError('complete graph contains unresolved references')
-            names = [(key.namespace, key.name) for key in self.graph.nodes]
-            if len(set(names)) != len(names):
-                raise ValueError('complete graph contains colliding names')
-        _completion(self.completeness, self.checks, report.diagnostics, (), self.graph.nodes)
+                raise ValueError('passed references contain unresolved references')
+            if index.collisions:
+                raise ValueError('passed references hide colliding names')
+        if self.checks.declarations.status == 'passed':
+            if any(item.checks.declarations.status != 'passed' for item in self.inputs):
+                raise ValueError('passed declarations hide incomplete local declaration checks')
+            if any(keys[0].namespace in ('declaration', 'glossary') for keys in index.collisions):
+                raise ValueError('passed declarations hide colliding names')
+            edges = {(edge.owner, edge.reference): edge for edge in self.graph.edges}
+            for declaration in index.declarations.values():
+                if (declaration.kind == 'constant'
+                        and declaration.type_ref.name not in ('bool', 'int')):
+                    edge = edges[declaration.key, declaration.type_ref]
+                    if edge.status != 'resolved' or not edge.candidates:
+                        raise ValueError('passed declarations hide an unresolved constant type')
+                    target = index.declarations[edge.candidates[0]]
+                    if declaration.value not in target.values:
+                        raise ValueError('passed declarations hide invalid enum membership')
+        rejected = tuple(fragment for item in self.inputs for fragment in item.rejected)
+        if self.completeness == 'complete' and not self.inputs:
+            raise ValueError('complete graph requires an input')
+        _completion(self.completeness, self.checks, report.diagnostics, rejected, self.graph.nodes)
+
+    @property
+    def registries(self) -> Registries:
+        """Read-only namespaces, names and candidate tuples in graph occurrence order."""
+        return ResolutionIndex(self.graph.nodes).registries
 
     @property
     def report(self) -> DiagnosticReport:

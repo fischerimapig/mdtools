@@ -1,5 +1,5 @@
-"""M2 contracts, original-snapshot extraction and strict definition loading.
+"""M2 contracts, original-snapshot collection and explicit-reference resolution.
 
-CLI-independent entry points: parser.parse_requirements and loader.load_definitions.
-Reference resolution and graph building follow separately in #38.
+CLI-independent entry points: parser.parse_requirements, loader.load_definitions,
+and resolver.resolve_analyses. Expressions and logic remain unexecuted M3 work.
 """

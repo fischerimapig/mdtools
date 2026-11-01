@@ -124,3 +124,44 @@ git diff --check
 ```
 
 参照解決・ファイル間衝突・名前付き型の値所属は#38、サービス/IR/Schemaは#39、spec CLIは#40へ残す。M3・LLM・#31の変更、マージ・Issue Closeは行わない。
+
+## Issue #38 SpecGraphの検証チェックリスト
+
+分岐元は#36/#37のマージ済みM2先端`0ea9ff7`。着手時は`issue/38-spec-graph`の作業ツリーがクリーンで、fetch後もM2先端が一致していた。変更前の全テストは927 passed, 1 skipped。
+
+| テスト | 責務・受け入れ条件 |
+|--------|------------------|
+| test_resolved_contract.py | 手構築値に対するbuiltin許可/拒否、非pendingの誤判定、partialやpendingを隠すreferences=passed、宣言検査未完了・列挙値不所属を隠すdeclarations=passed、読み取り専用registries、入力なしの成功拒否 |
+| test_contract.py | #35の既存契約。pendingは未実行として許可。以前許していた誤ったundefined/wrong-kindはtest_resolved_contract.pyで拒否し、衝突時はdeclarationsもfailedに補正 |
+| test_resolver.py | 全入力収集後の前方参照、名前空間優先、builtin特例、種別混在/全候補不適合のambiguous、別空間複数候補のwrong-kind、未定義、列挙値所属と未実行理由、再定義拒否の保持 |
+| test_resolver_collisions.py | 4名前空間の未参照衝突、同一snapshotの要件/モデル重複、コードと両位置による既報告抑制、別の同コード衝突、ファイル内/ファイル間の併存、先行する全別snapshot候補、unmappedとcontainer |
+| test_resolver_states.py | 入力0件/全unavailable、正常0ノード/拒否0ノード/混在、全状態の優先順位と全理由、ローカルreferencesの除外、不正参照優先、拒否断片から候補を推測しない、入力型/同一SourceRefの拒否 |
+| test_resolver_sources.py | cancellation/model-contractの実parser/loader結合、回復・未知版・missing-glossary・重複定義、元bytes/hash・Unicode/改行/escape・診断位置・拒否slice、自己参照/循環/重複refs、移動/見出し/順序とID・SourceRef/ordinalの区別、I/Oと標準出力なし |
+| mdtools/tests/test_boundaries.py | import方向・循環なし、CLIと任意依存を禁止したpython -Sでparser/loader/resolverから共通診断まで利用 |
+
+追加のbuilderは`_resolver_helpers.py`で実原稿を作り、公開parser/loaderを呼ぶ。判定を代替実装しない。値モデルとresolverの実行テストを分け、既存#36/#37の回帰を維持する。
+
+- [x] 不足を補う変更前の値モデル回帰テストで9件の失敗を再現。
+- [x] builtinはtype/resolvedとuses/wrong-kindのみ。架空のノード・宣言位置なし。refs/glossaryには特例なし。
+- [x] 全ノードと全明示参照を保持し、モデル所属や見出しから暗黙辺を作らない。M3は全て理由付きnot-run。
+- [x] 診断の追加抑制と衝突状態を分離。全snapshot・ローカル診断・拒否断片をそのまま保持。
+- [x] 宣言値不所属と型未解決による所属未実行を区別し、他の失敗が優先しても未実行理由を保持。
+- [x] 関連135件（既存契約・新規契約/resolver・import境界）が成功。
+- [x] 最終の全テスト：**1012 passed, 1 skipped**。skipは従来の外部combined.md未配置。既存927件に対し、旧契約の2ケースを厳格な拒否テストへ置き換え、87件を追加した。
+- [x] import境界・python -S、#34の見出し順序/親子構造、4文書の分解・再合成バイト一致、CLI help 10経路、README glossary参照、git diff --checkが成功。
+
+再現コマンド：
+
+```bash
+.venv/bin/python -m pytest mdtools/spec/tests/test_contract.py mdtools/spec/tests/test_resolv*.py mdtools/tests/test_boundaries.py -q
+.venv/bin/python -m pytest -q
+.venv/bin/mdtools mdsplit verify docs/spec/contract-v1_sections/hierarchy.json
+.venv/bin/mdtools mdsplit compose docs/spec/contract-v1_sections/hierarchy.json -o /tmp/spec38-composed.md
+diff -u docs/spec/contract-v1.md /tmp/spec38-composed.md
+.venv/bin/mdtools glossary verify README.md -f docs/glossary/defs.yaml
+git diff --check
+```
+
+契約とREADMEはsection原稿を編集してcanonicalを再生成した。全テスト、#34の見出し順序・親子構造、4文書の文字列round-trip、既存CLI help 10経路、glossary参照、diff checkを最終検証した。コミット・push・M2向けPR・最新push/PR head/CI対象SHAの一致とCI結果はPRに記載し、このローカル検証と区別する。
+
+#37のP3制限2件、#39のサービス/IR/Schema、#40のCLI、M3、LLM、#31は変更しない。マージ・Issue Closeは行わない。

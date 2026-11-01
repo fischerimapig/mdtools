@@ -243,7 +243,7 @@ assert [req.key.name for result in results for req in result.requirements] == [
 ]
 ```
 
-このAPIはCLI・任意依存・ファイルI/Oを必要としません。上例の読込はWorkspace側で行います。Workspace全体の衝突検査・Graph（#38）、共通サービス・SpecIR（#39）、spec CLI（#40）は後続Issueです。
+このAPIはCLI・任意依存・ファイルI/Oを必要としません。上例の読込はWorkspace側で行います。共通サービス・SpecIR（#39）、spec CLI（#40）は後続Issueです。
 
 M2 / #37の`mdtools.spec.loader.load_definitions(snapshot, kind=..., format=...)`は、明示登録したspec/glossaryの元snapshotから共有宣言・表示データ・明示参照・出典・診断を`LocalAnalysis`へ収集します。重複候補を上書きせず、不正な宣言やentryを原文の拒否断片へ残します。JSONは追加依存不要、YAMLは任意のPyYAMLを使い、anchor/alias/merge/tag/複数文書は未対応とします。既存glossary CLIの後勝ち・警告は変更しません。
 
@@ -264,6 +264,21 @@ assert all(result.checks.references.status == "not-run" for result in results)
 ```
 
 読込失敗は`DefinitionReadError.report`の共通診断へ返し、存在しないsnapshotを作りません。構造・ローカル宣言値がcompleteでも、名前付き型の値所属・参照解決は#38、式・論理はM3の未検査です。対応能力、回復境界、読込失敗の扱いは契約、実fixtureと出典の検証は[チェックリスト](mdtools/spec/tests/README.md#issue-37-厳格ローダーの検証チェックリスト)を参照してください。
+
+M2 / #38の`mdtools.spec.resolver.resolve_analyses(local_results)`は、全収集結果から名前空間ごとのレジストリと明示参照の`SpecGraph`を構築します。全候補を保持して未定義・曖昧・種別不一致を区別し、列挙型定数の値所属も検査します。読み取り専用の`resolved.registries`、全体checks/completeness、元snapshotとローカル診断を含む`resolved.report`を返します。
+
+```python
+from mdtools.spec.resolver import resolve_analyses
+
+# 上のloader例で得た仕様定義とglossaryを結合する。
+resolved = resolve_analyses(results)
+assert resolved.completeness == "complete"
+assert resolved.checks.references.status == "passed"
+assert resolved.registries["declaration"]["paid"][0].name == "paid"
+assert all(check.status == "not-run" for check in resolved.checks.expressions)
+```
+
+入力順と原稿のID・全出現・全明示参照を保持し、自己参照や循環を展開しません。入力が不完全なら個別参照が解決できても全体の参照検査をpassedにしません。APIはファイルを再読込せず、Workspaceの登録漏れ検出・サービス/IR/Schema（#39）、spec CLI（#40）、式・論理検査（M3）へ進みません。判定順・組み込み型・診断抑制・状態集約は契約、受け入れ条件との対応は[#38チェックリスト](mdtools/spec/tests/README.md#issue-38-specgraphの検証チェックリスト)を参照してください。
 
 ## 文書管理
 

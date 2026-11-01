@@ -144,6 +144,7 @@ from mdtools.spec.model import Body, FieldSource, NodeKey, Requirement
 from mdtools.spec.results import AnalysisChecks, LocalAnalysis
 from mdtools.spec.parser import parse_requirements
 from mdtools.spec.loader import load_definitions
+from mdtools.spec.resolver import resolve_analyses
 from mdtools.diagnostics import inspect_workspace
 from mdtools.workspace import load_workspace, snapshot_sources
 from mdsplit.decompose import decompose
@@ -181,6 +182,13 @@ assert loaded.declarations[0].key.name == 'paid'
 assert loaded.references[0][1].name == 'bool'
 assert all(check.status == 'not-run' for check in (loaded.checks.references, *loaded.checks.expressions))
 assert json.loads(render_json(loaded.report))['sources'][0]['uri'] == 'memory:definitions'
+resolved = resolve_analyses((local, extracted, loaded))
+assert resolved.completeness == 'complete'
+assert resolved.checks.references.status == 'passed'
+assert resolved.registries['declaration']['paid'] == (loaded.declarations[0].key,)
+assert resolved.graph.edges[0].builtin == 'bool'
+assert all(check.status == 'not-run' and check.reason for check in resolved.checks.expressions)
+assert len(json.loads(render_json(resolved.report))['sources']) == 3
 source = root / 'input.md'
 text = '# Title\n\n::: {lang=en}\nHello []{.term id=unit}\n:::\n\n::: {lang=ja}\n日本語\n:::\n'
 source.write_text(text, encoding='utf-8')
