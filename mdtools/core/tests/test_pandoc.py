@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from mdtools.core.pandoc import (
     BRACKETED_SPAN_RE,
     CODE_FENCE_RE,
@@ -9,6 +11,7 @@ from mdtools.core.pandoc import (
     FENCE_CLOSE_RE,
     PandocAttrs,
     parse_attrs,
+    tokenize_attrs,
 )
 
 
@@ -170,3 +173,27 @@ def test_bracketed_span_re_matches_empty_label():
     assert m is not None
     assert m.group(1) == ""
     assert m.group(2) == ".const id=x"
+
+
+def test_strict_tokens_preserve_hyphenated_keys_ids_duplicates_and_escaped_ranges():
+    raw = '.requirement #REQ-A spec-version=1 refs="REQ-A REQ-\\B" status=\'draft\' status=active'
+    tokens = tokenize_attrs(raw)
+    assert [(t.kind, t.name, t.value) for t in tokens] == [
+        ('class', 'requirement', 'requirement'), ('id', 'REQ-A', 'REQ-A'),
+        ('attribute', 'spec-version', '1'), ('attribute', 'refs', 'REQ-A REQ-B'),
+        ('attribute', 'status', 'draft'), ('attribute', 'status', 'active'),
+    ]
+    ref = tokens[3]
+    assert raw[ref.value_start:ref.value_end] == '"REQ-A REQ-\\B"'
+    assert raw[slice(*ref.value_ranges[-1])] == '\\B'
+    assert all(raw[t.start:t.end] for t in tokens)
+    # The strict consumer is additive; legacy duplicate behavior is unchanged.
+    assert parse_attrs('status=draft status=active').kv == {'status': 'active'}
+
+
+@pytest.mark.parametrize('raw', ['key=', 'key="unclosed', 'key=\'unclosed', 'key="ok"junk',
+                                 '.class=bad', '#', 'bare', '=bad', 'key=a"b'])
+def test_strict_tokens_retain_invalid_input(raw):
+    token, = tokenize_attrs(raw)
+    assert token.kind == 'invalid'
+    assert (token.start, token.end) == (0, len(raw))

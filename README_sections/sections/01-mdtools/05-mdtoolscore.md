@@ -32,4 +32,19 @@ API・分類・位置なし診断・根拠・表示規則は契約の「M1 / #25
 
 M1 / #26ではCLI内のbuild本体を`mdtools.build.build_document()`へ、mdsplitの存在チェックを`mdsplit.verify.verify()`へ分離しました。例えば`build_document(input_text="本文", lang="ja")`はCLI・stdinを経由せず文字列を返し、`verify(hierarchy_path)`はsection数と欠落参照を返します。既存の独立した処理APIと互換入口は維持します。責務表、将来の解析サービス・backend・CLI・LSPホストの境界、例外と互換性の詳細は契約の「依存方向と既存CLIの互換性」を参照してください。
 
-M2 / #35では`mdtools.spec.model` / `mdtools.spec.results`に要件・共有宣言・明示参照・ローカル/全体解析結果の不変データ契約を追加しました。M1の出典・診断を再利用し、部分結果と式未検査を保持します。契約の「M2 / #35 仕様モデルと解析結果」「M2 index/showの入出力・診断契約」と[小さなfixture](docs/spec/examples/model-contract/README.md)を参照してください。抽出器・厳格ローダー・Graph構築器・解析サービス・spec CLIは後続Issueで実装します。
+M2 / #35では`mdtools.spec.model` / `mdtools.spec.results`に要件・共有宣言・明示参照・ローカル/全体解析結果の不変データ契約を追加しました。M1の出典・診断を再利用し、部分結果と式未検査を保持します。契約の「M2 / #35 仕様モデルと解析結果」「M2 index/showの入出力・診断契約」と[小さなfixture](docs/spec/examples/model-contract/README.md)を参照してください。
+
+M2 / #36の`mdtools.spec.parser.parse_requirements(snapshot)`は、元の単一原稿・section原稿から要件、言語別本文、最大1個のmdspec、refs/usesと原稿位置を抽出し、`LocalAnalysis`を返します。Workspaceで選んだ各snapshotを個別に渡し、compose・言語抽出・glossary置換前に解析します。構造不正は診断と部分結果に残し、壊れたモデルをnatural-onlyにしません。参照解決と式・論理検査は理由付きnot-runです。
+
+```python
+from mdtools.workspace import load_workspace, snapshot_sources
+from mdtools.spec.parser import parse_requirements
+
+workspace = load_workspace("docs/spec/examples/cancellation/mdtools.toml")
+results = tuple(parse_requirements(source) for source in snapshot_sources(workspace))
+assert [req.key.name for result in results for req in result.requirements] == [
+    "REQ-CANCEL-ALLOW", "REQ-CANCEL-DENY", "REQ-CANCEL-GUIDANCE",
+]
+```
+
+このAPIはCLI・任意依存・ファイルI/Oを必要としません。上例の読込はWorkspace側で行います。厳格ローダー（#37）、Workspace全体の衝突検査・Graph（#38）、共通サービス・SpecIR（#39）、spec CLI（#40）は後続Issueです。
