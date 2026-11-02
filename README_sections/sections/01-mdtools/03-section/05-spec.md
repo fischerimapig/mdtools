@@ -20,6 +20,13 @@ showは成功・失敗とも`query.requirement_id`に指定IDを保持します�
 showのresultは`requirements/models/declarations/glossary/references/rejected`の配列で、重複IDも全出現を保持します。
 IR生成不能・対象不存在ではresultはnullです。解析済み集合に対象がなければ`spec.unknown-id`を追加しますが、解析status自体は変更しません。
 通常経路のstderrは空で、診断はreportへ集約します。textは全フィールドを階層パスと引用した値で表示し、全体診断には共通rendererを使用します。
+パスは`.`で区切り、objectキーが`[A-Za-z_][A-Za-z0-9_]*`に一致する場合はそのまま、それ以外はJSON文字列として引用・escapeして`[...]`で囲みます。空文字・改行・引用符・backslashもこの規則で扱い、配列添字の`[0]`とキーの`["[0]"]`を区別します。
+
+```text
+result.glossary.[0].data.["a.b"] = "flat"
+result.glossary.[0].data.a.b = "nested"
+result.glossary.[0].data.["line\nbreak"] = "value"
+```
 
 終了コードは0=M2解析・表示成功、1=設定/原稿/宣言/参照不正・未対応、2=引数不備、3=解析completeで対象不存在、4=I/O/文字コード/内部実行失敗、5=必要な任意依存不足です。
 優先順位は`2 → 4 → 5 → 1 → 3 → 0`で、showの対象が存在しても全体のpartial/unavailableや失敗を隠しません。

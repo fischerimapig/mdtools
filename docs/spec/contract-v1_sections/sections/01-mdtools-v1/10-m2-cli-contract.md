@@ -62,6 +62,13 @@ referencesは選択ノードをownerとする全辺で、状態・全候補・bu
 rejectedは対象要件の元範囲内にある拒否断片であり、壊れた形式記述の原文を保持する。
 全体reportは表示対象で絞り込まない。IRが生成できない場合は対象不存在を断定せず、元の解析診断を保持する。
 textは同じ値を階層パスとJSON引用で表示し、index内の重複reportは全体診断として共通rendererで一度表示する。
+パス要素は`.`で区切る。objectキーは`[A-Za-z_][A-Za-z0-9_]*`に一致する場合だけそのまま表示し、それ以外はJSON文字列として引用・escapeして`[...]`で囲んだ一要素にする。空文字・改行・引用符・backslashも同じ規則に従う。配列要素は従来どおり`[0]`等で表示し、文字列キーの`["[0]"]`と区別する。
+
+```text
+result.glossary.[0].data.["a.b"] = "flat"
+result.glossary.[0].data.a.b = "nested"
+result.glossary.[0].data.["line\nbreak"] = "value"
+```
 
 問い合わせ条件queryはCLI応答の付帯情報であり、原典・IR・NodeKeyへ追加しない。
 このCLIの初回実装でenvelope v1の詳細を確定し、IR・診断・パッケージの版は変更しない。

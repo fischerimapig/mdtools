@@ -238,6 +238,44 @@ def test_text_preserves_content_and_whole_report(name, body, capsys):
     if name == 'REQ-MULTILINGUAL': assert '処理状況を表示する。📚' in out
 
 
+def test_text_glossary_keys_preserve_path_boundaries(tmp_path, capsys):
+    config = project(tmp_path)
+    payload = {
+        'a.b': 'flat', 'a': {'b': 'nested'}, 'line\nbreak': 'newline',
+        '': 'empty', 'quote"\\': 'quoted', '[0]': 'key', 'items': ['item'],
+        '0': 'numeric', '日本語': 'unicode', 'Normal_09': 'ordinary',
+        '_name': 'underscore', 'a-b': 'hyphen',
+    }
+    (tmp_path/'glossary.json').write_text(json.dumps({
+        'entries': [{'id': 'label', 'kind': 'term', **payload}],
+    }), encoding='utf-8')
+    config.write_text(config.read_text()+'[[definitions]]\nkind="glossary"\npath="glossary.json"\n')
+
+    data = invoke(capsys, ['index', '--project', str(config), '--format', 'json'])
+    assert data['status'] == 'complete' and data['exit_code'] == 0
+    assert data['result']['glossary'][0]['data'] == payload
+
+    with pytest.raises(SystemExit) as exc:
+        main(['spec', 'index', '--project', str(config), '--format', 'text'])
+    assert exc.value.code == 0
+    out, err = capsys.readouterr()
+    assert err == ''
+    assert [line for line in out.splitlines() if line.startswith('result.glossary.[0].data.')] == [
+        'result.glossary.[0].data.["a.b"] = "flat"',
+        'result.glossary.[0].data.a.b = "nested"',
+        r'result.glossary.[0].data.["line\nbreak"] = "newline"',
+        'result.glossary.[0].data.[""] = "empty"',
+        r'result.glossary.[0].data.["quote\"\\"] = "quoted"',
+        'result.glossary.[0].data.["[0]"] = "key"',
+        'result.glossary.[0].data.items.[0] = "item"',
+        'result.glossary.[0].data.["0"] = "numeric"',
+        'result.glossary.[0].data.["日本語"] = "unicode"',
+        'result.glossary.[0].data.Normal_09 = "ordinary"',
+        'result.glossary.[0].data._name = "underscore"',
+        'result.glossary.[0].data.["a-b"] = "hyphen"',
+    ]
+
+
 def test_standard_library_only_dispatch():
     script = 'from mdtools.main import main; main()'
     process = subprocess.run([sys.executable, '-S', '-c', script, 'spec','index','--project',str(EXAMPLES/'model-contract/mdtools.toml'),'--format','json'], cwd=REPO, capture_output=True, text=True)

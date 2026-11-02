@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 
 from mdtools.analysis import analyze_workspace
@@ -111,7 +112,13 @@ def _exit_code(status, report, unknown):
 def _text_tree(value, prefix=''):
     """Lossless field display; JSON quoting keeps body/control characters clear."""
     if isinstance(value, dict) and value:
-        return ''.join(_text_tree(v, prefix + str(k) + '.') for k, v in value.items())
+        parts = []
+        for key, item in value.items():
+            key = str(key)
+            segment = (key if re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*', key)
+                       else f'[{json.dumps(key, ensure_ascii=False)}]')
+            parts.append(_text_tree(item, prefix + segment + '.'))
+        return ''.join(parts)
     if isinstance(value, list) and value:
         return ''.join(_text_tree(v, prefix + f'[{n}].') for n, v in enumerate(value))
     return prefix.rstrip('.') + ' = ' + json.dumps(value, ensure_ascii=False, allow_nan=False) + '\n'
