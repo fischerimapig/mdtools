@@ -67,11 +67,14 @@ def test_pure_serialization_no_io_and_fresh_values(monkeypatch):
 
 def test_complete_constructor_rejects_missing_registered_input():
     ir=analyze_workspace(REPO/'docs/spec/examples/cancellation/mdtools.toml').ir
-    entry=ir.manifest.entries[-1]
-    bad=replace(entry,state='read-error',source=None,reason='not read')
+    for index in (0, len(ir.manifest.entries)-1):
+        entries=list(ir.manifest.entries)
+        entries[index]=replace(entries[index],state='read-error',source=None,reason='not read')
+        with pytest.raises(ValueError):
+            build_spec_ir(ir.resolved,replace(ir.manifest,entries=tuple(entries)),
+                          report=ir.report,completeness='complete')
     with pytest.raises(ValueError):
-        build_spec_ir(ir.resolved,replace(ir.manifest,entries=(*ir.manifest.entries[:-1],bad)),
-                      report=ir.report,completeness='complete')
+        build_spec_ir(ir.resolved,ir.manifest,report=ir.report,completeness='partial')
 
 
 def test_committed_generated_example(validator):

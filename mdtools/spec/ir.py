@@ -79,12 +79,19 @@ class SpecIR:
             required = {'workspace.sources', 'spec.structure', 'spec.declarations', 'spec.references'}
             if not required <= {c.check_id for c in self.report.checks}:
                 raise ValueError('complete IR requires explicit service checks')
-            if (self.resolved.completeness != 'complete'
+            if (self.manifest.workspace_version != 1 or self.manifest.root is None
+                    or not any(e.role == 'workspace' for e in self.manifest.entries)
+                    or any(e.state != 'read' for e in self.manifest.entries if e.role in ('workspace', 'hierarchy'))
+                    or self.resolved.completeness != 'complete'
                     or any(e.state != 'analyzed' for e in selected)
                     or any(c.status != 'passed' for c in self.report.checks
                            if c.check_id in ('workspace.sources', 'spec.structure', 'spec.declarations', 'spec.references'))
                     or any(d.severity == 'error' for d in self.report.diagnostics)):
                 raise ValueError('complete IR hides incomplete inputs or checks')
+        if self.completeness != 'complete' and not any(
+                c.status != 'passed' for c in self.report.checks
+                if c.check_id in ('workspace.sources', 'spec.structure', 'spec.declarations', 'spec.references', 'spec.ir')):
+            raise ValueError('incomplete IR requires an explicit incomplete check')
         if self.completeness == 'unavailable' and self.resolved.graph.nodes:
             raise ValueError('unavailable IR contains nodes')
 
