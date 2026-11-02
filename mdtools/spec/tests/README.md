@@ -165,3 +165,69 @@ git diff --check
 契約とREADMEはsection原稿を編集してcanonicalを再生成した。全テスト、#34の見出し順序・親子構造、4文書の文字列round-trip、既存CLI help 10経路、glossary参照、diff checkを最終検証した。コミット・push・M2向けPR・最新push/PR head/CI対象SHAの一致とCI結果はPRに記載し、このローカル検証と区別する。
 
 #37のP3制限2件、#39のサービス/IR/Schema、#40のCLI、M3、LLM、#31は変更しない。マージ・Issue Closeは行わない。
+
+## Issue #39 SpecIR・共通解析サービスの検証チェックリスト
+
+基準はPR #47マージ後のM2先端`4d9535a685997713f98966f9e229d67a459cc99b`。着手時の作業ツリーはクリーン。現在の#38作業ツリーとM2先端のtreeが同一であることを確認し、変更前の全テストを再実行して1012 passed, 1 skippedを確認した。
+
+| 検証 | 保証する範囲 |
+|------|--------------|
+| mdtools/tests/test_analysis.py | cancellation/model-contractを実サービスへ入力。本文・言語・モデル・式未検査・共有定義・glossary・元snapshotを保持。回復/拒否/未知版、未定義/wrong-kind/衝突/曖昧参照をpartialとして保持 |
+| 同上・I/O責務 | 設定不正/未知版/UTF-8不正、読込失敗/producer失敗、YAML依存不足と正常入力の混在。resolverだけcompleteでも全体partial。読めない入力のsnapshot/LocalAnalysisなし。resolver失敗時も実入力を保持 |
+| 同上・snapshot/順序責務 | 設定・hierarchyの読込直後の変更でも選択に使ったhashと一致。全取得ファイルのbytes/hash、Unicode/絵文字/結合文字/LF/CRLF/CR/JSON escapeの原稿sliceを照合。順序・移動・見出し変更でIDを再生成しない。未登録原稿を除外 |
+| mdtools/spec/tests/test_ir.py | サービス生成の正常/partial/unavailable JSONをDraft 2020-12で検証。未知版/不正状態/負ordinal/hash終端LF/M3成功偽装/atomic表記等を拒否。診断v1 Schemaも参照検証。全登録入力の欠落をcompleteとする値を拒否 |
+| 同上・純粋変換責務 | I/O禁止下の変換、出力dictの独立性、同一snapshotでの決定性、固定例の再生成一致。例のfile:///example URIはメモリで明示構築した説明用snapshotであり、実ファイル取得成功を主張しない |
+| mdtools/tests/test_boundaries.py | analysisだけにworkspace/core/spec依存を許可。逆依存・循環なし。CLI/YAML/dev validator/backendを禁止したpython -Sでサービス→IR JSON、stdout/stderrなし |
+| 既存全pytest | #35～#38と既存CLI、M1診断Schema、#34のbase_level・見出し順序・親子構造を回帰確認 |
+
+- [x] 全テスト：**1050 passed, 1 skipped**。追加38件。skipは従来の外部combined.md未配置。
+- [x] README、mdsplit README、契約、core-refactorの4文書で既存section composeと分解・再合成のバイト一致を確認。
+- [x] 契約/root READMEはsection原稿からcanonicalを再生成。#34の構造検査と契約の20 sectionを維持。
+- [x] CIと同じCLI help 10経路、README glossary list/verify、git diff --checkが成功。
+
+再現：`.venv/bin/python -m pytest -q`。個別責務は上表のテストを指定する。Schema validatorはdev依存だけで、JSON実行経路の必須依存は増やしていない。通常の原稿・式・参照を再パースする別経路は追加していない。設定/hierarchyの読込callbackは選択とmanifestの整合を保つための追加で、既存load_workspaceとsnapshot_sourcesの既定挙動は維持する。
+
+#37の深いglossary出典検証RecursionErrorとPyYAMLによる未知directive破棄は未修正。前者がサービスへ漏れればexecution-errorとして扱うが、ローダー自体の制限解消ではない。#31、#40 CLI、M3、M4以降、LLM/solver、IR書戻しは対象外。コミット・push・PR head・CI対象SHAとCI結果はPRに記載し、このローカル検証と区別する。マージ・Issue Closeはユーザーが行う。
+
+### PR #48 レビュー対応：設定の自己登録
+
+基準HEADは`c820365611bfee2b951f293a9c7c12a0bea8542e`。[第一段階レビュー](https://github.com/fischerimapig/mdtools/pull/48#pullrequestreview-5731990301)のP3を修正した。設定名を`.md`にして自身を本文登録すると、修正前は同一パスとsymlinkで`ValueError('duplicate source snapshot')`、hard linkでは誤ってcompleteとなることを、追加したサービス結合テストの失敗で再現した。
+
+- [x] 設定とrootの検証後に設定の実体を既存Registryへ予約。生成物、文書とその参照、共有定義をその後に登録する。正規化パスとdevice/inodeによる既存の判定を使い、snapshotの黙った重複除去は追加しない。
+- [x] `test_workspace.py`に18ケース追加。自己登録・`.`/`..`・symlink・hard link、hierarchy/preamble/section/spec/glossaryへの二重登録は`workspace.duplicate-input`。canonical/generatedとの衝突は`workspace.generated-input`。root内外の`.md`名の設定から別本文を登録する正常例も成功する。
+- [x] `test_analysis.py`に6ケース追加。本文登録と生成物登録の同一パス・symlink・hard linkを実サービスへ渡し、unavailable、workspace/resolved/irなし、inputs空、`workspace.sources=failed`、M2の3検査が理由付きnot-runとなる。設定snapshotとmanifest entryは取得済みの1件だけを保持し、設定本文・hashも一致する。
+- [x] Workspace契約のsection原稿に設定自身も重複検査対象であること、予約順、診断コード、設定名の拡張子を制限しないことを追記し、canonicalを再生成した。
+
+### PR #48 レビュー対応：IR JSONの内容保持
+
+serializerの誤変換が確認されたものではなく、既存テストの回帰検出不足への対応。`test_ir.py`に次の3本を追加し、すべて実サービスから`render_ir_json()`を通したJSONを検証する。期待する意味上の値・順序・ordinal・位置は明示し、出典のURI/path/hashだけを元ファイルから組み立てる。serializerや解析モデルから期待値を生成しない。
+
+| 追加テスト | 内容の保証範囲 |
+|------------|----------------|
+| `test_service_json_preserves_bodies_model_links_and_expression_tokens` | model-contractの4要件、本文・言語、natural-only、2モデルへの完全なNodeKeyによる結合と順序。when/mustの値、`paid and (`とescapeを復号した`paid == true`、引用符とescapeを含む元トークンの範囲 |
+| `test_service_json_preserves_builtins_and_nested_glossary_values` | bool/intのbuiltinと空候補、宣言値false/0、glossaryの入れ子・null・false・0・空文字・配列・空配列・空object。falseと0は値に加え、scalarと配列要素の型も照合 |
+| `test_service_json_preserves_all_ambiguous_occurrences_and_candidate_order` | 2原稿にある同名要件3出現と別の参照元をpartialとして保持。同一snapshot内のordinal差と別snapshotのURI/hash/pathを含む完全なNodeKey、本文、曖昧参照3候補の登録順を照合。名前のdict化による重複除去なし |
+
+隔離した作業ツリーのコピーで、無変更の追加3テストが成功することを確認した後、以下を1件ずつ適用した。各変更で対象の追加テストを実行し、JSON内容の不一致による`AssertionError`を確認した。構文・収集エラーを検出成功として数えていない。
+
+| 個別に適用した誤変換 | 検出した不一致 |
+|--------------------|----------------|
+| candidatesを先頭1件に切り詰める | 期待する3件に対して2件欠落 |
+| glossaryを常に空配列にする | 表示entryと入れ子データが欠落 |
+| Expression.textを`"true"`に固定する | `paid`等の式原文が変化 |
+| modelsのwhen/mustを交換する | whenにmustの`paid == true`が入る |
+| builtinのbool/intを交換する | bool参照のbuiltinがintになる |
+| requirement.modelを要件自身のkeyにする | modelのnamespace/name/ordinalと不一致 |
+
+- [x] 対象6種類をすべて内容比較で検出。構文・収集エラーによる無効試行は0件。この確認は上記の誤変換に限定し、レビューの未検出25件すべてやコード全体のmutation coverageを保証しない。
+- [x] 関連3ファイルは149 passed。全pytestは**1077 passed, 1 skipped**（既存1050件に27件追加、skipは従来の外部combined.md未配置）。
+- [x] 4文書の既存section composeとdecompose→composeのバイト一致、#34のbase_level・見出し順序・親子構造、契約の20 sectionを確認。CLI help 10経路、README glossary参照、`git diff --check`も成功。
+
+再現コマンド：
+
+```bash
+.venv/bin/python -m pytest mdtools/tests/test_workspace.py mdtools/tests/test_analysis.py mdtools/spec/tests/test_ir.py -q
+.venv/bin/python -m pytest -q
+```
+
+公開API・正常入力のIR表現・各版は変更しない。#37の既知制限、#31、#40以降は今回の対象外。コミット・push・PR head・CI対象SHAの一致とCI完了はPRへ記録し、上記のローカル検証とは区別する。マージ・Issue Closeは行わない。
