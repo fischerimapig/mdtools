@@ -67,6 +67,12 @@
               "file": "sections/01-mdtools/03-section/04-glossary.md",
               "order": 4,
               "children": []
+            },
+            {
+              "title": "spec",
+              "file": "sections/01-mdtools/03-section/05-spec.md",
+              "order": 5,
+              "children": []
             }
           ]
         },

@@ -1,6 +1,6 @@
 # M2モデル契約fixture
 
-Issue #35のデータ契約の小さな原典例です。#36の抽出器はMarkdown原稿を実際のテスト入力として使います。#37の厳格ローダーは共有定義原稿も実際のテスト入力として使います。#38は両APIの収集結果を結合し、Graphと全体診断を検証します。spec CLIは#40の範囲です。
+Issue #35のデータ契約の小さな原典例です。#36の抽出器はMarkdown原稿を実際のテスト入力として使います。#37の厳格ローダーは共有定義原稿も実際のテスト入力として使います。#38は両APIの収集結果を結合し、Graphと全体診断を検証します。spec index/show CLIは#40で追加しました。
 
 | ファイル | 期待する扱い |
 |----------|--------------|
@@ -16,8 +16,8 @@ Issue #35のデータ契約の小さな原典例です。#36の抽出器はMarkd
 | missing-glossary.json | 関連付け先なし。全体解決でspec.undefined-glossary、references=failed、partial |
 | duplicate-definitions.json | 同じ文書の重複キー。辞書上書きで隠さずspec.invalid-definition、partial |
 | unsupported.yaml | anchor/aliasは未対応。spec.unsupported-syntax、unsupported、partial |
-| cli-show-unknown.json | 将来のJSON envelope例。解析completeでも対象不存在は終了3。M1診断JSON v1を埋め込む |
-| cli-index-missing-yaml.json | 将来のJSON envelope例。任意依存不足はunavailable・終了5、未実行検査を成功にしない |
+| cli-show-unknown.json | JSON envelopeの説明例。解析completeでも対象不存在は終了3。M1診断JSON v1を埋め込む |
+| cli-index-missing-yaml.json | JSON envelopeの説明例。任意依存不足はpartial・終了5。正常本文・snapshot・拒否断片を保持し、未実行検査を成功にしない |
 
 `mdtools.toml`は正常な構造の原稿4件、JSON共有定義、glossaryだけを登録します。`unchecked.md`の式は意図的に未検査です。構造と明示参照の正常性は論理的な成功を意味しません。不正例はこのWorkspaceに含めず、各後続Issueの異常系入力として利用します。従来のキャンセル要件例は変更しません。
 
@@ -27,10 +27,23 @@ Issue #35のデータ契約の小さな原典例です。#36の抽出器はMarkd
 
 追加テストは文脈・回復の`test_parser_contexts.py`と出典・Workspaceの`test_parser_sources.py`へ整理しています。初期実装・レビュー修正を含む検証項目と再現結果は[チェックリスト](../../../../mdtools/spec/tests/README.md)を参照してください。
 
-契約は[仕様記述契約v1](../../contract-v1.md)の「M2 / #35 仕様モデルと解析結果」「M2 index/showの入出力・診断契約」を参照してください。厳格JSON/YAML・glossary読み込みテストは#37、衝突診断・参照解決・列挙型定数の所属検査は#38で追加済みです。IR Schema/シリアライズは#39、コマンドの実行と出力検証は#40で追加します。
+契約は[仕様記述契約v1](../../contract-v1.md)の「M2 / #35 仕様モデルと解析結果」「M2 index/showの入出力・診断契約」を参照してください。厳格JSON/YAML・glossary読み込みテストは#37、衝突診断・参照解決・列挙型定数の所属検査は#38で追加済みです。IR Schema/シリアライズは#39、コマンドの実行と出力検証は#40で追加しました。
 
 #37の実入力テストは`mdtools/spec/tests/test_loader*.py`です。definitions.json/yamlの同じ宣言・明示参照、glossary.jsonの表示データ、duplicate-definitions.jsonの全候補と両位置、unsupported.yamlの拒否を確認します。missing-glossary.jsonはローカルではcomplete・references=not-runで、未定義診断は#38に残します。YAML依存不足は既存の元snapshotを保持したunavailable、ファイル取得失敗はsnapshotを捏造せずDefinitionReadError.reportへ返します。
 
 #38の実fixture結合は`test_resolver_sources.py`で検証します。正常Workspaceは全明示参照resolved・complete、missing-glossary.jsonはspec.undefined-glossary・partial、duplicate-definitions.jsonは既報告診断を保持してreferences/declarations=failedです。invalid.md・broken-model.md・unsupported.mdは元の拒否断片・診断を保持してpartialのままです。式が壊れているunchecked.mdでも、M2の構造・参照とM3の式未検査を分けて保持します。
 
 #39では`analyze_workspace("docs/spec/examples/model-contract/mdtools.toml")`を直接呼び、返された`analysis.ir`を`render_ir_json()`で出力できます。normal/natural-only/multilingual/uncheckedと共有定義・glossaryを同じ結果に保持します。不正例は別Workspaceへ登録してpartialと拒否断片を確認します。テストは`mdtools/tests/test_analysis.py`と`mdtools/spec/tests/test_ir.py`で、CLIを介さずサービス生成IRをSchemaに照合します。
+
+## M2 CLIの実行
+
+```bash
+mdtools spec index --project docs/spec/examples/model-contract/mdtools.toml --format json
+mdtools spec show REQ-NORMAL --project docs/spec/examples/model-contract/mdtools.toml --format text
+```
+
+index/showは各呼出しで原典全体を解析し、同じIRから全体・詳細を表示します。
+showのJSONはquery.requirement_idに問い合わせIDを、resultの配列に全出現と関連定義を保持します。
+全体診断・失敗は詳細の選択後も維持します。式・論理はM3のnot-runであり、M2成功は無矛盾性の保証ではありません。
+
+CLI JSON例は説明用の固定URI/pathを使います。missing-yaml例は実CLIの出力を固定pathへ置換したもので、resultとreportの取得済み情報を保持します。

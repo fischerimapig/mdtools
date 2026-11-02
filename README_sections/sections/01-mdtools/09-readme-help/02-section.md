@@ -6,6 +6,9 @@
 
 ```bash
 mdtools --help
+mdtools spec --help
+mdtools spec index --help
+mdtools spec show --help
 mdtools build --help
 mdtools mdsplit --help
 mdtools langfilter --help

@@ -48,6 +48,11 @@ jobs:
       - name: CLI smoke checks
         run: |
           uv run --locked mdtools --help
+          uv run --locked mdtools spec --help
+          uv run --locked mdtools spec index --help
+          uv run --locked mdtools spec show --help
+          uv run --locked mdtools spec index --project docs/spec/examples/model-contract/mdtools.toml --format json
+          uv run --locked mdtools spec show REQ-NORMAL --project docs/spec/examples/model-contract/mdtools.toml
           uv run --locked mdtools build --help
           uv run --locked mdtools mdsplit --help
           uv run --locked mdtools langfilter --help

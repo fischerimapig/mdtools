@@ -1,61 +1,432 @@
 {
-  "schema_version": 1,
   "command": "index",
-  "status": "unavailable",
   "exit_code": 5,
-  "result": null,
   "report": {
-    "schema_version": 1,
-    "sources": [],
     "checks": [
       {
         "check_id": "spec.declarations",
-        "status": "unsupported",
-        "reason": "PyYAML is required for YAML input"
+        "reason": "No shared declarations in this Markdown input scope; No interpretable definition document",
+        "status": "not-run"
       },
       {
         "check_id": "spec.expression-syntax",
-        "status": "not-run",
-        "reason": "M3 check; not executed by M2"
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
       },
       {
         "check_id": "spec.expression-types",
-        "status": "not-run",
-        "reason": "M3 check; not executed by M2"
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
       },
       {
         "check_id": "spec.expression-uses",
-        "status": "not-run",
-        "reason": "M3 check; not executed by M2"
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
       },
       {
         "check_id": "spec.logic",
-        "status": "not-run",
-        "reason": "M3 check; not executed by M2"
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
       },
       {
         "check_id": "spec.references",
-        "status": "not-run",
-        "reason": "Declarations unavailable"
+        "reason": "Resolution covers collected nodes only; local inputs are incomplete",
+        "status": "unknown"
       },
       {
         "check_id": "spec.structure",
-        "status": "not-run",
-        "reason": "Analysis did not start"
+        "reason": "See definition diagnostics for this scope",
+        "status": "unsupported"
+      },
+      {
+        "check_id": "workspace.sources",
+        "status": "passed"
       }
     ],
     "diagnostics": [
       {
-        "code": "spec.missing-dependency",
-        "severity": "error",
         "category": "unsupported",
-        "message": "PyYAML is required for YAML input",
+        "code": "spec.missing-dependency",
+        "evidence": [
+          {
+            "kind": "spec.dependency",
+            "message": "PyYAML"
+          }
+        ],
+        "message": "YAML requires optional dependency PyYAML",
         "primary": {
-          "kind": "none"
+          "kind": "unmapped",
+          "reason": "No source token was examined"
         },
-        "related": [],
-        "evidence": []
+        "related": [
+          {
+            "location": {
+              "kind": "original",
+              "span": {
+                "end": {
+                  "column": 1,
+                  "line": 5
+                },
+                "source": {
+                  "path": "/private/example/cli-missing-yaml/defs.yaml",
+                  "snapshot": "af3be1e4874ab8fb26a8745583a975be1fb0cc3164f2d021c665d47a4bfc4687",
+                  "uri": "file:///private/example/cli-missing-yaml/defs.yaml"
+                },
+                "start": {
+                  "column": 1,
+                  "line": 1
+                }
+              }
+            },
+            "message": "Known source container"
+          }
+        ],
+        "severity": "error"
+      }
+    ],
+    "schema_version": 1,
+    "sources": [
+      {
+        "path": "/private/example/cli-missing-yaml/defs.yaml",
+        "snapshot": "af3be1e4874ab8fb26a8745583a975be1fb0cc3164f2d021c665d47a4bfc4687",
+        "uri": "file:///private/example/cli-missing-yaml/defs.yaml"
+      },
+      {
+        "path": "/private/example/cli-missing-yaml/doc.md",
+        "snapshot": "6b2676d80da84264c9c704f58ab4ba961651f6e4de14d639e54431c44fd5da8e",
+        "uri": "file:///private/example/cli-missing-yaml/doc.md"
+      },
+      {
+        "path": "/private/example/cli-missing-yaml/mdtools.toml",
+        "snapshot": "eb336d0b3395f568d660d2b6f0c24e881833b8d894259f2e0332c8ba059f17be",
+        "uri": "file:///private/example/cli-missing-yaml/mdtools.toml"
       }
     ]
-  }
+  },
+  "result": {
+    "completeness": "partial",
+    "contract": {
+      "id": "mdtools-spec",
+      "version": 1
+    },
+    "declarations": [],
+    "glossary": [],
+    "implementation": {
+      "id": "mdtools.spec",
+      "revision": 1
+    },
+    "inputs": [
+      {
+        "checks": [
+          {
+            "check_id": "spec.declarations",
+            "reason": "No shared declarations in this Markdown input scope",
+            "status": "passed"
+          },
+          {
+            "check_id": "spec.expression-syntax",
+            "reason": "M3 check; not executed by M2",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.expression-types",
+            "reason": "M3 check; not executed by M2",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.expression-uses",
+            "reason": "M3 check; not executed by M2",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.logic",
+            "reason": "M3 check; not executed by M2",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.references",
+            "reason": "Workspace reference resolution belongs to #38",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.structure",
+            "status": "passed"
+          }
+        ],
+        "completeness": "complete",
+        "source": {
+          "path": "/private/example/cli-missing-yaml/doc.md",
+          "snapshot": "6b2676d80da84264c9c704f58ab4ba961651f6e4de14d639e54431c44fd5da8e",
+          "uri": "file:///private/example/cli-missing-yaml/doc.md"
+        }
+      },
+      {
+        "checks": [
+          {
+            "check_id": "spec.declarations",
+            "reason": "No interpretable definition document",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.expression-syntax",
+            "reason": "M3 check; not executed by M2",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.expression-types",
+            "reason": "M3 check; not executed by M2",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.expression-uses",
+            "reason": "M3 check; not executed by M2",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.logic",
+            "reason": "M3 check; not executed by M2",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.references",
+            "reason": "Workspace resolution belongs to #38",
+            "status": "not-run"
+          },
+          {
+            "check_id": "spec.structure",
+            "reason": "See definition diagnostics for this scope",
+            "status": "unsupported"
+          }
+        ],
+        "completeness": "unavailable",
+        "source": {
+          "path": "/private/example/cli-missing-yaml/defs.yaml",
+          "snapshot": "af3be1e4874ab8fb26a8745583a975be1fb0cc3164f2d021c665d47a4bfc4687",
+          "uri": "file:///private/example/cli-missing-yaml/defs.yaml"
+        }
+      }
+    ],
+    "manifest": {
+      "consistency": "per-file",
+      "documents": [
+        [
+          "markdown",
+          "/private/example/cli-missing-yaml/doc.md",
+          null
+        ]
+      ],
+      "entries": [
+        {
+          "path": "/private/example/cli-missing-yaml/mdtools.toml",
+          "role": "workspace",
+          "source": {
+            "path": "/private/example/cli-missing-yaml/mdtools.toml",
+            "snapshot": "eb336d0b3395f568d660d2b6f0c24e881833b8d894259f2e0332c8ba059f17be",
+            "uri": "file:///private/example/cli-missing-yaml/mdtools.toml"
+          },
+          "state": "read",
+          "uri": "file:///private/example/cli-missing-yaml/mdtools.toml"
+        },
+        {
+          "path": "/private/example/cli-missing-yaml/doc.md",
+          "role": "body",
+          "source": {
+            "path": "/private/example/cli-missing-yaml/doc.md",
+            "snapshot": "6b2676d80da84264c9c704f58ab4ba961651f6e4de14d639e54431c44fd5da8e",
+            "uri": "file:///private/example/cli-missing-yaml/doc.md"
+          },
+          "state": "analyzed",
+          "uri": "file:///private/example/cli-missing-yaml/doc.md"
+        },
+        {
+          "path": "/private/example/cli-missing-yaml/defs.yaml",
+          "role": "spec",
+          "source": {
+            "path": "/private/example/cli-missing-yaml/defs.yaml",
+            "snapshot": "af3be1e4874ab8fb26a8745583a975be1fb0cc3164f2d021c665d47a4bfc4687",
+            "uri": "file:///private/example/cli-missing-yaml/defs.yaml"
+          },
+          "state": "analyzed",
+          "uri": "file:///private/example/cli-missing-yaml/defs.yaml"
+        }
+      ],
+      "generated": [],
+      "root": "/private/example/cli-missing-yaml",
+      "workspace_version": 1
+    },
+    "models": [],
+    "nodes": [],
+    "references": [],
+    "rejected": [
+      {
+        "diagnostic_codes": [
+          "spec.missing-dependency"
+        ],
+        "kind": "definition",
+        "span": {
+          "end": {
+            "column": 1,
+            "line": 5
+          },
+          "source": {
+            "path": "/private/example/cli-missing-yaml/defs.yaml",
+            "snapshot": "af3be1e4874ab8fb26a8745583a975be1fb0cc3164f2d021c665d47a4bfc4687",
+            "uri": "file:///private/example/cli-missing-yaml/defs.yaml"
+          },
+          "start": {
+            "column": 1,
+            "line": 1
+          }
+        },
+        "text": "version: 1\ntypes: {}\nvariables: {}\nconstants: {}\n"
+      }
+    ],
+    "report": {
+      "checks": [
+        {
+          "check_id": "spec.declarations",
+          "reason": "No shared declarations in this Markdown input scope; No interpretable definition document",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.expression-syntax",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.expression-types",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.expression-uses",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.logic",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.references",
+          "reason": "Resolution covers collected nodes only; local inputs are incomplete",
+          "status": "unknown"
+        },
+        {
+          "check_id": "spec.structure",
+          "reason": "See definition diagnostics for this scope",
+          "status": "unsupported"
+        },
+        {
+          "check_id": "workspace.sources",
+          "status": "passed"
+        }
+      ],
+      "diagnostics": [
+        {
+          "category": "unsupported",
+          "code": "spec.missing-dependency",
+          "evidence": [
+            {
+              "kind": "spec.dependency",
+              "message": "PyYAML"
+            }
+          ],
+          "message": "YAML requires optional dependency PyYAML",
+          "primary": {
+            "kind": "unmapped",
+            "reason": "No source token was examined"
+          },
+          "related": [
+            {
+              "location": {
+                "kind": "original",
+                "span": {
+                  "end": {
+                    "column": 1,
+                    "line": 5
+                  },
+                  "source": {
+                    "path": "/private/example/cli-missing-yaml/defs.yaml",
+                    "snapshot": "af3be1e4874ab8fb26a8745583a975be1fb0cc3164f2d021c665d47a4bfc4687",
+                    "uri": "file:///private/example/cli-missing-yaml/defs.yaml"
+                  },
+                  "start": {
+                    "column": 1,
+                    "line": 1
+                  }
+                }
+              },
+              "message": "Known source container"
+            }
+          ],
+          "severity": "error"
+        }
+      ],
+      "schema_version": 1,
+      "sources": [
+        {
+          "path": "/private/example/cli-missing-yaml/defs.yaml",
+          "snapshot": "af3be1e4874ab8fb26a8745583a975be1fb0cc3164f2d021c665d47a4bfc4687",
+          "uri": "file:///private/example/cli-missing-yaml/defs.yaml"
+        },
+        {
+          "path": "/private/example/cli-missing-yaml/doc.md",
+          "snapshot": "6b2676d80da84264c9c704f58ab4ba961651f6e4de14d639e54431c44fd5da8e",
+          "uri": "file:///private/example/cli-missing-yaml/doc.md"
+        },
+        {
+          "path": "/private/example/cli-missing-yaml/mdtools.toml",
+          "snapshot": "eb336d0b3395f568d660d2b6f0c24e881833b8d894259f2e0332c8ba059f17be",
+          "uri": "file:///private/example/cli-missing-yaml/mdtools.toml"
+        }
+      ]
+    },
+    "requirements": [],
+    "resolution": {
+      "checks": [
+        {
+          "check_id": "spec.declarations",
+          "reason": "No shared declarations in this Markdown input scope; No interpretable definition document",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.expression-syntax",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.expression-types",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.expression-uses",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.logic",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.references",
+          "reason": "Resolution covers collected nodes only; local inputs are incomplete",
+          "status": "unknown"
+        },
+        {
+          "check_id": "spec.structure",
+          "reason": "See definition diagnostics for this scope",
+          "status": "unsupported"
+        }
+      ],
+      "completeness": "partial",
+      "scope": "collected-inputs"
+    },
+    "schema_version": 1
+  },
+  "schema_version": 1,
+  "status": "partial"
 }
