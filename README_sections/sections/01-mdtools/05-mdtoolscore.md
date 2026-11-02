@@ -47,7 +47,7 @@ assert [req.key.name for result in results for req in result.requirements] == [
 ]
 ```
 
-このAPIはCLI・任意依存・ファイルI/Oを必要としません。上例の読込はWorkspace側で行います。共通サービス・SpecIRは#39で追加し、spec CLIは#40で実装します。
+このAPIはCLI・任意依存・ファイルI/Oを必要としません。上例の読込はWorkspace側で行います。共通サービス・SpecIRは#39で追加し、spec index/show CLIは#40で追加しました。
 
 M2 / #37の`mdtools.spec.loader.load_definitions(snapshot, kind=..., format=...)`は、明示登録したspec/glossaryの元snapshotから共有宣言・表示データ・明示参照・出典・診断を`LocalAnalysis`へ収集します。重複候補を上書きせず、不正な宣言やentryを原文の拒否断片へ残します。JSONは追加依存不要、YAMLは任意のPyYAMLを使い、anchor/alias/merge/tag/複数文書は未対応とします。既存glossary CLIの後勝ち・警告は変更しません。
 
@@ -95,4 +95,4 @@ assert analysis.completeness == "complete"
 text = render_ir_json(analysis.ir)  # 戻り値だけ。出力・終了処理なし
 ```
 
-IRは原典からの生成物です。重複した全出現・全参照候補・元位置・拒否断片を保持し、式と論理はM3の理由付きnot-runです。[IR Schema](docs/spec/spec-ir-v1.schema.json)と契約の#39追記を参照してください。ファイルごとのsnapshotであり、atomic snapshotや現在の鮮度は保証しません。spec CLIは#40で実装します。#37の既知P3制限2件と#31は残っています。
+IRは原典からの生成物です。重複した全出現・全参照候補・元位置・拒否断片を保持し、式と論理はM3の理由付きnot-runです。[IR Schema](docs/spec/spec-ir-v1.schema.json)と契約の#39追記を参照してください。ファイルごとのsnapshotであり、atomic snapshotや現在の鮮度は保証しません。spec index/show CLIは#40で追加しました。#37の既知P3制限2件と#31は残っています。

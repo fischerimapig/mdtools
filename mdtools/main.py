@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 
 _TOOLS: dict[str, tuple[str, str]] = {
+    "spec":       ("mdtools.spec_cli",   "Inspect requirements, references, sources and M2 analysis state"),
     "build":      ("mdtools.build_cli",  "Build staged Markdown/QMD outputs from section sources"),
     "mdsplit":    ("mdsplit.cli",        "Decompose and reassemble Markdown documents"),
     "langfilter": ("langfilter.cli",     "Filter bilingual Markdown by language"),
@@ -27,6 +28,10 @@ def _print_help(file=None) -> None:
         print(f"  {name:<12} {desc}", file=file)
     print("", file=file)
     print("tool details:", file=file)
+    print("  spec", file=file)
+    print("    概要: 登録原典から要件・参照・出典とM2検査状態を表示します。", file=file)
+    print("    次のヘルプ: mdtools spec --help", file=file)
+    print("", file=file)
     print("  build", file=file)
     print("    概要: section 原稿から compose/langfilter/glossary を必要分だけ実行します。", file=file)
     print("    代表的な利用シーン: 配布用の言語別 Markdown/QMD を公式手順で作りたいとき。", file=file)

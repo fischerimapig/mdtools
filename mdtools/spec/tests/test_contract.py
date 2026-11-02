@@ -346,16 +346,23 @@ def test_fixture_workspace_and_equivalent_yaml_are_usable_inputs():
 
 @pytest.mark.parametrize('filename,command,status,exit_code,code', [
     ('cli-show-unknown.json', 'show', 'complete', 3, 'spec.unknown-id'),
-    ('cli-index-missing-yaml.json', 'index', 'unavailable', 5, 'spec.missing-dependency'),
+    ('cli-index-missing-yaml.json', 'index', 'partial', 5, 'spec.missing-dependency'),
 ])
-def test_future_cli_envelope_examples_reuse_m1_diagnostic_schema(filename, command, status, exit_code, code):
+def test_cli_envelope_examples_reuse_m1_diagnostic_schema(filename, command, status, exit_code, code):
     from jsonschema import Draft202012Validator
     envelope = json.loads((FIXTURES / filename).read_text())
     schema = json.loads((FIXTURES.parents[1] / 'diagnostics-v1.schema.json').read_text())
     Draft202012Validator(schema).validate(envelope['report'])
-    assert set(envelope) == {'schema_version', 'command', 'status', 'exit_code', 'result', 'report'}
+    assert set(envelope) == {'schema_version', 'command', 'status', 'exit_code', 'result', 'report'} | ({'query'} if command == 'show' else set())
+    if command == 'show':
+        assert envelope['query'] == {'requirement_id': 'REQ-MISSING'}
     assert (envelope['schema_version'], envelope['command'], envelope['status'], envelope['exit_code']) == (1, command, status, exit_code)
-    assert envelope['result'] is None
+    if command == 'show':
+        assert envelope['result'] is None
+    else:
+        assert envelope['result']['completeness'] == 'partial'
+        assert envelope['result']['rejected']
+        assert envelope['report']['sources']
     assert envelope['report']['diagnostics'][0]['code'] == code
     m3 = [c for c in envelope['report']['checks'] if c['check_id'].startswith('spec.expression-') or c['check_id'] == 'spec.logic']
     assert len(m3) == 4 and all(c['status'] == 'not-run' and c['reason'] for c in m3)

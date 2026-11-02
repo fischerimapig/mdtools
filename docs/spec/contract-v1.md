@@ -686,7 +686,7 @@ print(render_json(report), end="")
 
 ## 依存方向と既存CLIの互換性
 
-矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器、#37で共有定義の厳格ローダーを追加した。Graph構築器は#38、解析サービスとIRは#39で追加した。新しいCLIは#40で実装する。
+矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器、#37で共有定義の厳格ローダーを追加した。Graph構築器は#38、解析サービスとIRは#39で追加した。index/showのCLIは#40で追加した。
 
 ```mermaid
 flowchart TB
@@ -699,7 +699,7 @@ flowchart TB
     workspace --> core
     diagnostics["mdtools.diagnostics: Workspace診断組立て"] --> workspace
     diagnostics --> core
-    hosts["将来のCLI / LSPホスト"] -.-> service["mdtools.analysis: 解析サービス"]
+    hosts["spec CLI / 将来のLSPホスト"] --> service["mdtools.analysis: 解析サービス"]
     service --> workspace
     service --> spec["spec: 要件・定義・IR・検査計画"]
     service -.-> adapters["任意backend adapter"]
@@ -748,13 +748,13 @@ assert text_from_memory == "Hello\n"
 - `langfilter`は既存の言語抽出を維持し、形式記述を検査しない。
 - `mdtools build`は`compose → langfilter → glossary`の必要段階だけを実行し、中間ファイル保存・UTF-8再読込による既存の改行正規化を維持する。未定義IDのerrorは1、定義読込エラーは2、I/Oエラーは1、引数エラーは2を維持する。警告の文面・出力先も変えない。
 - #31は未解消。断片末尾CR＋次断片先頭LFで新しくCRLFができると`SourceMapBuilder.build()` / `compose_with_source_map()`が失敗する。通常のCRLF本文全般の問題ではない。buildは従来の`compose()`を使い、map構築に切り替えない。該当mapを正確な原稿追跡として扱わず、診断化するhostはtool-error / errorと理由、位置なしまたはspanなしunmappedを使う。近傍原稿への丸めや架空の行列を作らず、修正は#31で扱う。
-- `mdtools spec index/show/check/context`は後続Milestoneの予定であり、M1には存在しない。M5の選択的な検査ゲートも先取りしない。
+- `mdtools spec index/show`はM2 / #40で追加した。check/contextは後続Milestoneの予定である。M5の選択的な検査ゲートも先取りしない。
 
 依存方向は`mdtools/tests/test_boundaries.py`で本体の相対・関数内importと既存CLI dispatch表を含むグラフ、循環の不在、CLIを禁止した直接API呼出を検証する。`python -S`でsite packagesを除き、PyYAML・dev validator・backendなしのJSON/既存経路を検証する。PyYAMLは任意のYAML入力用、jsonschemaは公開Schema回帰のdev用のままで、必須実行時依存にしない。
 
 ## M2 index/showの入出力・診断契約
 
-M2 / #35は#39の共通解析サービスと#40のCLIが共有する外部契約を定める。本節のコマンドは将来の入口であり、#35時点では実行できない。既存CLIの引数・表示・終了コード・helpは変更しない。
+M2 / #35は#39の共通解析サービスと#40のCLIが共有する外部契約を定める。#40で本節のコマンドを実装した。既存CLIの引数・表示・終了コードは維持する。
 
 ```bash
 mdtools spec index --project mdtools.toml --format json
@@ -776,6 +776,7 @@ JSONモードではstdoutは末尾LF付きの単一JSON objectだけにする。
 | status | 解析のcomplete/partial/unavailable。プロセス全体の成功フラグではない |
 | exit_code | 本節の終了コードと同じ整数 |
 | result | indexでは#39のSpecIR、showでは対象requirementと関連models/declarations/glossary/references。生成不能・未知対象はnull |
+| query | showでのみ必須。`{"requirement_id": "指定ID"}`。成功・失敗、result=nullでも問い合わせ条件を保持する。indexには設けない |
 | report | M1のreport_to_dict()と同じ診断JSON v1 object。入力snapshot、全体checks、診断を含む |
 
 indexのIRは契約版・IRスキーマ版・manifest・requirements/models/declarations/glossary/references・出典・状態を持つ。manifestは本文と共有定義だけでなく、選択・順序に影響する設定とhierarchyも記録する。正確なIR Schemaと各フィールドのJSON表現は#39で追加し、#35ではIRシリアライザーを作らない。showの内容は同じIRからの選択結果とし、別パーサーを作らない。
@@ -802,6 +803,23 @@ textモードは同じ要件・出典・参照・検査状態と全体診断をs
 Workspace全体がpartial/unavailableの場合、showの対象が見つからなくても3へ置き換えず、元の1/4/5を返す。対象が見つかっても全体の失敗を成功へ変更しない。unknown-idは解析済み要件集合に対する問い合わせの診断であり、解析のcompleteを取り消すものではない。reportには解析診断にこの問い合わせ診断を追加する。
 
 0は宣言したM2検査範囲の成功に限り、式の文法・型・usesとの完全一致・論理整合性・本文との意味的一致を保証しない。パース前に失敗した場合も、実施していない各チェックへ理由付きnot-runを残す。どの失敗でも架空の原稿位置を生成しない。
+
+**#40の表示選択と利用順序**
+
+両コマンドは独立した呼出しで、それぞれ共通サービスを一度呼び出す。indexの出力をshowへ入力しない。
+設定・原典選択、snapshot取得、parser/loader、resolver・SpecGraph、SpecIR生成の後で表示を選択する。
+呼出し間に原典が変わればsnapshotも変わり、同一時点の結果を保証しない。
+
+showのresultはrequirements/models/declarations/glossary/references/rejectedの配列を持つ。
+requirementsはrequirement名前空間の一致する全出現、modelsは各出現の所属モデルとする。
+uses先の全宣言候補、そのtype先の宣言候補、各宣言のglossary候補を完全なNodeKeyで選択し、IRの配列順序を保持する。
+referencesは選択ノードをownerとする全辺で、状態・全候補・builtinを変更しない。refs先の本文や別名前空間の誤参照候補の本文は展開しない。
+rejectedは対象要件の元範囲内にある拒否断片であり、壊れた形式記述の原文を保持する。
+全体reportは表示対象で絞り込まない。IRが生成できない場合は対象不存在を断定せず、元の解析診断を保持する。
+textは同じ値を階層パスとJSON引用で表示し、index内の重複reportは全体診断として共通rendererで一度表示する。
+
+問い合わせ条件queryはCLI応答の付帯情報であり、原典・IR・NodeKeyへ追加しない。
+このCLIの初回実装でenvelope v1の詳細を確定し、IR・診断・パッケージの版は変更しない。
 
 ## 将来のバックエンドとLSP
 

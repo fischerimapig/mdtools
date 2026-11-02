@@ -73,7 +73,11 @@ def allowed_import(source, target):
         return target.startswith('mdtools.core.') or target in {
             'glossary.loader', 'glossary.resolver', 'langfilter.filter', 'mdsplit.compose',
         }
-    if source.endswith(('.cli', '.__main__')) or source in {'mdtools.main', 'mdtools.build_cli'}:
+    if source == 'mdtools.spec_cli':
+        return target.startswith('mdtools.core.') or target in {'mdtools.analysis', 'mdtools.spec.ir', 'mdtools.spec.model'}
+    if source == 'mdtools.main' and target == 'mdtools.spec_cli':
+        return True
+    if source.endswith(('.cli', '.__main__')) or source in {'mdtools.main', 'mdtools.build_cli', 'mdtools.spec_cli'}:
         # Presentation/dispatch is outside the processing layers.
         return not target.startswith(('mdtools.spec', 'mdtools.backends'))
     if source.split('.')[0] in PACKAGES[1:]:
@@ -113,13 +117,13 @@ def test_production_import_directions_and_no_cycles():
 
 def test_boundary_policy_rejects_reverse_and_external_dependencies():
     for source in ('mdtools.core.source', 'mdsplit.compose', 'mdtools.build', 'mdtools.workspace', 'mdtools.diagnostics'):
-        for target in ('mdtools.main', 'mdtools.build_cli', 'mdsplit.cli', 'mdtools.spec.index', 'mdtools.backends.z3', 'z3', 'pygls', 'jsonschema', 'pytest'):
+        for target in ('mdtools.main', 'mdtools.build_cli', 'mdtools.spec_cli', 'mdsplit.cli', 'mdtools.spec.index', 'mdtools.backends.z3', 'z3', 'pygls', 'jsonschema', 'pytest'):
             assert not allowed_import(source, target), (source, target)
     assert not allowed_import('mdtools.core.source', 'mdsplit.schema')
     assert not allowed_import('mdsplit.compose', 'mdtools.workspace')
     assert not allowed_import('mdsplit.compose', 'mdtools.diagnostics')
     assert not allowed_import('glossary.loader', 'mdtools.build')
-    for target in ('mdtools.main', 'mdtools.build_cli', 'mdtools.workspace', 'mdtools.diagnostics',
+    for target in ('mdtools.main', 'mdtools.build_cli', 'mdtools.spec_cli', 'mdtools.workspace', 'mdtools.diagnostics',
                    'glossary.loader', 'mdsplit.schema', 'mdtools.backends.z3', 'z3', 'pygls', 'jsonschema', 'pytest'):
         assert not allowed_import('mdtools.spec.model', target)
     for source in ('mdtools.core.source', 'mdtools.workspace', 'mdtools.diagnostics', 'mdsplit.compose', 'mdtools.spec.ir'):
@@ -138,7 +142,7 @@ import sys
 
 class BlockImports(importlib.abc.MetaPathFinder):
     def find_spec(self, fullname, path=None, target=None):
-        if fullname.endswith(('.cli', '.__main__')) or fullname in ('mdtools.main', 'mdtools.build_cli') or fullname.split('.')[0] in ('yaml', 'jsonschema', 'pytest', 'z3', 'cue', 'quint', 'lean', 'pygls', 'lsprotocol'):
+        if fullname.endswith(('.cli', '.__main__')) or fullname in ('mdtools.main', 'mdtools.build_cli', 'mdtools.spec_cli') or fullname.split('.')[0] in ('yaml', 'jsonschema', 'pytest', 'z3', 'cue', 'quint', 'lean', 'pygls', 'lsprotocol'):
             raise AssertionError('forbidden import: ' + fullname)
 sys.meta_path.insert(0, BlockImports())
 from mdtools.build import build_document

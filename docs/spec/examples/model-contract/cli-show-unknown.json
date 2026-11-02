@@ -60,5 +60,8 @@
         "requirement_id": "REQ-MISSING"
       }
     ]
+  },
+  "query": {
+    "requirement_id": "REQ-MISSING"
   }
 }

@@ -23,3 +23,14 @@ REQ-CANCEL-GUIDANCEは構造的に有効でも`natural-only`かつ論理検査`n
 ```json
 {"id": "EXAMPLE-ONLY", "kind": "constraint", "must": "false"}
 ```
+
+## M2 CLIの実行
+
+```bash
+mdtools spec index --project docs/spec/examples/cancellation/mdtools.toml --format json
+mdtools spec show REQ-CANCEL-ALLOW --project docs/spec/examples/cancellation/mdtools.toml --format text
+```
+
+index/showは各呼出しで原典全体を解析し、同じIRから全体・詳細を表示します。
+showのJSONはquery.requirement_idに問い合わせIDを、resultの配列に全出現と関連定義を保持します。
+全体診断・失敗は詳細の選択後も維持します。式・論理はM3のnot-runであり、M2成功は無矛盾性の保証ではありません。

@@ -1,5 +1,5 @@
 
-矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器、#37で共有定義の厳格ローダーを追加した。Graph構築器は#38、解析サービスとIRは#39で追加した。新しいCLIは#40で実装する。
+矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器、#37で共有定義の厳格ローダーを追加した。Graph構築器は#38、解析サービスとIRは#39で追加した。index/showのCLIは#40で追加した。
 
 ```mermaid
 flowchart TB
@@ -12,7 +12,7 @@ flowchart TB
     workspace --> core
     diagnostics["mdtools.diagnostics: Workspace診断組立て"] --> workspace
     diagnostics --> core
-    hosts["将来のCLI / LSPホスト"] -.-> service["mdtools.analysis: 解析サービス"]
+    hosts["spec CLI / 将来のLSPホスト"] --> service["mdtools.analysis: 解析サービス"]
     service --> workspace
     service --> spec["spec: 要件・定義・IR・検査計画"]
     service -.-> adapters["任意backend adapter"]
@@ -61,6 +61,6 @@ assert text_from_memory == "Hello\n"
 - `langfilter`は既存の言語抽出を維持し、形式記述を検査しない。
 - `mdtools build`は`compose → langfilter → glossary`の必要段階だけを実行し、中間ファイル保存・UTF-8再読込による既存の改行正規化を維持する。未定義IDのerrorは1、定義読込エラーは2、I/Oエラーは1、引数エラーは2を維持する。警告の文面・出力先も変えない。
 - #31は未解消。断片末尾CR＋次断片先頭LFで新しくCRLFができると`SourceMapBuilder.build()` / `compose_with_source_map()`が失敗する。通常のCRLF本文全般の問題ではない。buildは従来の`compose()`を使い、map構築に切り替えない。該当mapを正確な原稿追跡として扱わず、診断化するhostはtool-error / errorと理由、位置なしまたはspanなしunmappedを使う。近傍原稿への丸めや架空の行列を作らず、修正は#31で扱う。
-- `mdtools spec index/show/check/context`は後続Milestoneの予定であり、M1には存在しない。M5の選択的な検査ゲートも先取りしない。
+- `mdtools spec index/show`はM2 / #40で追加した。check/contextは後続Milestoneの予定である。M5の選択的な検査ゲートも先取りしない。
 
 依存方向は`mdtools/tests/test_boundaries.py`で本体の相対・関数内importと既存CLI dispatch表を含むグラフ、循環の不在、CLIを禁止した直接API呼出を検証する。`python -S`でsite packagesを除き、PyYAML・dev validator・backendなしのJSON/既存経路を検証する。PyYAMLは任意のYAML入力用、jsonschemaは公開Schema回帰のdev用のままで、必須実行時依存にしない。

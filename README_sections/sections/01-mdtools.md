@@ -3,6 +3,7 @@ Markdown 文書の編集を補助するコマンドラインツール集。
 
 | ツール | 概要 |
 |--------|------|
+| **spec** | 登録原典の要件・モデル・定義・参照・出典とM2検査状態を取得する |
 | **build** | section 原稿から compose / langfilter / glossary を必要分だけ実行して配布用 Markdown/QMD を生成する |
 | **mdsplit** | Markdown/QMD 文書を見出し単位のセクションファイルに分解・再構成する |
 | **langfilter** | 日英併記 Markdown から指定言語のブロックだけを抽出する |
