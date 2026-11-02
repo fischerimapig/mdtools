@@ -1,0 +1,26 @@
+{
+  "source_file": "manual.md",
+  "base_level": 1,
+  "metadata": {},
+  "sections": [
+    {
+      "title": "受け入れ例",
+      "file": "intro.md",
+      "order": 0,
+      "children": [
+        {
+          "title": "状態表示",
+          "file": "section.md",
+          "order": 0,
+          "children": []
+        },
+        {
+          "title": "案内",
+          "file": "detail.md",
+          "order": 1,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

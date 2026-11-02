@@ -231,3 +231,7 @@ serializerの誤変換が確認されたものではなく、既存テストの�
 ```
 
 公開API・正常入力のIR表現・各版は変更しない。#37の既知制限、#31、#40以降は今回の対象外。コミット・push・PR head・CI対象SHAの一致とCI完了はPRへ記録し、上記のローカル検証とは区別する。マージ・Issue Closeは行わない。
+
+## Issue #41 M2全体の受け入れ
+
+[受け入れ条件・テスト・CI対応表](../../../docs/spec/m2-acceptance.md)を参照する。実CLIのE2Eは`mdtools/tests/test_spec_acceptance.py`、既存の各部品テストは本書の各節が担当する。過去SHAの検証履歴と今回の結果は区別し、最新SHAの検証結果はPRへ記録する。
