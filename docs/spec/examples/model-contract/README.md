@@ -32,3 +32,5 @@ Issue #35のデータ契約の小さな原典例です。#36の抽出器はMarkd
 #37の実入力テストは`mdtools/spec/tests/test_loader*.py`です。definitions.json/yamlの同じ宣言・明示参照、glossary.jsonの表示データ、duplicate-definitions.jsonの全候補と両位置、unsupported.yamlの拒否を確認します。missing-glossary.jsonはローカルではcomplete・references=not-runで、未定義診断は#38に残します。YAML依存不足は既存の元snapshotを保持したunavailable、ファイル取得失敗はsnapshotを捏造せずDefinitionReadError.reportへ返します。
 
 #38の実fixture結合は`test_resolver_sources.py`で検証します。正常Workspaceは全明示参照resolved・complete、missing-glossary.jsonはspec.undefined-glossary・partial、duplicate-definitions.jsonは既報告診断を保持してreferences/declarations=failedです。invalid.md・broken-model.md・unsupported.mdは元の拒否断片・診断を保持してpartialのままです。式が壊れているunchecked.mdでも、M2の構造・参照とM3の式未検査を分けて保持します。
+
+#39では`analyze_workspace("docs/spec/examples/model-contract/mdtools.toml")`を直接呼び、返された`analysis.ir`を`render_ir_json()`で出力できます。normal/natural-only/multilingual/uncheckedと共有定義・glossaryを同じ結果に保持します。不正例は別Workspaceへ登録してpartialと拒否断片を確認します。テストは`mdtools/tests/test_analysis.py`と`mdtools/spec/tests/test_ir.py`で、CLIを介さずサービス生成IRをSchemaに照合します。

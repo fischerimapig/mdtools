@@ -1,5 +1,5 @@
 
-矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器、#37で共有定義の厳格ローダーを追加した。Graph構築器・解析サービス・新しいCLIは後続Issueで実装する。
+矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器、#37で共有定義の厳格ローダーを追加した。Graph構築器は#38、解析サービスとIRは#39で追加した。新しいCLIは#40で実装する。
 
 ```mermaid
 flowchart TB
@@ -12,9 +12,9 @@ flowchart TB
     workspace --> core
     diagnostics["mdtools.diagnostics: Workspace診断組立て"] --> workspace
     diagnostics --> core
-    hosts["将来のCLI / LSPホスト"] -.-> service["解析サービス・外側の組立て"]
-    service -.-> workspace
-    service -.-> spec["spec: 要件・定義・IR・検査計画"]
+    hosts["将来のCLI / LSPホスト"] -.-> service["mdtools.analysis: 解析サービス"]
+    service --> workspace
+    service --> spec["spec: 要件・定義・IR・検査計画"]
     service -.-> adapters["任意backend adapter"]
     spec --> core
     adapters -.-> spec

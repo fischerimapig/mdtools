@@ -1,0 +1,360 @@
+{
+  "completeness": "complete",
+  "contract": {
+    "id": "mdtools-spec",
+    "version": 1
+  },
+  "declarations": [],
+  "glossary": [],
+  "implementation": {
+    "id": "mdtools.spec",
+    "revision": 1
+  },
+  "inputs": [
+    {
+      "checks": [
+        {
+          "check_id": "spec.declarations",
+          "reason": "No shared declarations in this Markdown input scope",
+          "status": "passed"
+        },
+        {
+          "check_id": "spec.expression-syntax",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.expression-types",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.expression-uses",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.logic",
+          "reason": "M3 check; not executed by M2",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.references",
+          "reason": "Workspace reference resolution belongs to #38",
+          "status": "not-run"
+        },
+        {
+          "check_id": "spec.structure",
+          "status": "passed"
+        }
+      ],
+      "completeness": "complete",
+      "source": {
+        "path": "/example/natural.md",
+        "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+        "uri": "file:///example/natural.md"
+      }
+    }
+  ],
+  "manifest": {
+    "consistency": "per-file",
+    "documents": [
+      [
+        "markdown",
+        "/example/natural.md",
+        null
+      ]
+    ],
+    "entries": [
+      {
+        "path": "/example/mdtools.toml",
+        "role": "workspace",
+        "source": {
+          "path": "/example/mdtools.toml",
+          "snapshot": "7b19931aef5b8cee8fdff908b421e1b34f10144210afc4ce8691bd10d59f0ddc",
+          "uri": "file:///example/mdtools.toml"
+        },
+        "state": "read",
+        "uri": "file:///example/mdtools.toml"
+      },
+      {
+        "path": "/example/natural.md",
+        "role": "body",
+        "source": {
+          "path": "/example/natural.md",
+          "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+          "uri": "file:///example/natural.md"
+        },
+        "state": "analyzed",
+        "uri": "file:///example/natural.md"
+      }
+    ],
+    "generated": [],
+    "root": "/example",
+    "workspace_version": 1
+  },
+  "models": [],
+  "nodes": [
+    {
+      "name": "REQ-NATURAL",
+      "namespace": "requirement",
+      "ordinal": 0,
+      "source": {
+        "path": "/example/natural.md",
+        "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+        "uri": "file:///example/natural.md"
+      }
+    }
+  ],
+  "references": [],
+  "rejected": [],
+  "report": {
+    "checks": [
+      {
+        "check_id": "spec.declarations",
+        "reason": "No shared declarations in this Markdown input scope",
+        "status": "passed"
+      },
+      {
+        "check_id": "spec.expression-syntax",
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
+      },
+      {
+        "check_id": "spec.expression-types",
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
+      },
+      {
+        "check_id": "spec.expression-uses",
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
+      },
+      {
+        "check_id": "spec.logic",
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
+      },
+      {
+        "check_id": "spec.references",
+        "status": "passed"
+      },
+      {
+        "check_id": "spec.structure",
+        "status": "passed"
+      },
+      {
+        "check_id": "workspace.sources",
+        "status": "passed"
+      }
+    ],
+    "diagnostics": [],
+    "schema_version": 1,
+    "sources": [
+      {
+        "path": "/example/mdtools.toml",
+        "snapshot": "7b19931aef5b8cee8fdff908b421e1b34f10144210afc4ce8691bd10d59f0ddc",
+        "uri": "file:///example/mdtools.toml"
+      },
+      {
+        "path": "/example/natural.md",
+        "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+        "uri": "file:///example/natural.md"
+      }
+    ]
+  },
+  "requirements": [
+    {
+      "bodies": [
+        {
+          "language": null,
+          "span": {
+            "end": {
+              "column": 1,
+              "line": 3
+            },
+            "source": {
+              "path": "/example/natural.md",
+              "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+              "uri": "file:///example/natural.md"
+            },
+            "start": {
+              "column": 1,
+              "line": 2
+            }
+          },
+          "text": "日本語のみ。\n"
+        }
+      ],
+      "fields": [
+        {
+          "container": {
+            "end": {
+              "column": 1,
+              "line": 4
+            },
+            "source": {
+              "path": "/example/natural.md",
+              "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+              "uri": "file:///example/natural.md"
+            },
+            "start": {
+              "column": 1,
+              "line": 1
+            }
+          },
+          "location": {
+            "kind": "original",
+            "span": {
+              "end": {
+                "column": 31,
+                "line": 1
+              },
+              "source": {
+                "path": "/example/natural.md",
+                "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+                "uri": "file:///example/natural.md"
+              },
+              "start": {
+                "column": 20,
+                "line": 1
+              }
+            }
+          },
+          "path": "/id"
+        },
+        {
+          "container": {
+            "end": {
+              "column": 1,
+              "line": 4
+            },
+            "source": {
+              "path": "/example/natural.md",
+              "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+              "uri": "file:///example/natural.md"
+            },
+            "start": {
+              "column": 1,
+              "line": 1
+            }
+          },
+          "location": {
+            "kind": "original",
+            "span": {
+              "end": {
+                "column": 46,
+                "line": 1
+              },
+              "source": {
+                "path": "/example/natural.md",
+                "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+                "uri": "file:///example/natural.md"
+              },
+              "start": {
+                "column": 45,
+                "line": 1
+              }
+            }
+          },
+          "path": "/spec-version"
+        },
+        {
+          "container": {
+            "end": {
+              "column": 1,
+              "line": 4
+            },
+            "source": {
+              "path": "/example/natural.md",
+              "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+              "uri": "file:///example/natural.md"
+            },
+            "start": {
+              "column": 1,
+              "line": 1
+            }
+          },
+          "location": {
+            "kind": "unmapped",
+            "reason": "Omitted status defaults to draft; no source token"
+          },
+          "path": "/status"
+        }
+      ],
+      "formalization": "natural-only",
+      "key": {
+        "name": "REQ-NATURAL",
+        "namespace": "requirement",
+        "ordinal": 0,
+        "source": {
+          "path": "/example/natural.md",
+          "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+          "uri": "file:///example/natural.md"
+        }
+      },
+      "refs": [],
+      "span": {
+        "end": {
+          "column": 1,
+          "line": 4
+        },
+        "source": {
+          "path": "/example/natural.md",
+          "snapshot": "5e5ee3c1256d6fe05acd3b660f2c50dcf3dd9fc6ccfc163d763a7304d94d161b",
+          "uri": "file:///example/natural.md"
+        },
+        "start": {
+          "column": 1,
+          "line": 1
+        }
+      },
+      "status": "draft",
+      "structure": {
+        "check_id": "spec.structure",
+        "status": "passed"
+      },
+      "version": 1
+    }
+  ],
+  "resolution": {
+    "checks": [
+      {
+        "check_id": "spec.declarations",
+        "reason": "No shared declarations in this Markdown input scope",
+        "status": "passed"
+      },
+      {
+        "check_id": "spec.expression-syntax",
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
+      },
+      {
+        "check_id": "spec.expression-types",
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
+      },
+      {
+        "check_id": "spec.expression-uses",
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
+      },
+      {
+        "check_id": "spec.logic",
+        "reason": "M3 check; not executed by M2",
+        "status": "not-run"
+      },
+      {
+        "check_id": "spec.references",
+        "status": "passed"
+      },
+      {
+        "check_id": "spec.structure",
+        "status": "passed"
+      }
+    ],
+    "completeness": "complete",
+    "scope": "collected-inputs"
+  },
+  "schema_version": 1
+}

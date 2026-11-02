@@ -243,7 +243,7 @@ assert [req.key.name for result in results for req in result.requirements] == [
 ]
 ```
 
-このAPIはCLI・任意依存・ファイルI/Oを必要としません。上例の読込はWorkspace側で行います。共通サービス・SpecIR（#39）、spec CLI（#40）は後続Issueです。
+このAPIはCLI・任意依存・ファイルI/Oを必要としません。上例の読込はWorkspace側で行います。共通サービス・SpecIRは#39で追加し、spec CLIは#40で実装します。
 
 M2 / #37の`mdtools.spec.loader.load_definitions(snapshot, kind=..., format=...)`は、明示登録したspec/glossaryの元snapshotから共有宣言・表示データ・明示参照・出典・診断を`LocalAnalysis`へ収集します。重複候補を上書きせず、不正な宣言やentryを原文の拒否断片へ残します。JSONは追加依存不要、YAMLは任意のPyYAMLを使い、anchor/alias/merge/tag/複数文書は未対応とします。既存glossary CLIの後勝ち・警告は変更しません。
 
@@ -279,6 +279,19 @@ assert all(check.status == "not-run" for check in resolved.checks.expressions)
 ```
 
 入力順と原稿のID・全出現・全明示参照を保持し、自己参照や循環を展開しません。入力が不完全なら個別参照が解決できても全体の参照検査をpassedにしません。APIはファイルを再読込せず、Workspaceの登録漏れ検出・サービス/IR/Schema（#39）、spec CLI（#40）、式・論理検査（M3）へ進みません。判定順・組み込み型・診断抑制・状態集約は契約、受け入れ条件との対応は[#38チェックリスト](mdtools/spec/tests/README.md#issue-38-specgraphの検証チェックリスト)を参照してください。
+
+M2 / #39の`mdtools.analysis.analyze_workspace(project)`は、登録原典の取得からparser/loader/resolverと版付きSpecIR生成までを組み立てます。設定・hierarchy・本文・共有定義の実際のsnapshotをmanifestへ残し、読込不能入力を除外したresolverの成功をサービス全体の成功へ変更しません。
+
+```python
+from mdtools.analysis import analyze_workspace
+from mdtools.spec.ir import render_ir_json
+
+analysis = analyze_workspace("docs/spec/examples/cancellation/mdtools.toml")
+assert analysis.completeness == "complete"
+text = render_ir_json(analysis.ir)  # 戻り値だけ。出力・終了処理なし
+```
+
+IRは原典からの生成物です。重複した全出現・全参照候補・元位置・拒否断片を保持し、式と論理はM3の理由付きnot-runです。[IR Schema](docs/spec/spec-ir-v1.schema.json)と契約の#39追記を参照してください。ファイルごとのsnapshotであり、atomic snapshotや現在の鮮度は保証しません。spec CLIは#40で実装します。#37の既知P3制限2件と#31は残っています。
 
 ## 文書管理
 

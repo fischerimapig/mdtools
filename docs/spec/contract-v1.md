@@ -449,6 +449,28 @@ usesの許可種別はvariable/constant、typeはtypeとする。別空間の候
 
 契約値の不変条件、解決規則、状態集約、衝突診断、実fixture・出典の責務別テストと確認手順は[検証チェックリスト](../../mdtools/spec/tests/README.md#issue-38-specgraphの検証チェックリスト)を参照する。#37の既知のP3制限、#39のサービス/IR/Schema、#40のCLI、M3、LLM、#31は変更しない。
 
+**M2 / #39 共通解析サービス・版付きSpecIR**
+
+`mdtools.analysis.analyze_workspace(config_path)`は、Workspace選択、snapshot取得、既存parser/loader、resolver、IR変換を組み立てる。戻り値`WorkspaceAnalysis`はworkspace、manifest、実際のLocalAnalysisのinputs、任意のresolved/ir、report、completenessを持つ。#40のindex/showは同じ結果を利用する。CLIの表示・終了コード、式再解析、backend呼出は行わない。
+
+`load_workspace(config_path, read_text=None)`の任意callbackは設定・hierarchyのtext取得境界である。既定の挙動・例外は維持する。サービスはcallback内でUTF-8のSourceSnapshotを取得し、その同じtextを既存の選択・検証へ渡す。本文・共有定義も各一回取得する。snapshot_sourcesの再検証による再読込をmanifestの根拠にはしない。選択済みパスの差し替えは可能な範囲で検出するが、全ファイルのatomic snapshot、並行変更の完全な排除、現在の鮮度は保証しない。
+
+`mdtools.spec.ir.build_spec_ir(resolved, manifest, *, report, completeness)`は不変SpecIRを構築し、`ir_to_dict()`と`render_ir_json()`はI/Oなしに変換する。specはworkspaceや診断組立てをimportしない。外側のanalysisだけがworkspace/core/specへ依存する。この配置は既存import境界を維持するための判断であり、core・既存文書処理からの逆依存を追加しない。
+
+IR JSON v1の最上位はschema_version、contract、implementation、manifest、inputs、nodes、requirements、models、declarations、glossary、references、rejected、resolution、completeness、report。contractはid=mdtools-spec/version=1、schema_versionはIRの整数1、implementationはid=mdtools.spec/revision=1。実装の意味を変える際はrevisionを更新する。パッケージ版・Workspace版・共有定義版・診断版と代用しない。これは内部再利用APIであり、パッケージの新しい安定公開版を宣言しない。[Schema](spec-ir-v1.schema.json)を参照。
+
+manifestはentries、既知の場合のworkspace_version/root、文書登録の(kind, path, canonical)配列、generated、consistency=per-fileを持つ。entryはrole、uri、path、state、取得できたsource、必要なreasonを保持する。roleはworkspace/hierarchy/body/spec/glossary。stateはread/analyzed/read-error/analysis-error/not-runで、解析済みでもLocalAnalysisのpartial/unavailableを成功へ変更しない。読込不能entryにsourceを付けない。順序は設定、文書登録順のhierarchy、Workspace本文順、共有定義登録順。生成物は登録だけを記録し、内容を読まない。DocumentTreeとfront matterはworkspaceに保持し、仕様の継承・暗黙参照にはしない。
+
+nodesと種別別配列はresolverの出現順、references/candidatesはresolverの順、本文断片・fieldsはproducer順。rejectedは入力順・元範囲順。NodeKeyはnamespace/name/source/ordinalを全て出し、requirement.modelはモデルのNodeKeyへ結ぶ。宣言のminimum/maximum等は既存モデルのフィールド名を使う。名前だけのdictにせず、衝突した全出現・候補、全明示参照とbuiltin、拒否断片のtext/span/diagnostic_codesを残す。本文のlanguage=NoneはJSON nullであり、他の省略可能値は省略する。glossary表示データ内のnullはそのまま保持する。
+
+inputsは各LocalAnalysisのsource/checks/completeness、resolutionはscope=collected-inputsとresolverのchecks/completenessを保持する。最上位completenessとreportは登録入力全体のサービス結果であり、resolverへ渡せなかった入力を含む。reportはM1 report_to_dictの診断JSON v1。原文全体はreport.sourcesのメモリsnapshotに残し、JSONへは本文断片・拒否断片だけを出す。位置は全て元snapshotのM1座標で、デコード後の式文字列offsetを原稿列に転用しない。
+
+設定選択失敗はunavailable/ir=None。読込・UTF-8失敗はspec.read-error/tool-error、内部処理失敗はspec.execution-error/tool-errorで、pathをEvidenceに残す。読めなかったsnapshotや正常LocalAnalysisは作らない。読めた入力は続けて処理する。登録入力が欠ければstructureは実行失敗またはunknown、declarations/referencesは利用可能な部分があればunknown、なければnot-runを追加する。同一チェックでは#38の優先順位と全理由を保持するため、既存failed等をunknownで消さない。全登録入力の解析完了と全M2検査成功がcompleteの条件である。解析可能な部分があればpartial、全て利用不能ならunavailable。通常本文だけの0ノード入力はcompleteになり得るが、解析入力0件はunavailable。resolver/IR構築失敗ではir=Noneで既存snapshot/inputs/診断を保持する。
+
+JSONはキー昇順、2空白indent、ensure_ascii=False、非有限数禁止、末尾LF。時刻・乱数・実行時Git情報・作業用パスを追加しない。同じ入力snapshot・設定・実装改訂から同じJSONを生成する。移動や順序変更はURI/hash/表示順の変更であり、人が付けた意味上のIDを再生成しない。Schemaの構造検証はdev validatorのみを使い、出現・参照・完全性の対応は値モデルとテストで検証する。
+
+全てのM3検査は理由付きnot-runのまま。#37の深いglossary出典検証のRecursionErrorはローダーでは未修正で、サービスが受けた場合はexecution-errorとなる。PyYAMLが未知directiveを破棄する制限も残る。#31、#40のCLI、キャッシュ・M4鮮度管理、IRから原稿への書戻しは対象外。
+
 ## 状態と検査結果
 
 一つの「verified」フラグで状態を集約しない。次の軸を独立して保持・表示する。
@@ -662,7 +684,7 @@ print(render_json(report), end="")
 
 ## 依存方向と既存CLIの互換性
 
-矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器、#37で共有定義の厳格ローダーを追加した。Graph構築器・解析サービス・新しいCLIは後続Issueで実装する。
+矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器、#37で共有定義の厳格ローダーを追加した。Graph構築器は#38、解析サービスとIRは#39で追加した。新しいCLIは#40で実装する。
 
 ```mermaid
 flowchart TB
@@ -675,9 +697,9 @@ flowchart TB
     workspace --> core
     diagnostics["mdtools.diagnostics: Workspace診断組立て"] --> workspace
     diagnostics --> core
-    hosts["将来のCLI / LSPホスト"] -.-> service["解析サービス・外側の組立て"]
-    service -.-> workspace
-    service -.-> spec["spec: 要件・定義・IR・検査計画"]
+    hosts["将来のCLI / LSPホスト"] -.-> service["mdtools.analysis: 解析サービス"]
+    service --> workspace
+    service --> spec["spec: 要件・定義・IR・検査計画"]
     service -.-> adapters["任意backend adapter"]
     spec --> core
     adapters -.-> spec

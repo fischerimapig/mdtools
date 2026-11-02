@@ -14,6 +14,7 @@ import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
+from collections.abc import Callable
 
 from mdtools.core.source import SourceSnapshot
 from mdsplit.schema import DocumentTree, SectionNode
@@ -168,9 +169,9 @@ def _unique_object(pairs: list[tuple[str, Any]]) -> dict:
     return result
 
 
-def _hierarchy(path: Path) -> DocumentTree:
+def _hierarchy(path: Path, read_text: Callable[[Path], str]) -> DocumentTree:
     try:
-        data = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_unique_object)
+        data = json.loads(read_text(path), object_pairs_hook=_unique_object)
         _fields(data, {"source_file", "base_level", "metadata", "sections"}, set(), "hierarchy")
         if not isinstance(data.get("source_file", ""), str):
             raise ValueError("source_file must be a string")
@@ -201,16 +202,18 @@ def _hierarchy(path: Path) -> DocumentTree:
         raise WorkspaceError("workspace.read-error", path, str(exc)) from exc
 
 
-def load_workspace(config_path: str | Path) -> Workspace:
+def load_workspace(config_path: str | Path, *,
+                   read_text: Callable[[Path], str] | None = None) -> Workspace:
     """Load TOML v1 and select original files in explicit, deterministic order.
 
     Paths in the result are absolute and resolved. Definitions are registered
     separately and their contents are not parsed. Generated files need not exist.
     Invalid settings/references raise WorkspaceError, never a partial result.
     """
+    read_text = read_text or (lambda path: path.read_text(encoding="utf-8"))
     config_path = _resolve(Path.cwd(), str(config_path))
     try:
-        data = tomllib.loads(config_path.read_text(encoding="utf-8"))
+        data = tomllib.loads(read_text(config_path))
     except FileNotFoundError as exc:
         raise WorkspaceError("workspace.missing-file", config_path, str(exc)) from exc
     except (ValueError, UnicodeError) as exc:
@@ -260,7 +263,7 @@ def load_workspace(config_path: str | Path) -> Workspace:
         path = _within(root, root, doc["path"])
         registry.add(path)
         _file(path, (".json",))
-        tree = _hierarchy(path)
+        tree = _hierarchy(path, read_text)
         canonical = _within(root, root, doc["canonical"])
         _check_canonical_extension(canonical)
         documents.append(DocumentInput("hierarchy", path, canonical, tree))

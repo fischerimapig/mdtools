@@ -165,3 +165,26 @@ git diff --check
 契約とREADMEはsection原稿を編集してcanonicalを再生成した。全テスト、#34の見出し順序・親子構造、4文書の文字列round-trip、既存CLI help 10経路、glossary参照、diff checkを最終検証した。コミット・push・M2向けPR・最新push/PR head/CI対象SHAの一致とCI結果はPRに記載し、このローカル検証と区別する。
 
 #37のP3制限2件、#39のサービス/IR/Schema、#40のCLI、M3、LLM、#31は変更しない。マージ・Issue Closeは行わない。
+
+## Issue #39 SpecIR・共通解析サービスの検証チェックリスト
+
+基準はPR #47マージ後のM2先端`4d9535a685997713f98966f9e229d67a459cc99b`。着手時の作業ツリーはクリーン。現在の#38作業ツリーとM2先端のtreeが同一であることを確認し、変更前の全テストを再実行して1012 passed, 1 skippedを確認した。
+
+| 検証 | 保証する範囲 |
+|------|--------------|
+| mdtools/tests/test_analysis.py | cancellation/model-contractを実サービスへ入力。本文・言語・モデル・式未検査・共有定義・glossary・元snapshotを保持。回復/拒否/未知版、未定義/wrong-kind/衝突/曖昧参照をpartialとして保持 |
+| 同上・I/O責務 | 設定不正/未知版/UTF-8不正、読込失敗/producer失敗、YAML依存不足と正常入力の混在。resolverだけcompleteでも全体partial。読めない入力のsnapshot/LocalAnalysisなし。resolver失敗時も実入力を保持 |
+| 同上・snapshot/順序責務 | 設定・hierarchyの読込直後の変更でも選択に使ったhashと一致。全取得ファイルのbytes/hash、Unicode/絵文字/結合文字/LF/CRLF/CR/JSON escapeの原稿sliceを照合。順序・移動・見出し変更でIDを再生成しない。未登録原稿を除外 |
+| mdtools/spec/tests/test_ir.py | サービス生成の正常/partial/unavailable JSONをDraft 2020-12で検証。未知版/不正状態/負ordinal/hash終端LF/M3成功偽装/atomic表記等を拒否。診断v1 Schemaも参照検証。全登録入力の欠落をcompleteとする値を拒否 |
+| 同上・純粋変換責務 | I/O禁止下の変換、出力dictの独立性、同一snapshotでの決定性、固定例の再生成一致。例のfile:///example URIはメモリで明示構築した説明用snapshotであり、実ファイル取得成功を主張しない |
+| mdtools/tests/test_boundaries.py | analysisだけにworkspace/core/spec依存を許可。逆依存・循環なし。CLI/YAML/dev validator/backendを禁止したpython -Sでサービス→IR JSON、stdout/stderrなし |
+| 既存全pytest | #35～#38と既存CLI、M1診断Schema、#34のbase_level・見出し順序・親子構造を回帰確認 |
+
+- [x] 全テスト：**1050 passed, 1 skipped**。追加38件。skipは従来の外部combined.md未配置。
+- [x] README、mdsplit README、契約、core-refactorの4文書で既存section composeと分解・再合成のバイト一致を確認。
+- [x] 契約/root READMEはsection原稿からcanonicalを再生成。#34の構造検査と契約の20 sectionを維持。
+- [x] CIと同じCLI help 10経路、README glossary list/verify、git diff --checkが成功。
+
+再現：`.venv/bin/python -m pytest -q`。個別責務は上表のテストを指定する。Schema validatorはdev依存だけで、JSON実行経路の必須依存は増やしていない。通常の原稿・式・参照を再パースする別経路は追加していない。設定/hierarchyの読込callbackは選択とmanifestの整合を保つための追加で、既存load_workspaceとsnapshot_sourcesの既定挙動は維持する。
+
+#37の深いglossary出典検証RecursionErrorとPyYAMLによる未知directive破棄は未修正。前者がサービスへ漏れればexecution-errorとして扱うが、ローダー自体の制限解消ではない。#31、#40 CLI、M3、M4以降、LLM/solver、IR書戻しは対象外。コミット・push・PR head・CI対象SHAとCI結果はPRに記載し、このローカル検証と区別する。マージ・Issue Closeはユーザーが行う。

@@ -1,0 +1,951 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "contract": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "const": "mdtools-spec"
+        },
+        "version": {
+          "type": "integer",
+          "const": 1
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "implementation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "const": "mdtools.spec"
+        },
+        "revision": {
+          "type": "integer",
+          "const": 1
+        }
+      },
+      "required": [
+        "id",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "manifest": {
+      "$ref": "#/$defs/manifest"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/input"
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/key"
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/requirement"
+      }
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/model"
+      }
+    },
+    "declarations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/declaration"
+      }
+    },
+    "glossary": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/glossary"
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "rejected": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rejected"
+      }
+    },
+    "resolution": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "const": "collected-inputs"
+        },
+        "completeness": {
+          "$ref": "#/$defs/completion"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check"
+          }
+        }
+      },
+      "required": [
+        "scope",
+        "completeness",
+        "checks"
+      ],
+      "additionalProperties": false
+    },
+    "completeness": {
+      "$ref": "#/$defs/completion"
+    },
+    "report": {
+      "$ref": "diagnostics-v1.schema.json"
+    }
+  },
+  "required": [
+    "schema_version",
+    "contract",
+    "implementation",
+    "manifest",
+    "inputs",
+    "nodes",
+    "requirements",
+    "models",
+    "declarations",
+    "glossary",
+    "references",
+    "rejected",
+    "resolution",
+    "completeness",
+    "report"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "mdtools SpecIR v1",
+  "$defs": {
+    "source": {
+      "$ref": "diagnostics-v1.schema.json#/$defs/source"
+    },
+    "span": {
+      "$ref": "diagnostics-v1.schema.json#/$defs/span"
+    },
+    "location": {
+      "$ref": "diagnostics-v1.schema.json#/$defs/location"
+    },
+    "check": {
+      "$ref": "diagnostics-v1.schema.json#/$defs/check"
+    },
+    "key": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "enum": [
+            "requirement",
+            "model",
+            "declaration",
+            "glossary"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "source",
+        "ordinal"
+      ],
+      "additionalProperties": false
+    },
+    "field": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^(?:/(?:[^~]|~[01])*)?$"
+        },
+        "location": {
+          "$ref": "#/$defs/location"
+        },
+        "container": {
+          "$ref": "#/$defs/span"
+        }
+      },
+      "required": [
+        "path",
+        "location"
+      ],
+      "additionalProperties": false
+    },
+    "reference": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "refs",
+            "uses",
+            "type",
+            "glossary"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "$ref": "#/$defs/field"
+        }
+      },
+      "required": [
+        "kind",
+        "name",
+        "origin"
+      ],
+      "additionalProperties": false
+    },
+    "expression": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "$ref": "#/$defs/field"
+        }
+      },
+      "required": [
+        "text",
+        "origin"
+      ],
+      "additionalProperties": false
+    },
+    "body": {
+      "type": "object",
+      "properties": {
+        "language": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "span": {
+          "$ref": "#/$defs/span"
+        }
+      },
+      "required": [
+        "language",
+        "text",
+        "span"
+      ],
+      "additionalProperties": false
+    },
+    "requirement": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "span": {
+          "$ref": "#/$defs/span"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/field"
+          }
+        },
+        "bodies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/body"
+          }
+        },
+        "structure": {
+          "$ref": "#/$defs/check"
+        },
+        "formalization": {
+          "enum": [
+            "natural-only",
+            "present"
+          ]
+        },
+        "model": {
+          "$ref": "#/$defs/key"
+        },
+        "refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reference"
+          }
+        },
+        "version": {
+          "const": 1
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "active",
+            "deprecated"
+          ]
+        }
+      },
+      "required": [
+        "key",
+        "span",
+        "fields",
+        "bodies",
+        "structure",
+        "formalization",
+        "refs",
+        "version",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "m3check": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/check"
+        },
+        {
+          "properties": {
+            "check_id": {
+              "enum": [
+                "spec.expression-syntax",
+                "spec.expression-types",
+                "spec.expression-uses",
+                "spec.logic"
+              ]
+            },
+            "status": {
+              "const": "not-run"
+            }
+          },
+          "required": [
+            "reason"
+          ]
+        }
+      ]
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "span": {
+          "$ref": "#/$defs/span"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/field"
+          }
+        },
+        "uses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reference"
+          }
+        },
+        "when": {
+          "$ref": "#/$defs/expression"
+        },
+        "must": {
+          "$ref": "#/$defs/expression"
+        },
+        "version": {
+          "const": 1
+        },
+        "kind": {
+          "const": "constraint"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/m3check"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        }
+      },
+      "required": [
+        "key",
+        "span",
+        "fields",
+        "uses",
+        "when",
+        "must",
+        "version",
+        "kind",
+        "checks"
+      ],
+      "additionalProperties": false
+    },
+    "declaration": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "span": {
+          "$ref": "#/$defs/span"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/field"
+          }
+        },
+        "kind": {
+          "enum": [
+            "type",
+            "variable",
+            "constant"
+          ]
+        },
+        "type_ref": {
+          "$ref": "#/$defs/reference"
+        },
+        "role": {
+          "enum": [
+            "input",
+            "output"
+          ]
+        },
+        "minimum": {
+          "type": "integer"
+        },
+        "maximum": {
+          "type": "integer"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "value": {
+          "type": [
+            "boolean",
+            "integer",
+            "string"
+          ]
+        },
+        "glossary": {
+          "$ref": "#/$defs/reference"
+        }
+      },
+      "required": [
+        "key",
+        "span",
+        "fields",
+        "kind",
+        "values"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "type"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "values": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "variable",
+                  "constant"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "type_ref"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "variable"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "role"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "constant"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "value"
+            ]
+          }
+        }
+      ]
+    },
+    "glossary": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "span": {
+          "$ref": "#/$defs/span"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/field"
+          }
+        },
+        "kind": {
+          "enum": [
+            "term",
+            "const",
+            "symbol"
+          ]
+        },
+        "data": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "key",
+        "span",
+        "fields",
+        "kind",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "edge": {
+      "type": "object",
+      "properties": {
+        "owner": {
+          "$ref": "#/$defs/key"
+        },
+        "reference": {
+          "$ref": "#/$defs/reference"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "resolved",
+            "undefined",
+            "ambiguous",
+            "wrong-kind"
+          ]
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/key"
+          },
+          "uniqueItems": true
+        },
+        "builtin": {
+          "enum": [
+            "bool",
+            "int"
+          ]
+        }
+      },
+      "required": [
+        "owner",
+        "reference",
+        "status",
+        "candidates"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ambiguous"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "candidates": {
+                "minItems": 2
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "pending",
+                  "undefined"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "candidates": {
+                "maxItems": 0
+              }
+            },
+            "not": {
+              "required": [
+                "builtin"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "builtin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "candidates": {
+                "maxItems": 0
+              }
+            },
+            "oneOf": [
+              {
+                "properties": {
+                  "status": {
+                    "const": "resolved"
+                  },
+                  "reference": {
+                    "properties": {
+                      "kind": {
+                        "const": "type"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": "wrong-kind"
+                  },
+                  "reference": {
+                    "properties": {
+                      "kind": {
+                        "const": "uses"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              }
+            },
+            "not": {
+              "required": [
+                "builtin"
+              ]
+            }
+          },
+          "then": {
+            "properties": {
+              "candidates": {
+                "minItems": 1,
+                "maxItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "rejected": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "requirement",
+            "model",
+            "definition",
+            "glossary"
+          ]
+        },
+        "span": {
+          "$ref": "#/$defs/span"
+        },
+        "text": {
+          "type": "string"
+        },
+        "diagnostic_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "kind",
+        "span",
+        "text",
+        "diagnostic_codes"
+      ],
+      "additionalProperties": false
+    },
+    "entry": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "enum": [
+            "workspace",
+            "hierarchy",
+            "body",
+            "spec",
+            "glossary"
+          ]
+        },
+        "uri": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "read",
+            "analyzed",
+            "read-error",
+            "analysis-error",
+            "not-run"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "role",
+        "uri",
+        "path",
+        "state"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "read",
+                  "analyzed",
+                  "analysis-error"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "source"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "read-error",
+                  "not-run"
+                ]
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "source"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "read-error",
+                  "analysis-error",
+                  "not-run"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "reason"
+            ]
+          }
+        }
+      ]
+    },
+    "document": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "enum": [
+            "markdown",
+            "hierarchy"
+          ]
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      ],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entry"
+          }
+        },
+        "workspace_version": {
+          "const": 1
+        },
+        "root": {
+          "type": "string"
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/document"
+          }
+        },
+        "generated": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "consistency": {
+          "const": "per-file"
+        }
+      },
+      "required": [
+        "entries",
+        "documents",
+        "generated",
+        "consistency"
+      ],
+      "additionalProperties": false
+    },
+    "completion": {
+      "enum": [
+        "complete",
+        "partial",
+        "unavailable"
+      ]
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "completeness": {
+          "$ref": "#/$defs/completion"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check"
+          }
+        }
+      },
+      "required": [
+        "source",
+        "completeness",
+        "checks"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

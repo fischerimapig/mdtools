@@ -63,6 +63,8 @@ def allowed_import(source, target):
         return target.startswith('mdtools.core.')
     if source == 'mdtools.spec' or source.startswith('mdtools.spec.'):
         return target == 'mdtools.spec' or target.startswith(('mdtools.spec.', 'mdtools.core.'))
+    if source == 'mdtools.analysis':
+        return target.startswith(('mdtools.core.', 'mdtools.spec.')) or target == 'mdtools.workspace'
     if source == 'mdtools.workspace':
         return target.startswith('mdtools.core.') or target == 'mdsplit.schema'
     if source == 'mdtools.diagnostics':
@@ -120,6 +122,8 @@ def test_boundary_policy_rejects_reverse_and_external_dependencies():
     for target in ('mdtools.main', 'mdtools.build_cli', 'mdtools.workspace', 'mdtools.diagnostics',
                    'glossary.loader', 'mdsplit.schema', 'mdtools.backends.z3', 'z3', 'pygls', 'jsonschema', 'pytest'):
         assert not allowed_import('mdtools.spec.model', target)
+    for source in ('mdtools.core.source', 'mdtools.workspace', 'mdtools.diagnostics', 'mdsplit.compose', 'mdtools.spec.ir'):
+        assert not allowed_import(source, 'mdtools.analysis')
     assert allowed_import('mdtools.spec.results', 'mdtools.spec.model')
     assert allowed_import('mdtools.spec.model', 'mdtools.core.source')
     assert allowed_import('mdtools.spec.results', 'mdtools.core.diagnostics')
@@ -138,6 +142,8 @@ class BlockImports(importlib.abc.MetaPathFinder):
             raise AssertionError('forbidden import: ' + fullname)
 sys.meta_path.insert(0, BlockImports())
 from mdtools.build import build_document
+from mdtools.analysis import analyze_workspace
+from mdtools.spec.ir import render_ir_json
 from mdtools.core.diagnostics import CheckResult, DiagnosticLocation, render_json
 from mdtools.core.source import SourceSnapshot
 from mdtools.spec.model import Body, FieldSource, NodeKey, Requirement
@@ -206,6 +212,9 @@ assert json.loads(format_json(filter_entries(load([defs]), None)))[0]['id'] == '
 settings = root / 'mdtools.toml'
 settings.write_text('version = 1\n[[documents]]\nkind = "markdown"\npath = "input.md"\n')
 assert snapshot_sources(load_workspace(settings))[0].text == text
+analysis = analyze_workspace(settings)
+assert analysis.completeness == 'complete'
+assert json.loads(render_ir_json(analysis.ir))['schema_version'] == 1
 report = inspect_workspace(settings)
 assert report.checks[0].status == 'passed'
 assert json.loads(render_json(report))['schema_version'] == 1
