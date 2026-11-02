@@ -2,6 +2,7 @@
 from hashlib import sha256
 from pathlib import Path
 import json
+import os
 
 import pytest
 
@@ -81,6 +82,41 @@ def test_selection_failure_distinguishes_encoding(tmp_path,raw):
         assert not result.report.sources
         assert result.report.diagnostics[0].code == 'spec.read-error'
     else: assert result.report.diagnostics[0].code.startswith('workspace.')
+
+
+@pytest.mark.parametrize('alias', ['workspace.md', 'symlink.md', 'hardlink.md'])
+@pytest.mark.parametrize('role,code', [
+    ('body', 'workspace.duplicate-input'),
+    ('generated', 'workspace.generated-input'),
+])
+def test_config_alias_registration_returns_unavailable_with_one_snapshot(tmp_path, alias, role, code):
+    config = tmp_path / 'workspace.md'
+    text = ('version=1\n' + (f'generated=["{alias}"]\n' if role == 'generated' else '')
+            + '[[documents]]\nkind="markdown"\n'
+            + f'path="{alias if role == "body" else "doc.md"}"\n')
+    config.write_text(text, encoding='utf-8')
+    (tmp_path / 'doc.md').write_text('本文\n', encoding='utf-8')
+    (tmp_path / 'symlink.md').symlink_to(config)
+    os.link(config, tmp_path / 'hardlink.md')
+
+    result = analyze_workspace(config)
+
+    assert result.completeness == 'unavailable'
+    assert result.workspace is result.resolved is result.ir is None
+    assert result.inputs == ()
+    diagnostic, = result.report.diagnostics
+    assert (diagnostic.code, diagnostic.category, diagnostic.severity) == (code, 'user', 'error')
+    checks = {c.check_id: c for c in result.report.checks}
+    assert checks['workspace.sources'].status == 'failed'
+    for name in ('spec.structure', 'spec.declarations', 'spec.references'):
+        assert checks[name].status == 'not-run'
+        assert checks[name].reason == 'Workspace selection did not complete'
+    snapshot, = result.report.sources
+    assert snapshot.path == config
+    assert snapshot.text == text
+    assert snapshot.ref.snapshot == sha256(text.encode('utf-8')).hexdigest()
+    entry, = result.manifest.entries
+    assert (entry.role, entry.path, entry.state, entry.source) == ('workspace', config, 'read', snapshot.ref)
 
 
 def test_config_and_hierarchy_are_the_snapshots_used_for_selection(tmp_path,monkeypatch):

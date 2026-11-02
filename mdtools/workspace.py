@@ -235,8 +235,10 @@ def load_workspace(config_path: str | Path, *,
         raise WorkspaceError("workspace.not-directory", root, "root must be a directory")
 
     registry = _Registry()
+    # The config is an input identity even when it lives outside the root.
+    registry.add(config_path)
     generated: list[Path] = []
-    # Reserve all output identities before any inputs, independent of input order.
+    # Reserve outputs before body/hierarchy/definition inputs, regardless of order.
     outputs = [doc["canonical"] for doc in data["documents"] if doc["kind"] == "hierarchy"]
     for value in outputs + data.get("generated", []):
         path = _within(root, root, value)
