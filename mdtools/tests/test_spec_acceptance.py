@@ -143,6 +143,8 @@ def test_zero_requirements_and_rejected_syntax(workspace, bad, validator):
         else:
             assert ir['rejected']
         assert all(r['text'] in body for r in ir['rejected'])
+        if bad == 'json':
+            assert [r['text'] for r in ir['rejected']] == ['```mdspec\n{\n```\n']
         assert all(d['primary']['span']['source'] == source(workspace.parent/'only.md') for d in data['report']['diagnostics'])
     else:
         assert ir['requirements'] == ir['models'] == ir['rejected'] == []
