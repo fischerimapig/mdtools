@@ -216,9 +216,12 @@ assert json.loads(format_json(filter_entries(load([defs]), None)))[0]['id'] == '
 settings = root / 'mdtools.toml'
 settings.write_text('version = 1\n[[documents]]\nkind = "markdown"\npath = "input.md"\n')
 assert snapshot_sources(load_workspace(settings))[0].text == text
-analysis = analyze_workspace(settings)
+analysis = analyze_workspace(Path('docs/spec/examples/m2-acceptance/mdtools.toml').resolve())
 assert analysis.completeness == 'complete'
-assert json.loads(render_ir_json(analysis.ir))['schema_version'] == 1
+wire = json.loads(render_ir_json(analysis.ir))
+assert wire['schema_version'] == 1
+assert [r['key']['name'] for r in wire['requirements']] == ['REQ-SECTION', 'REQ-DETAIL', 'REQ-NORMAL']
+assert wire['models'][0]['must']['text'] == 'initial == \"new\"'
 report = inspect_workspace(settings)
 assert report.checks[0].status == 'passed'
 assert json.loads(render_json(report))['schema_version'] == 1

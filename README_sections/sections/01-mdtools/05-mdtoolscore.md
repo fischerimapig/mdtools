@@ -96,3 +96,5 @@ text = render_ir_json(analysis.ir)  # 戻り値だけ。出力・終了処理な
 ```
 
 IRは原典からの生成物です。重複した全出現・全参照候補・元位置・拒否断片を保持し、式と論理はM3の理由付きnot-runです。[IR Schema](docs/spec/spec-ir-v1.schema.json)と契約の#39追記を参照してください。ファイルごとのsnapshotであり、atomic snapshotや現在の鮮度は保証しません。spec index/show CLIは#40で追加しました。#37の既知P3制限2件と#31は残っています。
+
+M2 / #41の[受け入れハーネス・利用例・CIとテスト対応表](docs/spec/m2-acceptance.md)は、原典収集から実CLIまでの保証とM3への引継ぎをまとめています。

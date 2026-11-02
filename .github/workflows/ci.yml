@@ -42,7 +42,7 @@ jobs:
         run: uv sync --locked --group dev --extra yaml
 
       # Includes test_document_structure.py: text equality alone can hide lost headings.
-      - name: Run tests and Markdown heading structure checks
+      - name: Run unit, integration, E2E, schema and heading structure checks
         run: uv run --locked pytest -q
 
       - name: CLI smoke checks
@@ -52,6 +52,8 @@ jobs:
           uv run --locked mdtools spec index --help
           uv run --locked mdtools spec show --help
           uv run --locked mdtools spec index --project docs/spec/examples/model-contract/mdtools.toml --format json
+          uv run --locked mdtools spec index --project docs/spec/examples/m2-acceptance/mdtools.toml --format json
+          uv run --locked mdtools spec show REQ-SECTION --project docs/spec/examples/m2-acceptance/mdtools.toml
           uv run --locked mdtools spec show REQ-NORMAL --project docs/spec/examples/model-contract/mdtools.toml
           uv run --locked mdtools build --help
           uv run --locked mdtools mdsplit --help
@@ -65,7 +67,7 @@ jobs:
 
       - name: Verify Markdown round-trip
         run: |
-          for document in README.md mdsplit/README.md docs/spec/contract-v1.md docs/plans/core-refactor.md; do
+          for document in README.md mdsplit/README.md docs/spec/contract-v1.md docs/plans/core-refactor.md docs/spec/examples/m2-acceptance/manual.md; do
             hierarchy="${document%.md}_sections/hierarchy.json"
             uv run --locked mdtools mdsplit verify "$hierarchy"
             uv run --locked mdtools mdsplit compose "$hierarchy" > "${RUNNER_TEMP}/composed.md"
