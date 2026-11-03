@@ -1,5 +1,5 @@
 
-矢印はimport・API利用の方向を表す。実線はM1の実装、点線は後続Milestoneの設計であり、未実装パッケージや新しいCLIは追加しない。
+矢印はimport・API利用の方向を表す。実線は実装済み、点線は後続工程の設計を示す。M2 / #35でspecのモデル・結果型、#36で元snapshotからの要件抽出器、#37で共有定義の厳格ローダーを追加した。Graph構築器は#38、解析サービスとIRは#39で追加した。index/showのCLIは#40で追加した。
 
 ```mermaid
 flowchart TB
@@ -12,11 +12,11 @@ flowchart TB
     workspace --> core
     diagnostics["mdtools.diagnostics: Workspace診断組立て"] --> workspace
     diagnostics --> core
-    hosts["将来のCLI / LSPホスト"] -.-> service["解析サービス・外側の組立て"]
-    service -.-> workspace
-    service -.-> spec["spec: 要件・定義・IR・検査計画"]
+    hosts["spec CLI / 将来のLSPホスト"] --> service["mdtools.analysis: 解析サービス"]
+    service --> workspace
+    service --> spec["spec: 要件・定義・IR・検査計画"]
     service -.-> adapters["任意backend adapter"]
-    spec -.-> core
+    spec --> core
     adapters -.-> spec
     adapters -.-> core
 ```
@@ -26,10 +26,10 @@ flowchart TB
 | `mdtools.core` | 汎用I/O、Markdown走査、Pandoc属性、SourceRef / SourceSpan / SourceSnapshot / SourceMap、診断のモデル・表示。core内と標準ライブラリに依存し、`core.io`だけがYAML入力時に任意のPyYAMLを遅延importする |
 | `mdsplit` / `langfilter` / `glossary` / `mdhtml_rewrite`の処理本体 | 自ツールのモデル・変換・検証とcoreを利用する。文書階層は`mdsplit.schema`に残し、要件の依存関係モデルと分ける |
 | `mdtools.workspace` | 設定・hierarchy登録を検証し、原典と生成物を区別して本文snapshotを取得する組立て層。`mdsplit.schema`と`core.source`を利用するためcoreへ移さない。定義のkind=specは登録分類だけで、内容の解析・要件ID解決を行わない |
-| `mdtools.diagnostics` | Workspace固有の例外を共通診断と明示的な検査状態へ変換する組立て層。workspaceとcore診断に依存する。汎用モデル・ソート・JSON/テキスト表示は`core.diagnostics`に残す |
+| `mdtools.diagnostics` | Workspace固有の例外と定義snapshot取得前の読込失敗を共通診断と明示的な検査状態へ変換する組立て層。workspaceとcore診断に依存する。汎用モデル・ソート・JSON/テキスト表示は`core.diagnostics`に残す |
 | `mdtools.build` | compose・言語抽出・表示用glossaryを順に呼ぶ文書生成の組立て層。各処理APIへ依存し、coreから各ツールを呼ばせない。Workspaceの登録や仕様検査は暗黙に実行しない |
 | 既存CLIと互換入口 | 引数、stdin、最終出力先、表示、終了コードを担当し、上記の処理APIを呼ぶ。ファイルを扱う処理APIの読書きやbuildの中間ファイルは本体側の責務として維持する |
-| 将来のspec層 | 要件抽出、要件ID・参照の解決、要件/制約の意味、IRと検査計画を担当し、coreのsnapshot・位置・診断を再利用する。既存文書処理の意味や出力規則を書き換えない |
+| spec層 | M2 / #35のモデル・結果型、#36の要件抽出器、#37の共有定義ローダー。coreのsnapshot・位置・診断を再利用し、spec/core/標準ライブラリにのみ依存する。要件ID・参照の解決、要件/制約の意味、IRと検査計画は後続Issue。既存文書処理の意味や出力規則を書き換えない |
 | 将来の解析サービス・host・adapter | 解析サービスがWorkspace入力とspec処理を組み立て、外側で選択したadapterを渡す。CLI・LSPホストは同じサービス/APIと共通の診断結果を利用する。adapterはspecの入出力契約とcoreに依存し、外部backendの実行依存を閉じ込める |
 
 coreと既存文書処理からCLI、workspace、診断組立て、build、spec、backendへ逆依存しない。coreから文書処理への依存、workspaceから診断組立てへの依存も作らない。specの処理本体はCLIや特定backend実装をimportせず、将来必要になった時点で外側から能力を渡す。汎用診断の`requirement_id`は不透明な付帯文字列で、IDの存在・一意性・意味をcoreで解決しない。severity、診断分類、検査状態は独立して維持し、診断0件から成功を推定しない。
@@ -61,6 +61,6 @@ assert text_from_memory == "Hello\n"
 - `langfilter`は既存の言語抽出を維持し、形式記述を検査しない。
 - `mdtools build`は`compose → langfilter → glossary`の必要段階だけを実行し、中間ファイル保存・UTF-8再読込による既存の改行正規化を維持する。未定義IDのerrorは1、定義読込エラーは2、I/Oエラーは1、引数エラーは2を維持する。警告の文面・出力先も変えない。
 - #31は未解消。断片末尾CR＋次断片先頭LFで新しくCRLFができると`SourceMapBuilder.build()` / `compose_with_source_map()`が失敗する。通常のCRLF本文全般の問題ではない。buildは従来の`compose()`を使い、map構築に切り替えない。該当mapを正確な原稿追跡として扱わず、診断化するhostはtool-error / errorと理由、位置なしまたはspanなしunmappedを使う。近傍原稿への丸めや架空の行列を作らず、修正は#31で扱う。
-- `mdtools spec index/show/check/context`は後続Milestoneの予定であり、M1には存在しない。M5の選択的な検査ゲートも先取りしない。
+- `mdtools spec index/show`はM2 / #40で追加した。check/contextは後続Milestoneの予定である。M5の選択的な検査ゲートも先取りしない。
 
 依存方向は`mdtools/tests/test_boundaries.py`で本体の相対・関数内importと既存CLI dispatch表を含むグラフ、循環の不在、CLIを禁止した直接API呼出を検証する。`python -S`でsite packagesを除き、PyYAML・dev validator・backendなしのJSON/既存経路を検証する。PyYAMLは任意のYAML入力用、jsonschemaは公開Schema回帰のdev用のままで、必須実行時依存にしない。

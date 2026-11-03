@@ -1,0 +1,6 @@
+{
+  "entries": [
+    {"id": "paid label", "kind": "term", "names": {"ja": "支払い済み", "en": "Paid"}},
+    {"id": "order-state", "kind": "symbol", "symbol": "S"}
+  ]
+}

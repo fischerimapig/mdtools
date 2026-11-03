@@ -30,13 +30,43 @@
               "file": "sections/01-mdtoolscore/02-section/02-coremdscan.md",
               "order": 1,
               "children": []
+            },
+            {
+              "title": "core.pandoc",
+              "file": "sections/01-mdtoolscore/02-section/03-corepandoc.md",
+              "order": 2,
+              "children": []
             }
           ]
         },
         {
+          "title": "採用した仕様改善",
+          "file": "sections/01-mdtoolscore/03-section.md",
+          "order": 2,
+          "children": []
+        },
+        {
+          "title": "実装の流れ",
+          "file": "sections/01-mdtoolscore/04-section.md",
+          "order": 3,
+          "children": []
+        },
+        {
+          "title": "テスト結果",
+          "file": "sections/01-mdtoolscore/05-section.md",
+          "order": 4,
+          "children": []
+        },
+        {
+          "title": "今後の候補",
+          "file": "sections/01-mdtoolscore/06-section.md",
+          "order": 5,
+          "children": []
+        },
+        {
           "title": "M1 / #26 責務境界の整理",
           "file": "sections/01-mdtoolscore/03-m1-boundaries.md",
-          "order": 2,
+          "order": 6,
           "children": []
         }
       ]

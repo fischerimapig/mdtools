@@ -1,0 +1,24 @@
+version = 1
+root = ".."
+generated = ["m2-acceptance/dist/manual.en.md"]
+
+[[documents]]
+kind = "markdown"
+path = "m2-acceptance/examples.md"
+
+[[documents]]
+kind = "hierarchy"
+path = "m2-acceptance/manual_sections/hierarchy.json"
+canonical = "m2-acceptance/manual.md"
+
+[[documents]]
+kind = "markdown"
+path = "model-contract/normal.md"
+
+[[definitions]]
+kind = "spec"
+path = "model-contract/definitions.json"
+
+[[definitions]]
+kind = "glossary"
+path = "model-contract/glossary.json"

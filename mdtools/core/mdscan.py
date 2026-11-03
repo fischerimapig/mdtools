@@ -3,9 +3,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Iterator
 
 from .pandoc import CODE_FENCE_RE as _CODE_FENCE_RE
+
+# Shared #34 raw HTML block boundaries. Literal mentions in prose do not open
+# a block; the tag itself may continue on the following line.
+PRE_OPEN_RE = re.compile(r"^ {0,3}<pre(?=[ \t>]|\r?$)", re.IGNORECASE)
+PRE_CLOSE_RE = re.compile(r"</pre>", re.IGNORECASE)
 
 
 @dataclass(frozen=True)

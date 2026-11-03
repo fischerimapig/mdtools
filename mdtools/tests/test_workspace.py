@@ -213,6 +213,57 @@ def test_duplicate_documents_include_path_symlink_and_hardlink_aliases(tmp_path,
     error(settings, "workspace.duplicate-input")
 
 
+@pytest.mark.parametrize("alias", ["workspace.md", "./workspace.md", "sub/../workspace.md", "symlink.md", "hardlink.md"])
+def test_config_cannot_be_registered_as_a_document_through_an_alias(tmp_path, alias):
+    settings = write(tmp_path / "workspace.md", "version = 1\n" + markdown(alias))
+    (tmp_path / "sub").mkdir()
+    (tmp_path / "symlink.md").symlink_to(settings)
+    os.link(settings, tmp_path / "hardlink.md")
+    assert error(settings, "workspace.duplicate-input").path == (tmp_path / alias).resolve()
+
+
+@pytest.mark.parametrize("role", ["hierarchy", "preamble", "section", "spec", "glossary"])
+def test_config_identity_is_reserved_across_input_roles(tmp_path, role):
+    if role == "hierarchy":
+        documents = hierarchy_config().replace("parts/hierarchy.json", "workspace.md")
+    elif role in ("preamble", "section"):
+        if role == "preamble":
+            hierarchy(tmp_path, metadata={"preamble_file": "../workspace.md"})
+        else:
+            hierarchy(tmp_path, sections=[{"title": "A", "file": "../workspace.md", "order": 0}])
+        documents = hierarchy_config()
+    else:
+        write(tmp_path / "doc.md")
+        documents = markdown() + f'[[definitions]]\nkind = "{role}"\npath = "workspace.md"\n'
+    settings = write(tmp_path / "workspace.md", "version = 1\n" + documents)
+    assert error(settings, "workspace.duplicate-input").path == settings
+
+
+@pytest.mark.parametrize("alias", ["workspace.md", "symlink.md", "hardlink.md"])
+@pytest.mark.parametrize("output", ["canonical", "generated"])
+def test_config_cannot_be_registered_as_generated_output(tmp_path, alias, output):
+    if output == "canonical":
+        hierarchy(tmp_path)
+        text = "version = 1\n" + hierarchy_config(alias)
+    else:
+        write(tmp_path / "doc.md")
+        text = f'version = 1\ngenerated = ["{alias}"]\n' + markdown()
+    settings = write(tmp_path / "workspace.md", text)
+    (tmp_path / "symlink.md").symlink_to(settings)
+    os.link(settings, tmp_path / "hardlink.md")
+    assert error(settings, "workspace.generated-input").path == (tmp_path / alias).resolve()
+
+
+@pytest.mark.parametrize("root", [".", "project"])
+def test_markdown_named_config_can_register_other_documents_inside_or_outside_root(tmp_path, root):
+    source = write(tmp_path / root / "doc.md")
+    settings = write(tmp_path / "workspace.md", f'version = 1\nroot = "{root}"\n' + markdown())
+    workspace = load_workspace(settings)
+    assert workspace.config_path == settings
+    assert workspace.analysis_files == (source,)
+    assert workspace.root == source.parent
+
+
 @pytest.mark.parametrize("canonical_exists", [True, False])
 @pytest.mark.parametrize("canonical_first", [True, False])
 def test_canonical_cannot_be_a_document_in_either_registration_order(tmp_path, canonical_exists, canonical_first):

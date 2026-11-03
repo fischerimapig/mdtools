@@ -61,6 +61,10 @@ def allowed_import(source, target):
         return target == 'mdtools' or (target == source.split('.')[0] and target != 'mdtools')
     if source.startswith('mdtools.core'):
         return target.startswith('mdtools.core.')
+    if source == 'mdtools.spec' or source.startswith('mdtools.spec.'):
+        return target == 'mdtools.spec' or target.startswith(('mdtools.spec.', 'mdtools.core.'))
+    if source == 'mdtools.analysis':
+        return target.startswith(('mdtools.core.', 'mdtools.spec.')) or target == 'mdtools.workspace'
     if source == 'mdtools.workspace':
         return target.startswith('mdtools.core.') or target == 'mdsplit.schema'
     if source == 'mdtools.diagnostics':
@@ -69,7 +73,11 @@ def allowed_import(source, target):
         return target.startswith('mdtools.core.') or target in {
             'glossary.loader', 'glossary.resolver', 'langfilter.filter', 'mdsplit.compose',
         }
-    if source.endswith(('.cli', '.__main__')) or source in {'mdtools.main', 'mdtools.build_cli'}:
+    if source == 'mdtools.spec_cli':
+        return target.startswith('mdtools.core.') or target in {'mdtools.analysis', 'mdtools.spec.ir', 'mdtools.spec.model'}
+    if source == 'mdtools.main' and target == 'mdtools.spec_cli':
+        return True
+    if source.endswith(('.cli', '.__main__')) or source in {'mdtools.main', 'mdtools.build_cli', 'mdtools.spec_cli'}:
         # Presentation/dispatch is outside the processing layers.
         return not target.startswith(('mdtools.spec', 'mdtools.backends'))
     if source.split('.')[0] in PACKAGES[1:]:
@@ -109,12 +117,20 @@ def test_production_import_directions_and_no_cycles():
 
 def test_boundary_policy_rejects_reverse_and_external_dependencies():
     for source in ('mdtools.core.source', 'mdsplit.compose', 'mdtools.build', 'mdtools.workspace', 'mdtools.diagnostics'):
-        for target in ('mdtools.main', 'mdtools.build_cli', 'mdsplit.cli', 'mdtools.spec.index', 'mdtools.backends.z3', 'z3', 'pygls', 'jsonschema', 'pytest'):
+        for target in ('mdtools.main', 'mdtools.build_cli', 'mdtools.spec_cli', 'mdsplit.cli', 'mdtools.spec.index', 'mdtools.backends.z3', 'z3', 'pygls', 'jsonschema', 'pytest'):
             assert not allowed_import(source, target), (source, target)
     assert not allowed_import('mdtools.core.source', 'mdsplit.schema')
     assert not allowed_import('mdsplit.compose', 'mdtools.workspace')
     assert not allowed_import('mdsplit.compose', 'mdtools.diagnostics')
     assert not allowed_import('glossary.loader', 'mdtools.build')
+    for target in ('mdtools.main', 'mdtools.build_cli', 'mdtools.spec_cli', 'mdtools.workspace', 'mdtools.diagnostics',
+                   'glossary.loader', 'mdsplit.schema', 'mdtools.backends.z3', 'z3', 'pygls', 'jsonschema', 'pytest'):
+        assert not allowed_import('mdtools.spec.model', target)
+    for source in ('mdtools.core.source', 'mdtools.workspace', 'mdtools.diagnostics', 'mdsplit.compose', 'mdtools.spec.ir'):
+        assert not allowed_import(source, 'mdtools.analysis')
+    assert allowed_import('mdtools.spec.results', 'mdtools.spec.model')
+    assert allowed_import('mdtools.spec.model', 'mdtools.core.source')
+    assert allowed_import('mdtools.spec.results', 'mdtools.core.diagnostics')
 
 
 def test_processing_apis_without_cli_or_optional_dependencies(tmp_path):
@@ -126,11 +142,19 @@ import sys
 
 class BlockImports(importlib.abc.MetaPathFinder):
     def find_spec(self, fullname, path=None, target=None):
-        if fullname.endswith(('.cli', '.__main__')) or fullname in ('mdtools.main', 'mdtools.build_cli') or fullname.split('.')[0] in ('yaml', 'jsonschema', 'pytest', 'z3', 'cue', 'quint', 'lean', 'pygls', 'lsprotocol'):
+        if fullname.endswith(('.cli', '.__main__')) or fullname in ('mdtools.main', 'mdtools.build_cli', 'mdtools.spec_cli') or fullname.split('.')[0] in ('yaml', 'jsonschema', 'pytest', 'z3', 'cue', 'quint', 'lean', 'pygls', 'lsprotocol'):
             raise AssertionError('forbidden import: ' + fullname)
 sys.meta_path.insert(0, BlockImports())
 from mdtools.build import build_document
-from mdtools.core.diagnostics import render_json
+from mdtools.analysis import analyze_workspace
+from mdtools.spec.ir import render_ir_json
+from mdtools.core.diagnostics import CheckResult, DiagnosticLocation, render_json
+from mdtools.core.source import SourceSnapshot
+from mdtools.spec.model import Body, FieldSource, NodeKey, Requirement
+from mdtools.spec.results import AnalysisChecks, LocalAnalysis
+from mdtools.spec.parser import parse_requirements
+from mdtools.spec.loader import load_definitions
+from mdtools.spec.resolver import resolve_analyses
 from mdtools.diagnostics import inspect_workspace
 from mdtools.workspace import load_workspace, snapshot_sources
 from mdsplit.decompose import decompose
@@ -145,6 +169,36 @@ from mdhtml_rewrite.rewrite import rewrite_file
 from mdhtml_rewrite.convert import convert_single
 
 root = Path(sys.argv[1])
+snapshot = SourceSnapshot('memory:spec-smoke', '日本語📚\r\n')
+span = snapshot.span()
+fields = tuple(FieldSource(path, DiagnosticLocation('unmapped', reason='smoke test has no attribute token'), span)
+               for path in ('/id', '/spec-version', '/status'))
+requirement = Requirement(NodeKey('requirement', 'REQ-SMOKE', snapshot.ref, 0), span, fields,
+                          (Body(None, snapshot.text, span),), CheckResult('spec.structure', 'passed'), 'natural-only')
+checks = AnalysisChecks(CheckResult('spec.structure', 'passed'), CheckResult('spec.declarations', 'passed'),
+                        CheckResult('spec.references', 'not-run', 'Workspace resolution deferred'))
+local = LocalAnalysis(snapshot, checks, 'complete', (requirement,))
+assert json.loads(render_json(local.report))['checks']
+raw = '::: {.requirement #REQ-EXTRACT spec-version=1}\n日本語📚\n```mdspec\n{"version":1,"id":"MODEL-EXTRACT","kind":"constraint","uses":[],"when":"true","must":"true"}\n```\n:::\n'
+extracted = parse_requirements(SourceSnapshot('memory:extracted', raw))
+assert extracted.completeness == 'complete'
+assert extracted.requirements[0].model.key.name == 'MODEL-EXTRACT'
+assert all(c.status == 'not-run' for c in extracted.requirements[0].model.checks)
+assert json.loads(render_json(extracted.report))['sources'][0]['uri'] == 'memory:extracted'
+definitions = SourceSnapshot('memory:definitions', '{"version":1,"types":{},"variables":{"paid":{"type":"bool","role":"input"}},"constants":{}}')
+loaded = load_definitions(definitions, kind='spec', format='json')
+assert loaded.completeness == 'complete'
+assert loaded.declarations[0].key.name == 'paid'
+assert loaded.references[0][1].name == 'bool'
+assert all(check.status == 'not-run' for check in (loaded.checks.references, *loaded.checks.expressions))
+assert json.loads(render_json(loaded.report))['sources'][0]['uri'] == 'memory:definitions'
+resolved = resolve_analyses((local, extracted, loaded))
+assert resolved.completeness == 'complete'
+assert resolved.checks.references.status == 'passed'
+assert resolved.registries['declaration']['paid'] == (loaded.declarations[0].key,)
+assert resolved.graph.edges[0].builtin == 'bool'
+assert all(check.status == 'not-run' and check.reason for check in resolved.checks.expressions)
+assert len(json.loads(render_json(resolved.report))['sources']) == 3
 source = root / 'input.md'
 text = '# Title\n\n::: {lang=en}\nHello []{.term id=unit}\n:::\n\n::: {lang=ja}\n日本語\n:::\n'
 source.write_text(text, encoding='utf-8')
@@ -162,6 +216,12 @@ assert json.loads(format_json(filter_entries(load([defs]), None)))[0]['id'] == '
 settings = root / 'mdtools.toml'
 settings.write_text('version = 1\n[[documents]]\nkind = "markdown"\npath = "input.md"\n')
 assert snapshot_sources(load_workspace(settings))[0].text == text
+analysis = analyze_workspace(Path('docs/spec/examples/m2-acceptance/mdtools.toml').resolve())
+assert analysis.completeness == 'complete'
+wire = json.loads(render_ir_json(analysis.ir))
+assert wire['schema_version'] == 1
+assert [r['key']['name'] for r in wire['requirements']] == ['REQ-SECTION', 'REQ-DETAIL', 'REQ-NORMAL']
+assert wire['models'][0]['must']['text'] == 'initial == \"new\"'
 report = inspect_workspace(settings)
 assert report.checks[0].status == 'passed'
 assert json.loads(render_json(report))['schema_version'] == 1

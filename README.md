@@ -4,6 +4,7 @@ Markdown 文書の編集を補助するコマンドラインツール集。
 
 | ツール | 概要 |
 |--------|------|
+| **spec** | 登録原典の要件・モデル・定義・参照・出典とM2検査状態を取得する |
 | **build** | section 原稿から compose / langfilter / glossary を必要分だけ実行して配布用 Markdown/QMD を生成する |
 | **mdsplit** | Markdown/QMD 文書を見出し単位のセクションファイルに分解・再構成する |
 | **langfilter** | 日英併記 Markdown から指定言語のブロックだけを抽出する |
@@ -174,6 +175,45 @@ mdtools glossary verify manuscript.qmd -f defs.json
 
 詳細とスキーマ定義は [glossary/README.md](glossary/README.md) を参照。
 
+### spec
+
+Workspaceへ明示登録した原典から要件・モデル・宣言・glossary・明示参照と出典を取得します。
+
+```bash
+mdtools spec index --project docs/spec/examples/model-contract/mdtools.toml --format json
+mdtools spec show REQ-NORMAL --project docs/spec/examples/model-contract/mdtools.toml --format text
+mdtools spec show REQ-MULTILINGUAL --project docs/spec/examples/model-contract/mdtools.toml --format json
+```
+
+`--project PATH`は必須、`--format`はtext/json（既定text）です。showの対象は大小文字を区別する要件ID一つです。
+設定や生成IRを暗黙に探索せず、langfilter・glossary置換前の原典を解析します。
+
+処理順は「設定・原典選択 → snapshot取得 → parser/loader → resolver・SpecGraph → SpecIR → 表示」です。
+indexはIR全体を返します。showはそのIRから対象要件の全出現、各言語本文、所属モデル、uses先の宣言と型依存・glossary関連付け、明示参照、対象要件内の拒否断片を選択します。
+refs先のID・解決状態・全候補を保持し、他要件の本文は展開しません。
+両コマンドは独立し、それぞれWorkspace全体を一度解析します。indexのJSONをshowへ入力する方式ではなく、原典が変わればsnapshotも変わります。
+
+JSON stdoutは末尾LF付きの単一objectです。`schema_version=1`、`command`、解析の`status`、`exit_code`、`result`、全体の`report`を持ちます。
+showは成功・失敗とも`query.requirement_id`に指定IDを保持します。これは原典中の出現識別子NodeKeyとは別の問い合わせ条件です。
+showのresultは`requirements/models/declarations/glossary/references/rejected`の配列で、重複IDも全出現を保持します。
+IR生成不能・対象不存在ではresultはnullです。解析済み集合に対象がなければ`spec.unknown-id`を追加しますが、解析status自体は変更しません。
+通常経路のstderrは空で、診断はreportへ集約します。textは全フィールドを階層パスと引用した値で表示し、全体診断には共通rendererを使用します。
+パスは`.`で区切り、objectキーが`[A-Za-z_][A-Za-z0-9_]*`に一致する場合はそのまま、それ以外はJSON文字列として引用・escapeして`[...]`で囲みます。空文字・改行・引用符・backslashもこの規則で扱い、配列添字の`[0]`とキーの`["[0]"]`を区別します。
+
+```text
+result.glossary.[0].data.["a.b"] = "flat"
+result.glossary.[0].data.a.b = "nested"
+result.glossary.[0].data.["line\nbreak"] = "value"
+```
+
+終了コードは0=M2解析・表示成功、1=設定/原稿/宣言/参照不正・未対応、2=引数不備、3=解析completeで対象不存在、4=I/O/文字コード/内部実行失敗、5=必要な任意依存不足です。
+優先順位は`2 → 4 → 5 → 1 → 3 → 0`で、showの対象が存在しても全体のpartial/unavailableや失敗を隠しません。
+引数不備はstdoutを空にしてstderrへusageと理由、helpはstdoutへ表示して0で終了します。
+
+M2成功は構造・宣言値・明示参照の範囲です。natural-only、形式記述の構造不正・未対応、M3の式構文/式型/uses照合/論理の理由付きnot-runを区別します。
+論理的な無矛盾性や本文と形式の意味的一致は保証しません。YAML入力だけが任意依存PyYAMLを必要とします。
+詳細は[CLI契約](docs/spec/contract-v1.md#m2-indexshowの入出力診断契約)を参照してください。
+
 ## 典型的なワークフロー
 
 ```bash
@@ -228,6 +268,73 @@ API・分類・位置なし診断・根拠・表示規則は契約の「M1 / #25
 
 M1 / #26ではCLI内のbuild本体を`mdtools.build.build_document()`へ、mdsplitの存在チェックを`mdsplit.verify.verify()`へ分離しました。例えば`build_document(input_text="本文", lang="ja")`はCLI・stdinを経由せず文字列を返し、`verify(hierarchy_path)`はsection数と欠落参照を返します。既存の独立した処理APIと互換入口は維持します。責務表、将来の解析サービス・backend・CLI・LSPホストの境界、例外と互換性の詳細は契約の「依存方向と既存CLIの互換性」を参照してください。
 
+M2 / #35では`mdtools.spec.model` / `mdtools.spec.results`に要件・共有宣言・明示参照・ローカル/全体解析結果の不変データ契約を追加しました。M1の出典・診断を再利用し、部分結果と式未検査を保持します。契約の「M2 / #35 仕様モデルと解析結果」「M2 index/showの入出力・診断契約」と[小さなfixture](docs/spec/examples/model-contract/README.md)を参照してください。
+
+M2 / #36の`mdtools.spec.parser.parse_requirements(snapshot)`は、元の単一原稿・section原稿から要件、言語別本文、最大1個のmdspec、refs/usesと原稿位置を抽出し、`LocalAnalysis`を返します。Workspaceで選んだ各snapshotを個別に渡し、compose・言語抽出・glossary置換前に解析します。構造不正は診断と部分結果に残し、壊れたモデルをnatural-onlyにしません。参照解決と式・論理検査は理由付きnot-runです。
+
+```python
+from mdtools.workspace import load_workspace, snapshot_sources
+from mdtools.spec.parser import parse_requirements
+
+workspace = load_workspace("docs/spec/examples/cancellation/mdtools.toml")
+results = tuple(parse_requirements(source) for source in snapshot_sources(workspace))
+assert [req.key.name for result in results for req in result.requirements] == [
+    "REQ-CANCEL-ALLOW", "REQ-CANCEL-DENY", "REQ-CANCEL-GUIDANCE",
+]
+```
+
+このAPIはCLI・任意依存・ファイルI/Oを必要としません。上例の読込はWorkspace側で行います。共通サービス・SpecIRは#39で追加し、spec index/show CLIは#40で追加しました。
+
+M2 / #37の`mdtools.spec.loader.load_definitions(snapshot, kind=..., format=...)`は、明示登録したspec/glossaryの元snapshotから共有宣言・表示データ・明示参照・出典・診断を`LocalAnalysis`へ収集します。重複候補を上書きせず、不正な宣言やentryを原文の拒否断片へ残します。JSONは追加依存不要、YAMLは任意のPyYAMLを使い、anchor/alias/merge/tag/複数文書は未対応とします。既存glossary CLIの後勝ち・警告は変更しません。
+
+```python
+from mdtools.diagnostics import read_definition_source
+from mdtools.spec.loader import load_definitions
+from mdtools.workspace import load_workspace
+
+workspace = load_workspace("docs/spec/examples/model-contract/mdtools.toml")
+results = tuple(
+    load_definitions(read_definition_source(item.path), kind=item.kind,
+                     format=item.path.suffix.lower().removeprefix("."))
+    for item in workspace.definitions
+)
+assert [len(result.nodes) for result in results] == [4, 2]
+assert all(result.completeness == "complete" for result in results)
+assert all(result.checks.references.status == "not-run" for result in results)
+```
+
+読込失敗は`DefinitionReadError.report`の共通診断へ返し、存在しないsnapshotを作りません。構造・ローカル宣言値がcompleteでも、名前付き型の値所属・参照解決は#38、式・論理はM3の未検査です。対応能力、回復境界、読込失敗の扱いは契約、実fixtureと出典の検証は[チェックリスト](mdtools/spec/tests/README.md#issue-37-厳格ローダーの検証チェックリスト)を参照してください。
+
+M2 / #38の`mdtools.spec.resolver.resolve_analyses(local_results)`は、全収集結果から名前空間ごとのレジストリと明示参照の`SpecGraph`を構築します。全候補を保持して未定義・曖昧・種別不一致を区別し、列挙型定数の値所属も検査します。読み取り専用の`resolved.registries`、全体checks/completeness、元snapshotとローカル診断を含む`resolved.report`を返します。
+
+```python
+from mdtools.spec.resolver import resolve_analyses
+
+# 上のloader例で得た仕様定義とglossaryを結合する。
+resolved = resolve_analyses(results)
+assert resolved.completeness == "complete"
+assert resolved.checks.references.status == "passed"
+assert resolved.registries["declaration"]["paid"][0].name == "paid"
+assert all(check.status == "not-run" for check in resolved.checks.expressions)
+```
+
+入力順と原稿のID・全出現・全明示参照を保持し、自己参照や循環を展開しません。入力が不完全なら個別参照が解決できても全体の参照検査をpassedにしません。APIはファイルを再読込せず、Workspaceの登録漏れ検出・サービス/IR/Schema（#39）、spec CLI（#40）、式・論理検査（M3）へ進みません。判定順・組み込み型・診断抑制・状態集約は契約、受け入れ条件との対応は[#38チェックリスト](mdtools/spec/tests/README.md#issue-38-specgraphの検証チェックリスト)を参照してください。
+
+M2 / #39の`mdtools.analysis.analyze_workspace(project)`は、登録原典の取得からparser/loader/resolverと版付きSpecIR生成までを組み立てます。設定・hierarchy・本文・共有定義の実際のsnapshotをmanifestへ残し、読込不能入力を除外したresolverの成功をサービス全体の成功へ変更しません。
+
+```python
+from mdtools.analysis import analyze_workspace
+from mdtools.spec.ir import render_ir_json
+
+analysis = analyze_workspace("docs/spec/examples/cancellation/mdtools.toml")
+assert analysis.completeness == "complete"
+text = render_ir_json(analysis.ir)  # 戻り値だけ。出力・終了処理なし
+```
+
+IRは原典からの生成物です。重複した全出現・全参照候補・元位置・拒否断片を保持し、式と論理はM3の理由付きnot-runです。[IR Schema](docs/spec/spec-ir-v1.schema.json)と契約の#39追記を参照してください。ファイルごとのsnapshotであり、atomic snapshotや現在の鮮度は保証しません。spec index/show CLIは#40で追加しました。#37の既知P3制限2件と#31は残っています。
+
+M2 / #41の[受け入れハーネス・利用例・CIとテスト対応表](docs/spec/m2-acceptance.md)は、原典収集から実CLIまでの保証とM3への引継ぎをまとめています。
+
 ## 文書管理
 
 主要 Markdown 文書は `mdsplit` で section 管理します。canonical `.md` と対応する `*_sections/` は同じ変更として扱い、最後に round-trip を確認します。
@@ -269,6 +376,9 @@ MIT
 
 ```bash
 mdtools --help
+mdtools spec --help
+mdtools spec index --help
+mdtools spec show --help
 mdtools build --help
 mdtools mdsplit --help
 mdtools langfilter --help

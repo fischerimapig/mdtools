@@ -1,6 +1,6 @@
 # キャンセル要件の契約例
 
-[仕様記述契約v1](../../contract-v1.md) のレビュー用サンプル。M1では原稿と共有定義の形式を示す。仕様パーサー、Z3実行、検査結果ファイルはこの例に含まれず、以下の期待値はM2以降の実装が満たす条件である。
+[仕様記述契約v1](../../contract-v1.md) のレビュー用サンプル。M1では原稿と共有定義の形式を示す。現在はM2の実サービス・CLI・E2E入力でもある。Z3実行と論理衝突の検出はM3の期待値である。
 
 | ファイル | 役割 |
 |----------|------|
@@ -10,7 +10,7 @@
 | [definitions.json](definitions.json) | 共有入力・出力と、型・範囲付きの定数。glossary用の定義ではない |
 | [mdtools.toml](mdtools.toml) | Workspace設定v1。上の3原稿と仕様用共有定義を明示登録する |
 
-[Workspace設定v1](../../contract-v1.md#workspace設定-v1) に従い、`load_workspace()`で解析対象を決定できる。このREADMEや設定ファイル自体は本文の解析入力にしない。登録とパス検証はM1 / #23の実装範囲であり、要件・定義の内容解析や制約検査はまだ行わない。
+[Workspace設定v1](../../contract-v1.md#workspace設定-v1) に従い、`load_workspace()`で解析対象を決定できる。このREADMEや設定ファイル自体は本文の解析入力にしない。登録とパス検証はM1 / #23の実装範囲であり、現在のM2サービスは要件・定義の内容解析と明示参照検査を行う。式・論理の制約検査はM3に残す。
 
 `paid`と`shipped`はBoolean入力、`cancel_allowed`はBoolean出力である。支払い済み・未発送の入力ではREQ-CANCEL-ALLOWが出力trueを要求し、REQ-CANCEL-DENYが出力falseを要求する。この入力で出力が存在しないことと、両原稿の要件ID・形式記述位置を報告するのがM3での期待値となる。
 
@@ -23,3 +23,14 @@ REQ-CANCEL-GUIDANCEは構造的に有効でも`natural-only`かつ論理検査`n
 ```json
 {"id": "EXAMPLE-ONLY", "kind": "constraint", "must": "false"}
 ```
+
+## M2 CLIの実行
+
+```bash
+mdtools spec index --project docs/spec/examples/cancellation/mdtools.toml --format json
+mdtools spec show REQ-CANCEL-ALLOW --project docs/spec/examples/cancellation/mdtools.toml --format text
+```
+
+index/showは各呼出しで原典全体を解析し、同じIRから全体・詳細を表示します。
+showのJSONはquery.requirement_idに問い合わせIDを、resultの配列に全出現と関連定義を保持します。
+全体診断・失敗は詳細の選択後も維持します。式・論理はM3のnot-runであり、M2成功は無矛盾性の保証ではありません。

@@ -6,11 +6,9 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-from mdtools.core.mdscan import CodeFenceTracker
+from mdtools.core.mdscan import CodeFenceTracker, PRE_OPEN_RE, PRE_CLOSE_RE
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+)$")
-PRE_OPEN_RE = re.compile(r"<pre[\s>]", re.IGNORECASE)
-PRE_CLOSE_RE = re.compile(r"</pre>", re.IGNORECASE)
 
 
 @dataclass
@@ -70,10 +68,11 @@ def parse_sections(text: str) -> tuple[FrontMatter | None, list[RawSection]]:
             current_content_lines.append(line)
             continue
 
-        if PRE_OPEN_RE.search(line):
-            in_pre_block = True
-        if PRE_CLOSE_RE.search(line):
-            in_pre_block = False
+        if in_pre_block or PRE_OPEN_RE.match(line):
+            in_pre_block = PRE_CLOSE_RE.search(line) is None
+            # The closing line is still raw HTML, even if it starts with '#'.
+            current_content_lines.append(line)
+            continue
 
         if not in_pre_block:
             heading_match = HEADING_RE.match(line)
