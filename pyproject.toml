@@ -23,6 +23,9 @@ yaml = ["pyyaml>=6.0"]
 [tool.hatch.build.targets.wheel]
 packages = ["mdtools", "mdsplit", "mdhtml_rewrite", "langfilter", "glossary"]
 
+[tool.hatch.build.targets.sdist]
+exclude = ["/experiments", "/docs/design/m2-redesign"]
+
 [dependency-groups]
 dev = [
     "jsonschema>=4.23",

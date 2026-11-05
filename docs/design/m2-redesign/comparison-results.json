@@ -1,0 +1,7318 @@
+{
+  "baseline_sha": "b11368128d4e2a476f2204af40bdfdc947f1cc88",
+  "normalization": "Source URI is memory:corpus/<case-id>. Original UTF-8 bytes, snapshots, IDs, order, bodies and diagnostics are not removed or rounded.",
+  "cases": [
+    {
+      "case_id": "C-fixture-cancel-allow",
+      "classification": "C",
+      "input": "# キャンセル許可\n\n::: {.requirement #REQ-CANCEL-ALLOW spec-version=1 status=draft}\n::: {lang=ja}\n支払い済みで未発送なら、キャンセルを許可する。\n:::\n\n::: {lang=en}\nAllow cancellation when payment is complete and the order has not shipped.\n:::\n\n```mdspec\n{\n  \"version\": 1,\n  \"id\": \"MODEL-CANCEL-ALLOW\",\n  \"kind\": \"constraint\",\n  \"uses\": [\"paid\", \"shipped\", \"cancel_allowed\"],\n  \"when\": \"paid and not shipped\",\n  \"must\": \"cancel_allowed == true\"\n}\n```\n:::\n",
+      "snapshot": "91fa02546b711044bcd69d00d84176d40e13a022a0dc5f54e1f387ac437dbe18",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-ALLOW",
+            "ids": [
+              "REQ-CANCEL-ALLOW"
+            ],
+            "span": [
+              25,
+              483
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": "ja",
+                "span": [
+                  104,
+                  174
+                ],
+                "text": "支払い済みで未発送なら、キャンセルを許可する。\n"
+              },
+              {
+                "language": "en",
+                "span": [
+                  193,
+                  268
+                ],
+                "text": "Allow cancellation when payment is complete and the order has not shipped.\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  273,
+                  479
+                ],
+                "body": [
+                  283,
+                  475
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-CANCEL-ALLOW"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-CANCEL-ALLOW"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-ALLOW",
+            "ids": [
+              "REQ-CANCEL-ALLOW"
+            ],
+            "span": [
+              25,
+              483
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": "ja",
+                "span": [
+                  104,
+                  174
+                ],
+                "text": "支払い済みで未発送なら、キャンセルを許可する。\n"
+              },
+              {
+                "language": "en",
+                "span": [
+                  193,
+                  268
+                ],
+                "text": "Allow cancellation when payment is complete and the order has not shipped.\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  273,
+                  479
+                ],
+                "body": [
+                  283,
+                  475
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-ALLOW",
+            "ids": [
+              "REQ-CANCEL-ALLOW"
+            ],
+            "span": [
+              25,
+              483
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": "ja",
+                "span": [
+                  104,
+                  174
+                ],
+                "text": "支払い済みで未発送なら、キャンセルを許可する。\n"
+              },
+              {
+                "language": "en",
+                "span": [
+                  193,
+                  268
+                ],
+                "text": "Allow cancellation when payment is complete and the order has not shipped.\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  273,
+                  479
+                ],
+                "body": [
+                  283,
+                  475
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-fixture-cancel-deny",
+      "classification": "C",
+      "input": "# キャンセル禁止\n\n::: {.requirement #REQ-CANCEL-DENY spec-version=1 status=draft refs=\"REQ-CANCEL-ALLOW\"}\n支払い済みなら、キャンセルを禁止する。\n\n```mdspec\n{\n  \"version\": 1,\n  \"id\": \"MODEL-CANCEL-DENY\",\n  \"kind\": \"constraint\",\n  \"uses\": [\"paid\", \"cancel_allowed\"],\n  \"when\": \"paid\",\n  \"must\": \"cancel_allowed == false\"\n}\n```\n:::\n",
+      "snapshot": "dc9e2f10f78faa3a063fe938c0e556c39fb85a636d56759132c95072fdbbc2d2",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-DENY",
+            "ids": [
+              "REQ-CANCEL-DENY"
+            ],
+            "span": [
+              25,
+              355
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  113,
+                  172
+                ],
+                "text": "支払い済みなら、キャンセルを禁止する。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  172,
+                  351
+                ],
+                "body": [
+                  182,
+                  347
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-CANCEL-DENY"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-CANCEL-DENY"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-DENY",
+            "ids": [
+              "REQ-CANCEL-DENY"
+            ],
+            "span": [
+              25,
+              355
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  113,
+                  172
+                ],
+                "text": "支払い済みなら、キャンセルを禁止する。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  172,
+                  351
+                ],
+                "body": [
+                  182,
+                  347
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-DENY",
+            "ids": [
+              "REQ-CANCEL-DENY"
+            ],
+            "span": [
+              25,
+              355
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  113,
+                  172
+                ],
+                "text": "支払い済みなら、キャンセルを禁止する。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  172,
+                  351
+                ],
+                "body": [
+                  182,
+                  347
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-fixture-guidance",
+      "classification": "C",
+      "input": "# キャンセル案内\n\n::: {.requirement #REQ-CANCEL-GUIDANCE spec-version=1 status=draft}\nキャンセルを受け付けた場合は、利用者に分かりやすい案内を表示する。\n:::\n",
+      "snapshot": "9f65431d972d08e6bfd64f84f5758e16ae1c7b5a19f5abb5658702c62fe88e51",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-GUIDANCE",
+            "ids": [
+              "REQ-CANCEL-GUIDANCE"
+            ],
+            "span": [
+              25,
+              197
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  93,
+                  193
+                ],
+                "text": "キャンセルを受け付けた場合は、利用者に分かりやすい案内を表示する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-CANCEL-GUIDANCE"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-CANCEL-GUIDANCE"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-GUIDANCE",
+            "ids": [
+              "REQ-CANCEL-GUIDANCE"
+            ],
+            "span": [
+              25,
+              197
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  93,
+                  193
+                ],
+                "text": "キャンセルを受け付けた場合は、利用者に分かりやすい案内を表示する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-GUIDANCE",
+            "ids": [
+              "REQ-CANCEL-GUIDANCE"
+            ],
+            "span": [
+              25,
+              197
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  93,
+                  193
+                ],
+                "text": "キャンセルを受け付けた場合は、利用者に分かりやすい案内を表示する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-fixture-normal",
+      "classification": "C",
+      "input": "::: {.requirement #REQ-NORMAL spec-version=1 status=active}\n支払い済みなら処理を許可する。\n\n```mdspec\n{\n  \"version\": 1,\n  \"id\": \"MODEL-NORMAL\",\n  \"kind\": \"constraint\",\n  \"uses\": [\"paid\"],\n  \"when\": \"paid\",\n  \"must\": \"paid == true\"\n}\n```\n:::\n",
+      "snapshot": "5a8848582410faf46c8401c4f4406ec0f7b8c24ac49e25d9fc89c7e58186f30f",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-NORMAL",
+            "ids": [
+              "REQ-NORMAL"
+            ],
+            "span": [
+              0,
+              256
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  60,
+                  107
+                ],
+                "text": "支払い済みなら処理を許可する。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  107,
+                  252
+                ],
+                "body": [
+                  117,
+                  248
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-NORMAL"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-NORMAL"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-NORMAL",
+            "ids": [
+              "REQ-NORMAL"
+            ],
+            "span": [
+              0,
+              256
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  60,
+                  107
+                ],
+                "text": "支払い済みなら処理を許可する。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  107,
+                  252
+                ],
+                "body": [
+                  117,
+                  248
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-NORMAL",
+            "ids": [
+              "REQ-NORMAL"
+            ],
+            "span": [
+              0,
+              256
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  60,
+                  107
+                ],
+                "text": "支払い済みなら処理を許可する。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  107,
+                  252
+                ],
+                "body": [
+                  117,
+                  248
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-fixture-multilingual",
+      "classification": "C",
+      "input": "::: {.requirement #REQ-MULTILINGUAL spec-version=1}\n::: {lang=ja}\n処理状況を表示する。📚\n:::\n\n::: {lang=en}\nShow the processing status.\n:::\n:::\n",
+      "snapshot": "6dabbfef0d0056112ef5a5e79843f053b051bc6f7c7406b88f631766e7932922",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-MULTILINGUAL",
+            "ids": [
+              "REQ-MULTILINGUAL"
+            ],
+            "span": [
+              0,
+              156
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": "ja",
+                "span": [
+                  66,
+                  101
+                ],
+                "text": "処理状況を表示する。📚\n"
+              },
+              {
+                "language": "en",
+                "span": [
+                  120,
+                  148
+                ],
+                "text": "Show the processing status.\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-MULTILINGUAL"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-MULTILINGUAL"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-MULTILINGUAL",
+            "ids": [
+              "REQ-MULTILINGUAL"
+            ],
+            "span": [
+              0,
+              156
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": "ja",
+                "span": [
+                  66,
+                  101
+                ],
+                "text": "処理状況を表示する。📚\n"
+              },
+              {
+                "language": "en",
+                "span": [
+                  120,
+                  148
+                ],
+                "text": "Show the processing status.\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-MULTILINGUAL",
+            "ids": [
+              "REQ-MULTILINGUAL"
+            ],
+            "span": [
+              0,
+              156
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": "ja",
+                "span": [
+                  66,
+                  101
+                ],
+                "text": "処理状況を表示する。📚\n"
+              },
+              {
+                "language": "en",
+                "span": [
+                  120,
+                  148
+                ],
+                "text": "Show the processing status.\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-fixture-natural-only",
+      "classification": "C",
+      "input": "::: {.requirement #REQ-NATURAL spec-version=1}\n利用者に処理状況を表示する。\n:::\n",
+      "snapshot": "a712dd236361b5f465276877e77c277ad08a5ff3885d58a3f7d9e2870ac66268",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-NATURAL",
+            "ids": [
+              "REQ-NATURAL"
+            ],
+            "span": [
+              0,
+              94
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  47,
+                  90
+                ],
+                "text": "利用者に処理状況を表示する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-NATURAL"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-NATURAL"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-NATURAL",
+            "ids": [
+              "REQ-NATURAL"
+            ],
+            "span": [
+              0,
+              94
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  47,
+                  90
+                ],
+                "text": "利用者に処理状況を表示する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-NATURAL",
+            "ids": [
+              "REQ-NATURAL"
+            ],
+            "span": [
+              0,
+              94
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  47,
+                  90
+                ],
+                "text": "利用者に処理状況を表示する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-fixture-invalid",
+      "classification": "C",
+      "input": "::: {.requirement spec-version=1}\nIDが欠落している。\n:::\n\n::: {.requirement #REQ-RECOVER spec-version=1}\n回復後もこの要件を保持する。\n:::\n",
+      "snapshot": "f30a62927bd788fe35f45aab556cb0e6a5223ba522b5d877471b926d1e9cbe76",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": null,
+            "ids": [],
+            "span": [
+              0,
+              65
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  34,
+                  61
+                ],
+                "text": "IDが欠落している。\n"
+              }
+            ],
+            "mdspec": []
+          },
+          {
+            "id": "REQ-RECOVER",
+            "ids": [
+              "REQ-RECOVER"
+            ],
+            "span": [
+              66,
+              160
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  113,
+                  156
+                ],
+                "text": "回復後もこの要件を保持する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-RECOVER"
+          ],
+          "completeness": "partial",
+          "diagnostics": [
+            {
+              "code": "spec.invalid-requirement",
+              "severity": "error",
+              "category": "user",
+              "message": "Missing requirement attribute: id",
+              "primary": {
+                "kind": "original",
+                "span": [
+                  0,
+                  34
+                ],
+                "reason": null
+              },
+              "related": [],
+              "requirement_id": null
+            }
+          ],
+          "rejected": [
+            {
+              "kind": "requirement",
+              "span": [
+                0,
+                65
+              ],
+              "text": "::: {.requirement spec-version=1}\nIDが欠落している。\n:::\n",
+              "diagnostic_codes": [
+                "spec.invalid-requirement"
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "ids": [
+          null,
+          "REQ-RECOVER"
+        ],
+        "candidates": [
+          {
+            "id": null,
+            "ids": [],
+            "span": [
+              0,
+              65
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  34,
+                  61
+                ],
+                "text": "IDが欠落している。\n"
+              }
+            ],
+            "mdspec": []
+          },
+          {
+            "id": "REQ-RECOVER",
+            "ids": [
+              "REQ-RECOVER"
+            ],
+            "span": [
+              66,
+              160
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  113,
+                  156
+                ],
+                "text": "回復後もこの要件を保持する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": null,
+            "ids": [],
+            "span": [
+              0,
+              65
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  34,
+                  61
+                ],
+                "text": "IDが欠落している。\n"
+              }
+            ],
+            "mdspec": []
+          },
+          {
+            "id": "REQ-RECOVER",
+            "ids": [
+              "REQ-RECOVER"
+            ],
+            "span": [
+              66,
+              160
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  113,
+                  156
+                ],
+                "text": "回復後もこの要件を保持する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-fixture-broken-model",
+      "classification": "C",
+      "input": "::: {.requirement #REQ-BROKEN spec-version=1}\n形式記述が壊れていてもnatural-onlyにしない。\n\n```mdspec\n{\"version\": 1, \"id\": \"MODEL-BROKEN\", \"kind\": \"constraint\", \"uses\": []}\n```\n:::\n",
+      "snapshot": "c209a7212581123f5f59edaabaafdd6a0fd3f7ac09130e635501c9410191583a",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-BROKEN",
+            "ids": [
+              "REQ-BROKEN"
+            ],
+            "span": [
+              0,
+              197
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  46,
+                  108
+                ],
+                "text": "形式記述が壊れていてもnatural-onlyにしない。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  108,
+                  193
+                ],
+                "body": [
+                  118,
+                  189
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-BROKEN"
+          ],
+          "completeness": "partial",
+          "diagnostics": [
+            {
+              "code": "spec.invalid-model",
+              "severity": "error",
+              "category": "user",
+              "message": "Missing model field: when",
+              "primary": {
+                "kind": "original",
+                "span": [
+                  118,
+                  188
+                ],
+                "reason": null
+              },
+              "related": [],
+              "requirement_id": "REQ-BROKEN"
+            },
+            {
+              "code": "spec.invalid-model",
+              "severity": "error",
+              "category": "user",
+              "message": "Missing model field: must",
+              "primary": {
+                "kind": "original",
+                "span": [
+                  118,
+                  188
+                ],
+                "reason": null
+              },
+              "related": [],
+              "requirement_id": "REQ-BROKEN"
+            }
+          ],
+          "rejected": [
+            {
+              "kind": "model",
+              "span": [
+                108,
+                193
+              ],
+              "text": "```mdspec\n{\"version\": 1, \"id\": \"MODEL-BROKEN\", \"kind\": \"constraint\", \"uses\": []}\n```\n",
+              "diagnostic_codes": [
+                "spec.invalid-model"
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-BROKEN"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-BROKEN",
+            "ids": [
+              "REQ-BROKEN"
+            ],
+            "span": [
+              0,
+              197
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  46,
+                  108
+                ],
+                "text": "形式記述が壊れていてもnatural-onlyにしない。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  108,
+                  193
+                ],
+                "body": [
+                  118,
+                  189
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-BROKEN",
+            "ids": [
+              "REQ-BROKEN"
+            ],
+            "span": [
+              0,
+              197
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  46,
+                  108
+                ],
+                "text": "形式記述が壊れていてもnatural-onlyにしない。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  108,
+                  193
+                ],
+                "body": [
+                  118,
+                  189
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-normal",
+      "classification": "C",
+      "input": "::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n",
+      "snapshot": "b9d9d5279e18d42f63eed63325fa98d8ee6a2171571bd0e409a8c60314839490",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              52
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  41,
+                  48
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              52
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  41,
+                  48
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              52
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  41,
+                  48
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": [],
+      "trace": {
+        "source": {
+          "uri": "memory:corpus/C-normal",
+          "snapshot": "b9d9d5279e18d42f63eed63325fa98d8ee6a2171571bd0e409a8c60314839490",
+          "bytes": 52
+        },
+        "profile": "mdtools-document-prototype-v0",
+        "model_version": 0,
+        "status": "complete",
+        "coverage": [
+          {
+            "span": {
+              "bytes": [
+                0,
+                41
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                41,
+                48
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                48,
+                52
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "state": "recognized",
+            "reason": null
+          }
+        ],
+        "notices": [],
+        "references": [],
+        "nodes": [
+          {
+            "node": 0,
+            "parent": null,
+            "kind": "div",
+            "span": {
+              "bytes": [
+                0,
+                52
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+            },
+            "header": {
+              "bytes": [
+                0,
+                41
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "body": {
+              "bytes": [
+                41,
+                48
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": {
+              "bytes": [
+                48,
+                52
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "closure": "closed",
+            "header_valid": true,
+            "marker": ":::",
+            "info": "",
+            "info_span": null,
+            "attributes": [
+              {
+                "kind": "class",
+                "name": "requirement",
+                "value": "requirement",
+                "span": {
+                  "bytes": [
+                    5,
+                    17
+                  ],
+                  "start": [
+                    1,
+                    6
+                  ],
+                  "end": [
+                    1,
+                    18
+                  ],
+                  "raw": ".requirement"
+                },
+                "value_span": {
+                  "bytes": [
+                    6,
+                    17
+                  ],
+                  "start": [
+                    1,
+                    7
+                  ],
+                  "end": [
+                    1,
+                    18
+                  ],
+                  "raw": "requirement"
+                }
+              },
+              {
+                "kind": "id",
+                "name": "REQ-A",
+                "value": "REQ-A",
+                "span": {
+                  "bytes": [
+                    18,
+                    24
+                  ],
+                  "start": [
+                    1,
+                    19
+                  ],
+                  "end": [
+                    1,
+                    25
+                  ],
+                  "raw": "#REQ-A"
+                },
+                "value_span": {
+                  "bytes": [
+                    19,
+                    24
+                  ],
+                  "start": [
+                    1,
+                    20
+                  ],
+                  "end": [
+                    1,
+                    25
+                  ],
+                  "raw": "REQ-A"
+                }
+              },
+              {
+                "kind": "attribute",
+                "name": "spec-version",
+                "value": "1",
+                "span": {
+                  "bytes": [
+                    25,
+                    39
+                  ],
+                  "start": [
+                    1,
+                    26
+                  ],
+                  "end": [
+                    1,
+                    40
+                  ],
+                  "raw": "spec-version=1"
+                },
+                "value_span": {
+                  "bytes": [
+                    38,
+                    39
+                  ],
+                  "start": [
+                    1,
+                    39
+                  ],
+                  "end": [
+                    1,
+                    40
+                  ],
+                  "raw": "1"
+                }
+              }
+            ],
+            "inlines": []
+          },
+          {
+            "node": 1,
+            "parent": 0,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                41,
+                48
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                41,
+                48
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    41,
+                    48
+                  ],
+                  "start": [
+                    2,
+                    1
+                  ],
+                  "end": [
+                    3,
+                    1
+                  ],
+                  "raw": "本文\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "C-body-only",
+      "classification": "C",
+      "input": "本文だけ\n",
+      "snapshot": "40fdb955c32abd78ebe8b17cf55a88fca0f8cc9fd9040d88d0255bc9e8ab191f",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [],
+        "candidates": [],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": []
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-malformed-header",
+      "classification": "C",
+      "input": "::: {.requirement #REQ-A spec-version=1} trailing\n本文\n:::\n",
+      "snapshot": "e60145c09f9a7aa6f68d0d751fd33da2afa13e63e1e71397c23f21a25ba9c94a",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              61
+            ],
+            "header_valid": false,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  50,
+                  57
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [],
+          "completeness": "partial",
+          "diagnostics": [
+            {
+              "code": "spec.invalid-requirement",
+              "severity": "error",
+              "category": "user",
+              "message": "Expected ::: {attributes} with no trailing text",
+              "primary": {
+                "kind": "original",
+                "span": [
+                  0,
+                  50
+                ],
+                "reason": null
+              },
+              "related": [],
+              "requirement_id": null
+            }
+          ],
+          "rejected": [
+            {
+              "kind": "requirement",
+              "span": [
+                0,
+                61
+              ],
+              "text": "::: {.requirement #REQ-A spec-version=1} trailing\n本文\n:::\n",
+              "diagnostic_codes": [
+                "spec.invalid-requirement"
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              61
+            ],
+            "header_valid": false,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  50,
+                  57
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "partial"
+      },
+      "observed": {
+        "status": "partial",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              61
+            ],
+            "header_valid": false,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  50,
+                  57
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": [
+        {
+          "code": "block.invalid-header",
+          "message": "Invalid generic Div header",
+          "span": {
+            "bytes": [
+              0,
+              50
+            ],
+            "start": [
+              1,
+              1
+            ],
+            "end": [
+              2,
+              1
+            ]
+          }
+        }
+      ],
+      "trace": {
+        "source": {
+          "uri": "memory:corpus/C-malformed-header",
+          "snapshot": "e60145c09f9a7aa6f68d0d751fd33da2afa13e63e1e71397c23f21a25ba9c94a",
+          "bytes": 61
+        },
+        "profile": "mdtools-document-prototype-v0",
+        "model_version": 0,
+        "status": "partial",
+        "coverage": [
+          {
+            "span": {
+              "bytes": [
+                0,
+                50
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1} trailing\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                50,
+                57
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                57,
+                61
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "state": "recognized",
+            "reason": null
+          }
+        ],
+        "notices": [
+          {
+            "code": "block.invalid-header",
+            "message": "Invalid generic Div header",
+            "span": {
+              "bytes": [
+                0,
+                50
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1} trailing\n"
+            }
+          }
+        ],
+        "references": [],
+        "nodes": [
+          {
+            "node": 0,
+            "parent": null,
+            "kind": "div",
+            "span": {
+              "bytes": [
+                0,
+                61
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1} trailing\n本文\n:::\n"
+            },
+            "header": {
+              "bytes": [
+                0,
+                50
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1} trailing\n"
+            },
+            "body": {
+              "bytes": [
+                50,
+                57
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": {
+              "bytes": [
+                57,
+                61
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "closure": "closed",
+            "header_valid": false,
+            "marker": ":::",
+            "info": "",
+            "info_span": null,
+            "attributes": [
+              {
+                "kind": "class",
+                "name": "requirement",
+                "value": "requirement",
+                "span": {
+                  "bytes": [
+                    5,
+                    17
+                  ],
+                  "start": [
+                    1,
+                    6
+                  ],
+                  "end": [
+                    1,
+                    18
+                  ],
+                  "raw": ".requirement"
+                },
+                "value_span": {
+                  "bytes": [
+                    6,
+                    17
+                  ],
+                  "start": [
+                    1,
+                    7
+                  ],
+                  "end": [
+                    1,
+                    18
+                  ],
+                  "raw": "requirement"
+                }
+              },
+              {
+                "kind": "id",
+                "name": "REQ-A",
+                "value": "REQ-A",
+                "span": {
+                  "bytes": [
+                    18,
+                    24
+                  ],
+                  "start": [
+                    1,
+                    19
+                  ],
+                  "end": [
+                    1,
+                    25
+                  ],
+                  "raw": "#REQ-A"
+                },
+                "value_span": {
+                  "bytes": [
+                    19,
+                    24
+                  ],
+                  "start": [
+                    1,
+                    20
+                  ],
+                  "end": [
+                    1,
+                    25
+                  ],
+                  "raw": "REQ-A"
+                }
+              },
+              {
+                "kind": "attribute",
+                "name": "spec-version",
+                "value": "1",
+                "span": {
+                  "bytes": [
+                    25,
+                    39
+                  ],
+                  "start": [
+                    1,
+                    26
+                  ],
+                  "end": [
+                    1,
+                    40
+                  ],
+                  "raw": "spec-version=1"
+                },
+                "value_span": {
+                  "bytes": [
+                    38,
+                    39
+                  ],
+                  "start": [
+                    1,
+                    39
+                  ],
+                  "end": [
+                    1,
+                    40
+                  ],
+                  "raw": "1"
+                }
+              }
+            ],
+            "inlines": []
+          },
+          {
+            "node": 1,
+            "parent": 0,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                50,
+                57
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                50,
+                57
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    50,
+                    57
+                  ],
+                  "start": [
+                    2,
+                    1
+                  ],
+                  "end": [
+                    3,
+                    1
+                  ],
+                  "raw": "本文\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "C-unclosed-div",
+      "classification": "C",
+      "input": "::: {.requirement #REQ-A spec-version=1}\n本文\n",
+      "snapshot": "04f90f4e7734e9d14410063be79f44629bee9b3219070fe0d8b0bd8af2e6e9fa",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              48
+            ],
+            "header_valid": true,
+            "closure": "eof",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  41,
+                  48
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "partial",
+          "diagnostics": [
+            {
+              "code": "spec.invalid-requirement",
+              "severity": "error",
+              "category": "user",
+              "message": "Requirement is not closed in this source snapshot",
+              "primary": {
+                "kind": "original",
+                "span": [
+                  0,
+                  41
+                ],
+                "reason": null
+              },
+              "related": [],
+              "requirement_id": "REQ-A"
+            }
+          ],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              48
+            ],
+            "header_valid": true,
+            "closure": "eof",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  41,
+                  48
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "partial"
+      },
+      "observed": {
+        "status": "partial",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              48
+            ],
+            "header_valid": true,
+            "closure": "eof",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  41,
+                  48
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": [
+        {
+          "code": "block.unclosed-div",
+          "message": "Div reaches EOF without a closing marker",
+          "span": {
+            "bytes": [
+              0,
+              48
+            ],
+            "start": [
+              1,
+              1
+            ],
+            "end": [
+              3,
+              1
+            ]
+          }
+        }
+      ],
+      "trace": {
+        "source": {
+          "uri": "memory:corpus/C-unclosed-div",
+          "snapshot": "04f90f4e7734e9d14410063be79f44629bee9b3219070fe0d8b0bd8af2e6e9fa",
+          "bytes": 48
+        },
+        "profile": "mdtools-document-prototype-v0",
+        "model_version": 0,
+        "status": "partial",
+        "coverage": [
+          {
+            "span": {
+              "bytes": [
+                0,
+                41
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                41,
+                48
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "state": "recognized",
+            "reason": null
+          }
+        ],
+        "notices": [
+          {
+            "code": "block.unclosed-div",
+            "message": "Div reaches EOF without a closing marker",
+            "span": {
+              "bytes": [
+                0,
+                48
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n"
+            }
+          }
+        ],
+        "references": [],
+        "nodes": [
+          {
+            "node": 0,
+            "parent": null,
+            "kind": "div",
+            "span": {
+              "bytes": [
+                0,
+                48
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n"
+            },
+            "header": {
+              "bytes": [
+                0,
+                41
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "body": {
+              "bytes": [
+                41,
+                48
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": null,
+            "closure": "eof",
+            "header_valid": true,
+            "marker": ":::",
+            "info": "",
+            "info_span": null,
+            "attributes": [
+              {
+                "kind": "class",
+                "name": "requirement",
+                "value": "requirement",
+                "span": {
+                  "bytes": [
+                    5,
+                    17
+                  ],
+                  "start": [
+                    1,
+                    6
+                  ],
+                  "end": [
+                    1,
+                    18
+                  ],
+                  "raw": ".requirement"
+                },
+                "value_span": {
+                  "bytes": [
+                    6,
+                    17
+                  ],
+                  "start": [
+                    1,
+                    7
+                  ],
+                  "end": [
+                    1,
+                    18
+                  ],
+                  "raw": "requirement"
+                }
+              },
+              {
+                "kind": "id",
+                "name": "REQ-A",
+                "value": "REQ-A",
+                "span": {
+                  "bytes": [
+                    18,
+                    24
+                  ],
+                  "start": [
+                    1,
+                    19
+                  ],
+                  "end": [
+                    1,
+                    25
+                  ],
+                  "raw": "#REQ-A"
+                },
+                "value_span": {
+                  "bytes": [
+                    19,
+                    24
+                  ],
+                  "start": [
+                    1,
+                    20
+                  ],
+                  "end": [
+                    1,
+                    25
+                  ],
+                  "raw": "REQ-A"
+                }
+              },
+              {
+                "kind": "attribute",
+                "name": "spec-version",
+                "value": "1",
+                "span": {
+                  "bytes": [
+                    25,
+                    39
+                  ],
+                  "start": [
+                    1,
+                    26
+                  ],
+                  "end": [
+                    1,
+                    40
+                  ],
+                  "raw": "spec-version=1"
+                },
+                "value_span": {
+                  "bytes": [
+                    38,
+                    39
+                  ],
+                  "start": [
+                    1,
+                    39
+                  ],
+                  "end": [
+                    1,
+                    40
+                  ],
+                  "raw": "1"
+                }
+              }
+            ],
+            "inlines": []
+          },
+          {
+            "node": 1,
+            "parent": 0,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                41,
+                48
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                41,
+                48
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    41,
+                    48
+                  ],
+                  "start": [
+                    2,
+                    1
+                  ],
+                  "end": [
+                    3,
+                    1
+                  ],
+                  "raw": "本文\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "C-literal-fence",
+      "classification": "C",
+      "input": "```text\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n```\n",
+      "snapshot": "36bf2b7967ec8a2f3214f6a938b92bcf9dd004786badc65578e9a7384ca3cc32",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [],
+        "candidates": [],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": []
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-literal-comment",
+      "classification": "C",
+      "input": "<!--\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n-->\n",
+      "snapshot": "ffd0507f019dfc3f4bc85510a998e5c94c28af3c38e57d76dd547196e8bf15b5",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [],
+        "candidates": [],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": []
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": [],
+      "trace": {
+        "source": {
+          "uri": "memory:corpus/C-literal-comment",
+          "snapshot": "ffd0507f019dfc3f4bc85510a998e5c94c28af3c38e57d76dd547196e8bf15b5",
+          "bytes": 61
+        },
+        "profile": "mdtools-document-prototype-v0",
+        "model_version": 0,
+        "status": "complete",
+        "coverage": [
+          {
+            "span": {
+              "bytes": [
+                0,
+                61
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "<!--\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n-->\n"
+            },
+            "state": "recognized",
+            "reason": null
+          }
+        ],
+        "notices": [],
+        "references": [],
+        "nodes": [
+          {
+            "node": 0,
+            "parent": null,
+            "kind": "html_comment",
+            "span": {
+              "bytes": [
+                0,
+                61
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "<!--\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n-->\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                0,
+                61
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "<!--\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n-->\n"
+            },
+            "closing": null,
+            "closure": "closed",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": []
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "C-literal-code-span",
+      "classification": "C",
+      "input": "`<!--`\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n",
+      "snapshot": "26891173c9224e72d1a12a24ac87d8c266a5b4a0f7e5313add610aee9a93ccaa",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              8,
+              60
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  49,
+                  56
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              8,
+              60
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  49,
+                  56
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              8,
+              60
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  49,
+                  56
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-literal-html-attribute",
+      "classification": "C",
+      "input": "<a title=\"<!--\">x</a>\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n",
+      "snapshot": "c5ead981a7de908b4c9d09ca914d914ee6c2b010582a5daaf8493a9f9dda4c77",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              23,
+              75
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  64,
+                  71
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              23,
+              75
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  64,
+                  71
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              23,
+              75
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  64,
+                  71
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-unicode-lf",
+      "classification": "C",
+      "input": "序📚 文\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n",
+      "snapshot": "0ae6057deb3bdfe414599b4248f79a1bb4ced287f43d484c53f7d5cfbeb73377",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              15,
+              67
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  56,
+                  63
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              15,
+              67
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  56,
+                  63
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              15,
+              67
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  56,
+                  63
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-unicode-crlf",
+      "classification": "C",
+      "input": "序📚\r\n\r\n::: {.requirement #REQ-A spec-version=1}\r\n本文\r\n:::\r\n",
+      "snapshot": "ee64f9d30b32458a70958880eab1555dfdc7c3e6e6c8a288800788b265714cd5",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              11,
+              66
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  53,
+                  61
+                ],
+                "text": "本文\r\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              11,
+              66
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  53,
+                  61
+                ],
+                "text": "本文\r\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              11,
+              66
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  53,
+                  61
+                ],
+                "text": "本文\r\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "C-unicode-cr",
+      "classification": "C",
+      "input": "序📚\r\r::: {.requirement #REQ-A spec-version=1}\r本文\r:::\r",
+      "snapshot": "d74556a4875462d1c601040c13799873a2aeb4eb32dc78e652d645ab850623c2",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              9,
+              61
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  50,
+                  57
+                ],
+                "text": "本文\r"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              9,
+              61
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  50,
+                  57
+                ],
+                "text": "本文\r"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              9,
+              61
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  50,
+                  57
+                ],
+                "text": "本文\r"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "",
+      "unsupported_reason": null,
+      "notices": []
+    },
+    {
+      "case_id": "I-51-link-title",
+      "classification": "I",
+      "input": "[説明](https://example.com \"<!--\")\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n",
+      "snapshot": "13b2e870dc552e8d3a139fb0917478cc19eb5079b44ac3344ee60b0a3f685a28",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              38,
+              90
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  79,
+                  86
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              38,
+              90
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  79,
+                  86
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "Intentional prototype correction; baseline loses REQ-A. No production switch authorized.",
+      "unsupported_reason": null,
+      "notices": [],
+      "trace": {
+        "source": {
+          "uri": "memory:corpus/I-51-link-title",
+          "snapshot": "13b2e870dc552e8d3a139fb0917478cc19eb5079b44ac3344ee60b0a3f685a28",
+          "bytes": 90
+        },
+        "profile": "mdtools-document-prototype-v0",
+        "model_version": 0,
+        "status": "complete",
+        "coverage": [
+          {
+            "span": {
+              "bytes": [
+                0,
+                37
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "[説明](https://example.com \"<!--\")\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                37,
+                38
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                38,
+                79
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                79,
+                86
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                86,
+                90
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "state": "recognized",
+            "reason": null
+          }
+        ],
+        "notices": [],
+        "references": [],
+        "nodes": [
+          {
+            "node": 0,
+            "parent": null,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                0,
+                37
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "[説明](https://example.com \"<!--\")\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                0,
+                37
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "[説明](https://example.com \"<!--\")\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "link",
+                "span": {
+                  "bytes": [
+                    0,
+                    36
+                  ],
+                  "start": [
+                    1,
+                    1
+                  ],
+                  "end": [
+                    1,
+                    33
+                  ],
+                  "raw": "[説明](https://example.com \"<!--\")"
+                },
+                "target": {
+                  "bytes": [
+                    9,
+                    28
+                  ],
+                  "start": [
+                    1,
+                    6
+                  ],
+                  "end": [
+                    1,
+                    25
+                  ],
+                  "raw": "https://example.com"
+                },
+                "title": {
+                  "bytes": [
+                    30,
+                    34
+                  ],
+                  "start": [
+                    1,
+                    27
+                  ],
+                  "end": [
+                    1,
+                    31
+                  ],
+                  "raw": "<!--"
+                },
+                "reference": null
+              },
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    36,
+                    37
+                  ],
+                  "start": [
+                    1,
+                    33
+                  ],
+                  "end": [
+                    2,
+                    1
+                  ],
+                  "raw": "\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          },
+          {
+            "node": 1,
+            "parent": null,
+            "kind": "blank",
+            "span": {
+              "bytes": [
+                37,
+                38
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                37,
+                38
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": []
+          },
+          {
+            "node": 2,
+            "parent": null,
+            "kind": "div",
+            "span": {
+              "bytes": [
+                38,
+                90
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+            },
+            "header": {
+              "bytes": [
+                38,
+                79
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "body": {
+              "bytes": [
+                79,
+                86
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": {
+              "bytes": [
+                86,
+                90
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "closure": "closed",
+            "header_valid": true,
+            "marker": ":::",
+            "info": "",
+            "info_span": null,
+            "attributes": [
+              {
+                "kind": "class",
+                "name": "requirement",
+                "value": "requirement",
+                "span": {
+                  "bytes": [
+                    43,
+                    55
+                  ],
+                  "start": [
+                    3,
+                    6
+                  ],
+                  "end": [
+                    3,
+                    18
+                  ],
+                  "raw": ".requirement"
+                },
+                "value_span": {
+                  "bytes": [
+                    44,
+                    55
+                  ],
+                  "start": [
+                    3,
+                    7
+                  ],
+                  "end": [
+                    3,
+                    18
+                  ],
+                  "raw": "requirement"
+                }
+              },
+              {
+                "kind": "id",
+                "name": "REQ-A",
+                "value": "REQ-A",
+                "span": {
+                  "bytes": [
+                    56,
+                    62
+                  ],
+                  "start": [
+                    3,
+                    19
+                  ],
+                  "end": [
+                    3,
+                    25
+                  ],
+                  "raw": "#REQ-A"
+                },
+                "value_span": {
+                  "bytes": [
+                    57,
+                    62
+                  ],
+                  "start": [
+                    3,
+                    20
+                  ],
+                  "end": [
+                    3,
+                    25
+                  ],
+                  "raw": "REQ-A"
+                }
+              },
+              {
+                "kind": "attribute",
+                "name": "spec-version",
+                "value": "1",
+                "span": {
+                  "bytes": [
+                    63,
+                    77
+                  ],
+                  "start": [
+                    3,
+                    26
+                  ],
+                  "end": [
+                    3,
+                    40
+                  ],
+                  "raw": "spec-version=1"
+                },
+                "value_span": {
+                  "bytes": [
+                    76,
+                    77
+                  ],
+                  "start": [
+                    3,
+                    39
+                  ],
+                  "end": [
+                    3,
+                    40
+                  ],
+                  "raw": "1"
+                }
+              }
+            ],
+            "inlines": []
+          },
+          {
+            "node": 3,
+            "parent": 2,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                79,
+                86
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                79,
+                86
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    79,
+                    86
+                  ],
+                  "start": [
+                    4,
+                    1
+                  ],
+                  "end": [
+                    5,
+                    1
+                  ],
+                  "raw": "本文\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "I-51-image-title",
+      "classification": "I",
+      "input": "![画像](https://example.com/image.png \"<!--\")\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n",
+      "snapshot": "6d1f4fbd396423bd793454c82e7d50a8585fdae7a6b2af9c2a38f7b5a12ce211",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              49,
+              101
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  90,
+                  97
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              49,
+              101
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  90,
+                  97
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "Intentional prototype correction; baseline loses REQ-A. No production switch authorized.",
+      "unsupported_reason": null,
+      "notices": [],
+      "trace": {
+        "source": {
+          "uri": "memory:corpus/I-51-image-title",
+          "snapshot": "6d1f4fbd396423bd793454c82e7d50a8585fdae7a6b2af9c2a38f7b5a12ce211",
+          "bytes": 101
+        },
+        "profile": "mdtools-document-prototype-v0",
+        "model_version": 0,
+        "status": "complete",
+        "coverage": [
+          {
+            "span": {
+              "bytes": [
+                0,
+                48
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "![画像](https://example.com/image.png \"<!--\")\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                48,
+                49
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                49,
+                90
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                90,
+                97
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                97,
+                101
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "state": "recognized",
+            "reason": null
+          }
+        ],
+        "notices": [],
+        "references": [],
+        "nodes": [
+          {
+            "node": 0,
+            "parent": null,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                0,
+                48
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "![画像](https://example.com/image.png \"<!--\")\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                0,
+                48
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "![画像](https://example.com/image.png \"<!--\")\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "image",
+                "span": {
+                  "bytes": [
+                    0,
+                    47
+                  ],
+                  "start": [
+                    1,
+                    1
+                  ],
+                  "end": [
+                    1,
+                    44
+                  ],
+                  "raw": "![画像](https://example.com/image.png \"<!--\")"
+                },
+                "target": {
+                  "bytes": [
+                    10,
+                    39
+                  ],
+                  "start": [
+                    1,
+                    7
+                  ],
+                  "end": [
+                    1,
+                    36
+                  ],
+                  "raw": "https://example.com/image.png"
+                },
+                "title": {
+                  "bytes": [
+                    41,
+                    45
+                  ],
+                  "start": [
+                    1,
+                    38
+                  ],
+                  "end": [
+                    1,
+                    42
+                  ],
+                  "raw": "<!--"
+                },
+                "reference": null
+              },
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    47,
+                    48
+                  ],
+                  "start": [
+                    1,
+                    44
+                  ],
+                  "end": [
+                    2,
+                    1
+                  ],
+                  "raw": "\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          },
+          {
+            "node": 1,
+            "parent": null,
+            "kind": "blank",
+            "span": {
+              "bytes": [
+                48,
+                49
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                48,
+                49
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": []
+          },
+          {
+            "node": 2,
+            "parent": null,
+            "kind": "div",
+            "span": {
+              "bytes": [
+                49,
+                101
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+            },
+            "header": {
+              "bytes": [
+                49,
+                90
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "body": {
+              "bytes": [
+                90,
+                97
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": {
+              "bytes": [
+                97,
+                101
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "closure": "closed",
+            "header_valid": true,
+            "marker": ":::",
+            "info": "",
+            "info_span": null,
+            "attributes": [
+              {
+                "kind": "class",
+                "name": "requirement",
+                "value": "requirement",
+                "span": {
+                  "bytes": [
+                    54,
+                    66
+                  ],
+                  "start": [
+                    3,
+                    6
+                  ],
+                  "end": [
+                    3,
+                    18
+                  ],
+                  "raw": ".requirement"
+                },
+                "value_span": {
+                  "bytes": [
+                    55,
+                    66
+                  ],
+                  "start": [
+                    3,
+                    7
+                  ],
+                  "end": [
+                    3,
+                    18
+                  ],
+                  "raw": "requirement"
+                }
+              },
+              {
+                "kind": "id",
+                "name": "REQ-A",
+                "value": "REQ-A",
+                "span": {
+                  "bytes": [
+                    67,
+                    73
+                  ],
+                  "start": [
+                    3,
+                    19
+                  ],
+                  "end": [
+                    3,
+                    25
+                  ],
+                  "raw": "#REQ-A"
+                },
+                "value_span": {
+                  "bytes": [
+                    68,
+                    73
+                  ],
+                  "start": [
+                    3,
+                    20
+                  ],
+                  "end": [
+                    3,
+                    25
+                  ],
+                  "raw": "REQ-A"
+                }
+              },
+              {
+                "kind": "attribute",
+                "name": "spec-version",
+                "value": "1",
+                "span": {
+                  "bytes": [
+                    74,
+                    88
+                  ],
+                  "start": [
+                    3,
+                    26
+                  ],
+                  "end": [
+                    3,
+                    40
+                  ],
+                  "raw": "spec-version=1"
+                },
+                "value_span": {
+                  "bytes": [
+                    87,
+                    88
+                  ],
+                  "start": [
+                    3,
+                    39
+                  ],
+                  "end": [
+                    3,
+                    40
+                  ],
+                  "raw": "1"
+                }
+              }
+            ],
+            "inlines": []
+          },
+          {
+            "node": 3,
+            "parent": 2,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                90,
+                97
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                90,
+                97
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    90,
+                    97
+                  ],
+                  "start": [
+                    4,
+                    1
+                  ],
+                  "end": [
+                    5,
+                    1
+                  ],
+                  "raw": "本文\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "I-51-reference-title",
+      "classification": "I",
+      "input": "[ref]: https://example.com \"<!--\"\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n",
+      "snapshot": "870427a79c60febee43d231ece1e4f1291d3fafe4bc71b5f24847e9cb6092310",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "matched",
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              35,
+              87
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  76,
+                  83
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              35,
+              87
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  76,
+                  83
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "Intentional prototype correction; baseline loses REQ-A. No production switch authorized.",
+      "unsupported_reason": null,
+      "notices": [],
+      "trace": {
+        "source": {
+          "uri": "memory:corpus/I-51-reference-title",
+          "snapshot": "870427a79c60febee43d231ece1e4f1291d3fafe4bc71b5f24847e9cb6092310",
+          "bytes": 87
+        },
+        "profile": "mdtools-document-prototype-v0",
+        "model_version": 0,
+        "status": "complete",
+        "coverage": [
+          {
+            "span": {
+              "bytes": [
+                0,
+                34
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "[ref]: https://example.com \"<!--\"\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                34,
+                35
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                35,
+                76
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                76,
+                83
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                83,
+                87
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "state": "recognized",
+            "reason": null
+          }
+        ],
+        "notices": [],
+        "references": [
+          {
+            "label": "ref",
+            "span": {
+              "bytes": [
+                0,
+                33
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                1,
+                34
+              ],
+              "raw": "[ref]: https://example.com \"<!--\""
+            },
+            "destination": {
+              "bytes": [
+                7,
+                26
+              ],
+              "start": [
+                1,
+                8
+              ],
+              "end": [
+                1,
+                27
+              ],
+              "raw": "https://example.com"
+            },
+            "title": {
+              "bytes": [
+                28,
+                32
+              ],
+              "start": [
+                1,
+                29
+              ],
+              "end": [
+                1,
+                33
+              ],
+              "raw": "<!--"
+            }
+          }
+        ],
+        "nodes": [
+          {
+            "node": 0,
+            "parent": null,
+            "kind": "reference_definition",
+            "span": {
+              "bytes": [
+                0,
+                34
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "[ref]: https://example.com \"<!--\"\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                0,
+                33
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                1,
+                34
+              ],
+              "raw": "[ref]: https://example.com \"<!--\""
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": []
+          },
+          {
+            "node": 1,
+            "parent": null,
+            "kind": "blank",
+            "span": {
+              "bytes": [
+                34,
+                35
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                34,
+                35
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": []
+          },
+          {
+            "node": 2,
+            "parent": null,
+            "kind": "div",
+            "span": {
+              "bytes": [
+                35,
+                87
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+            },
+            "header": {
+              "bytes": [
+                35,
+                76
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "body": {
+              "bytes": [
+                76,
+                83
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": {
+              "bytes": [
+                83,
+                87
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "closure": "closed",
+            "header_valid": true,
+            "marker": ":::",
+            "info": "",
+            "info_span": null,
+            "attributes": [
+              {
+                "kind": "class",
+                "name": "requirement",
+                "value": "requirement",
+                "span": {
+                  "bytes": [
+                    40,
+                    52
+                  ],
+                  "start": [
+                    3,
+                    6
+                  ],
+                  "end": [
+                    3,
+                    18
+                  ],
+                  "raw": ".requirement"
+                },
+                "value_span": {
+                  "bytes": [
+                    41,
+                    52
+                  ],
+                  "start": [
+                    3,
+                    7
+                  ],
+                  "end": [
+                    3,
+                    18
+                  ],
+                  "raw": "requirement"
+                }
+              },
+              {
+                "kind": "id",
+                "name": "REQ-A",
+                "value": "REQ-A",
+                "span": {
+                  "bytes": [
+                    53,
+                    59
+                  ],
+                  "start": [
+                    3,
+                    19
+                  ],
+                  "end": [
+                    3,
+                    25
+                  ],
+                  "raw": "#REQ-A"
+                },
+                "value_span": {
+                  "bytes": [
+                    54,
+                    59
+                  ],
+                  "start": [
+                    3,
+                    20
+                  ],
+                  "end": [
+                    3,
+                    25
+                  ],
+                  "raw": "REQ-A"
+                }
+              },
+              {
+                "kind": "attribute",
+                "name": "spec-version",
+                "value": "1",
+                "span": {
+                  "bytes": [
+                    60,
+                    74
+                  ],
+                  "start": [
+                    3,
+                    26
+                  ],
+                  "end": [
+                    3,
+                    40
+                  ],
+                  "raw": "spec-version=1"
+                },
+                "value_span": {
+                  "bytes": [
+                    73,
+                    74
+                  ],
+                  "start": [
+                    3,
+                    39
+                  ],
+                  "end": [
+                    3,
+                    40
+                  ],
+                  "raw": "1"
+                }
+              }
+            ],
+            "inlines": []
+          },
+          {
+            "node": 3,
+            "parent": 2,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                76,
+                83
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                76,
+                83
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    76,
+                    83
+                  ],
+                  "start": [
+                    4,
+                    1
+                  ],
+                  "end": [
+                    5,
+                    1
+                  ],
+                  "raw": "本文\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "I-pending-paragraph-comment",
+      "classification": "I",
+      "input": "text <!--\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n",
+      "snapshot": "15a6406fa986db5c05be8105655dc4f41d37d7fb40926040674da312151efce5",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "unapproved-observation",
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": null,
+      "observed": {
+        "status": "complete",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              11,
+              63
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  52,
+                  59
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "Unapproved intentional-change candidate; no production application.",
+      "unsupported_reason": "Expected semantics pending compatibility decision; observation only.",
+      "notices": [],
+      "trace": {
+        "source": {
+          "uri": "memory:corpus/I-pending-paragraph-comment",
+          "snapshot": "15a6406fa986db5c05be8105655dc4f41d37d7fb40926040674da312151efce5",
+          "bytes": 63
+        },
+        "profile": "mdtools-document-prototype-v0",
+        "model_version": 0,
+        "status": "complete",
+        "coverage": [
+          {
+            "span": {
+              "bytes": [
+                0,
+                10
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "text <!--\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                10,
+                11
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                11,
+                52
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                52,
+                59
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                59,
+                63
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "state": "recognized",
+            "reason": null
+          }
+        ],
+        "notices": [],
+        "references": [],
+        "nodes": [
+          {
+            "node": 0,
+            "parent": null,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                0,
+                10
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "text <!--\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                0,
+                10
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "text <!--\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    0,
+                    10
+                  ],
+                  "start": [
+                    1,
+                    1
+                  ],
+                  "end": [
+                    2,
+                    1
+                  ],
+                  "raw": "text <!--\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          },
+          {
+            "node": 1,
+            "parent": null,
+            "kind": "blank",
+            "span": {
+              "bytes": [
+                10,
+                11
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                10,
+                11
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": []
+          },
+          {
+            "node": 2,
+            "parent": null,
+            "kind": "div",
+            "span": {
+              "bytes": [
+                11,
+                63
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+            },
+            "header": {
+              "bytes": [
+                11,
+                52
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "body": {
+              "bytes": [
+                52,
+                59
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": {
+              "bytes": [
+                59,
+                63
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "closure": "closed",
+            "header_valid": true,
+            "marker": ":::",
+            "info": "",
+            "info_span": null,
+            "attributes": [
+              {
+                "kind": "class",
+                "name": "requirement",
+                "value": "requirement",
+                "span": {
+                  "bytes": [
+                    16,
+                    28
+                  ],
+                  "start": [
+                    3,
+                    6
+                  ],
+                  "end": [
+                    3,
+                    18
+                  ],
+                  "raw": ".requirement"
+                },
+                "value_span": {
+                  "bytes": [
+                    17,
+                    28
+                  ],
+                  "start": [
+                    3,
+                    7
+                  ],
+                  "end": [
+                    3,
+                    18
+                  ],
+                  "raw": "requirement"
+                }
+              },
+              {
+                "kind": "id",
+                "name": "REQ-A",
+                "value": "REQ-A",
+                "span": {
+                  "bytes": [
+                    29,
+                    35
+                  ],
+                  "start": [
+                    3,
+                    19
+                  ],
+                  "end": [
+                    3,
+                    25
+                  ],
+                  "raw": "#REQ-A"
+                },
+                "value_span": {
+                  "bytes": [
+                    30,
+                    35
+                  ],
+                  "start": [
+                    3,
+                    20
+                  ],
+                  "end": [
+                    3,
+                    25
+                  ],
+                  "raw": "REQ-A"
+                }
+              },
+              {
+                "kind": "attribute",
+                "name": "spec-version",
+                "value": "1",
+                "span": {
+                  "bytes": [
+                    36,
+                    50
+                  ],
+                  "start": [
+                    3,
+                    26
+                  ],
+                  "end": [
+                    3,
+                    40
+                  ],
+                  "raw": "spec-version=1"
+                },
+                "value_span": {
+                  "bytes": [
+                    49,
+                    50
+                  ],
+                  "start": [
+                    3,
+                    39
+                  ],
+                  "end": [
+                    3,
+                    40
+                  ],
+                  "raw": "1"
+                }
+              }
+            ],
+            "inlines": []
+          },
+          {
+            "node": 3,
+            "parent": 2,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                52,
+                59
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                52,
+                59
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    52,
+                    59
+                  ],
+                  "start": [
+                    4,
+                    1
+                  ],
+                  "end": [
+                    5,
+                    1
+                  ],
+                  "raw": "本文\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "I-pending-div-tail-comment",
+      "classification": "I",
+      "input": "::: {.ordinary} <!--\n:::\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n",
+      "snapshot": "45287a648dcf8b2a3cbf16c710a738f750d9070698a6818a0ed4b5b1b3e123d8",
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "comparison": "unapproved-observation",
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "expected": null,
+      "observed": {
+        "status": "partial",
+        "semantic_checks": {
+          "json": "not-run",
+          "references": "not-run",
+          "expressions": "not-run",
+          "requirement_validation": "not-run"
+        },
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              26,
+              78
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  67,
+                  74
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ]
+      },
+      "difference_reason": "Unapproved intentional-change candidate; no production application.",
+      "unsupported_reason": "Expected semantics pending compatibility decision; observation only.",
+      "notices": [
+        {
+          "code": "block.invalid-header",
+          "message": "Invalid generic Div header",
+          "span": {
+            "bytes": [
+              0,
+              21
+            ],
+            "start": [
+              1,
+              1
+            ],
+            "end": [
+              2,
+              1
+            ]
+          }
+        }
+      ],
+      "trace": {
+        "source": {
+          "uri": "memory:corpus/I-pending-div-tail-comment",
+          "snapshot": "45287a648dcf8b2a3cbf16c710a738f750d9070698a6818a0ed4b5b1b3e123d8",
+          "bytes": 78
+        },
+        "profile": "mdtools-document-prototype-v0",
+        "model_version": 0,
+        "status": "partial",
+        "coverage": [
+          {
+            "span": {
+              "bytes": [
+                0,
+                21
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "::: {.ordinary} <!--\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                21,
+                25
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                25,
+                26
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                26,
+                67
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                67,
+                74
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "state": "recognized",
+            "reason": null
+          },
+          {
+            "span": {
+              "bytes": [
+                74,
+                78
+              ],
+              "start": [
+                6,
+                1
+              ],
+              "end": [
+                7,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "state": "recognized",
+            "reason": null
+          }
+        ],
+        "notices": [
+          {
+            "code": "block.invalid-header",
+            "message": "Invalid generic Div header",
+            "span": {
+              "bytes": [
+                0,
+                21
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "::: {.ordinary} <!--\n"
+            }
+          }
+        ],
+        "references": [],
+        "nodes": [
+          {
+            "node": 0,
+            "parent": null,
+            "kind": "div",
+            "span": {
+              "bytes": [
+                0,
+                25
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": "::: {.ordinary} <!--\n:::\n"
+            },
+            "header": {
+              "bytes": [
+                0,
+                21
+              ],
+              "start": [
+                1,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": "::: {.ordinary} <!--\n"
+            },
+            "body": {
+              "bytes": [
+                21,
+                21
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                2,
+                1
+              ],
+              "raw": ""
+            },
+            "closing": {
+              "bytes": [
+                21,
+                25
+              ],
+              "start": [
+                2,
+                1
+              ],
+              "end": [
+                3,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "closure": "closed",
+            "header_valid": false,
+            "marker": ":::",
+            "info": "",
+            "info_span": null,
+            "attributes": [
+              {
+                "kind": "class",
+                "name": "ordinary",
+                "value": "ordinary",
+                "span": {
+                  "bytes": [
+                    5,
+                    14
+                  ],
+                  "start": [
+                    1,
+                    6
+                  ],
+                  "end": [
+                    1,
+                    15
+                  ],
+                  "raw": ".ordinary"
+                },
+                "value_span": {
+                  "bytes": [
+                    6,
+                    14
+                  ],
+                  "start": [
+                    1,
+                    7
+                  ],
+                  "end": [
+                    1,
+                    15
+                  ],
+                  "raw": "ordinary"
+                }
+              }
+            ],
+            "inlines": []
+          },
+          {
+            "node": 1,
+            "parent": null,
+            "kind": "blank",
+            "span": {
+              "bytes": [
+                25,
+                26
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                25,
+                26
+              ],
+              "start": [
+                3,
+                1
+              ],
+              "end": [
+                4,
+                1
+              ],
+              "raw": "\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": []
+          },
+          {
+            "node": 2,
+            "parent": null,
+            "kind": "div",
+            "span": {
+              "bytes": [
+                26,
+                78
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                7,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+            },
+            "header": {
+              "bytes": [
+                26,
+                67
+              ],
+              "start": [
+                4,
+                1
+              ],
+              "end": [
+                5,
+                1
+              ],
+              "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+            },
+            "body": {
+              "bytes": [
+                67,
+                74
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": {
+              "bytes": [
+                74,
+                78
+              ],
+              "start": [
+                6,
+                1
+              ],
+              "end": [
+                7,
+                1
+              ],
+              "raw": ":::\n"
+            },
+            "closure": "closed",
+            "header_valid": true,
+            "marker": ":::",
+            "info": "",
+            "info_span": null,
+            "attributes": [
+              {
+                "kind": "class",
+                "name": "requirement",
+                "value": "requirement",
+                "span": {
+                  "bytes": [
+                    31,
+                    43
+                  ],
+                  "start": [
+                    4,
+                    6
+                  ],
+                  "end": [
+                    4,
+                    18
+                  ],
+                  "raw": ".requirement"
+                },
+                "value_span": {
+                  "bytes": [
+                    32,
+                    43
+                  ],
+                  "start": [
+                    4,
+                    7
+                  ],
+                  "end": [
+                    4,
+                    18
+                  ],
+                  "raw": "requirement"
+                }
+              },
+              {
+                "kind": "id",
+                "name": "REQ-A",
+                "value": "REQ-A",
+                "span": {
+                  "bytes": [
+                    44,
+                    50
+                  ],
+                  "start": [
+                    4,
+                    19
+                  ],
+                  "end": [
+                    4,
+                    25
+                  ],
+                  "raw": "#REQ-A"
+                },
+                "value_span": {
+                  "bytes": [
+                    45,
+                    50
+                  ],
+                  "start": [
+                    4,
+                    20
+                  ],
+                  "end": [
+                    4,
+                    25
+                  ],
+                  "raw": "REQ-A"
+                }
+              },
+              {
+                "kind": "attribute",
+                "name": "spec-version",
+                "value": "1",
+                "span": {
+                  "bytes": [
+                    51,
+                    65
+                  ],
+                  "start": [
+                    4,
+                    26
+                  ],
+                  "end": [
+                    4,
+                    40
+                  ],
+                  "raw": "spec-version=1"
+                },
+                "value_span": {
+                  "bytes": [
+                    64,
+                    65
+                  ],
+                  "start": [
+                    4,
+                    39
+                  ],
+                  "end": [
+                    4,
+                    40
+                  ],
+                  "raw": "1"
+                }
+              }
+            ],
+            "inlines": []
+          },
+          {
+            "node": 3,
+            "parent": 2,
+            "kind": "paragraph",
+            "span": {
+              "bytes": [
+                67,
+                74
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "header": null,
+            "body": {
+              "bytes": [
+                67,
+                74
+              ],
+              "start": [
+                5,
+                1
+              ],
+              "end": [
+                6,
+                1
+              ],
+              "raw": "本文\n"
+            },
+            "closing": null,
+            "closure": "none",
+            "header_valid": true,
+            "marker": "",
+            "info": "",
+            "info_span": null,
+            "attributes": [],
+            "inlines": [
+              {
+                "kind": "text",
+                "span": {
+                  "bytes": [
+                    67,
+                    74
+                  ],
+                  "start": [
+                    5,
+                    1
+                  ],
+                  "end": [
+                    6,
+                    1
+                  ],
+                  "raw": "本文\n"
+                },
+                "target": null,
+                "title": null,
+                "reference": null
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "failure_traces": {
+    "node_limit": {
+      "source": {
+        "uri": "memory:limited",
+        "snapshot": "b9d9d5279e18d42f63eed63325fa98d8ee6a2171571bd0e409a8c60314839490",
+        "bytes": 52
+      },
+      "profile": "mdtools-document-prototype-v0",
+      "model_version": 0,
+      "status": "partial",
+      "coverage": [
+        {
+          "span": {
+            "bytes": [
+              0,
+              41
+            ],
+            "start": [
+              1,
+              1
+            ],
+            "end": [
+              2,
+              1
+            ],
+            "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+          },
+          "state": "recognized",
+          "reason": null
+        },
+        {
+          "span": {
+            "bytes": [
+              41,
+              52
+            ],
+            "start": [
+              2,
+              1
+            ],
+            "end": [
+              4,
+              1
+            ],
+            "raw": "本文\n:::\n"
+          },
+          "state": "unparsed",
+          "reason": "maximum block nodes exceeded"
+        }
+      ],
+      "notices": [
+        {
+          "code": "limit.nodes",
+          "message": "Maximum block nodes exceeded",
+          "span": {
+            "bytes": [
+              41,
+              52
+            ],
+            "start": [
+              2,
+              1
+            ],
+            "end": [
+              4,
+              1
+            ],
+            "raw": "本文\n:::\n"
+          }
+        }
+      ],
+      "references": [],
+      "nodes": [
+        {
+          "node": 0,
+          "parent": null,
+          "kind": "div",
+          "span": {
+            "bytes": [
+              0,
+              52
+            ],
+            "start": [
+              1,
+              1
+            ],
+            "end": [
+              4,
+              1
+            ],
+            "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+          },
+          "header": {
+            "bytes": [
+              0,
+              41
+            ],
+            "start": [
+              1,
+              1
+            ],
+            "end": [
+              2,
+              1
+            ],
+            "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+          },
+          "body": {
+            "bytes": [
+              41,
+              52
+            ],
+            "start": [
+              2,
+              1
+            ],
+            "end": [
+              4,
+              1
+            ],
+            "raw": "本文\n:::\n"
+          },
+          "closing": null,
+          "closure": "limit",
+          "header_valid": true,
+          "marker": ":::",
+          "info": "",
+          "info_span": null,
+          "attributes": [
+            {
+              "kind": "class",
+              "name": "requirement",
+              "value": "requirement",
+              "span": {
+                "bytes": [
+                  5,
+                  17
+                ],
+                "start": [
+                  1,
+                  6
+                ],
+                "end": [
+                  1,
+                  18
+                ],
+                "raw": ".requirement"
+              },
+              "value_span": {
+                "bytes": [
+                  6,
+                  17
+                ],
+                "start": [
+                  1,
+                  7
+                ],
+                "end": [
+                  1,
+                  18
+                ],
+                "raw": "requirement"
+              }
+            },
+            {
+              "kind": "id",
+              "name": "REQ-A",
+              "value": "REQ-A",
+              "span": {
+                "bytes": [
+                  18,
+                  24
+                ],
+                "start": [
+                  1,
+                  19
+                ],
+                "end": [
+                  1,
+                  25
+                ],
+                "raw": "#REQ-A"
+              },
+              "value_span": {
+                "bytes": [
+                  19,
+                  24
+                ],
+                "start": [
+                  1,
+                  20
+                ],
+                "end": [
+                  1,
+                  25
+                ],
+                "raw": "REQ-A"
+              }
+            },
+            {
+              "kind": "attribute",
+              "name": "spec-version",
+              "value": "1",
+              "span": {
+                "bytes": [
+                  25,
+                  39
+                ],
+                "start": [
+                  1,
+                  26
+                ],
+                "end": [
+                  1,
+                  40
+                ],
+                "raw": "spec-version=1"
+              },
+              "value_span": {
+                "bytes": [
+                  38,
+                  39
+                ],
+                "start": [
+                  1,
+                  39
+                ],
+                "end": [
+                  1,
+                  40
+                ],
+                "raw": "1"
+              }
+            }
+          ],
+          "inlines": []
+        }
+      ]
+    },
+    "multiline_reference_unsupported": {
+      "source": {
+        "uri": "memory:multiline-reference",
+        "snapshot": "c262b5d587e9811618435a7fdb46b9b0170c7d69e77d1a1873c389e2a74271f5",
+        "bytes": 77
+      },
+      "profile": "mdtools-document-prototype-v0",
+      "model_version": 0,
+      "status": "partial",
+      "coverage": [
+        {
+          "span": {
+            "bytes": [
+              0,
+              4
+            ],
+            "start": [
+              1,
+              1
+            ],
+            "end": [
+              2,
+              1
+            ],
+            "raw": "[a]\n"
+          },
+          "state": "recognized",
+          "reason": null
+        },
+        {
+          "span": {
+            "bytes": [
+              4,
+              5
+            ],
+            "start": [
+              2,
+              1
+            ],
+            "end": [
+              3,
+              1
+            ],
+            "raw": "\n"
+          },
+          "state": "recognized",
+          "reason": null
+        },
+        {
+          "span": {
+            "bytes": [
+              5,
+              24
+            ],
+            "start": [
+              3,
+              1
+            ],
+            "end": [
+              5,
+              1
+            ],
+            "raw": "[a]: /url\n \"title\"\n"
+          },
+          "state": "unsupported",
+          "reason": "multiline reference definition outside single-line prototype profile"
+        },
+        {
+          "span": {
+            "bytes": [
+              24,
+              25
+            ],
+            "start": [
+              5,
+              1
+            ],
+            "end": [
+              6,
+              1
+            ],
+            "raw": "\n"
+          },
+          "state": "recognized",
+          "reason": null
+        },
+        {
+          "span": {
+            "bytes": [
+              25,
+              66
+            ],
+            "start": [
+              6,
+              1
+            ],
+            "end": [
+              7,
+              1
+            ],
+            "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+          },
+          "state": "recognized",
+          "reason": null
+        },
+        {
+          "span": {
+            "bytes": [
+              66,
+              73
+            ],
+            "start": [
+              7,
+              1
+            ],
+            "end": [
+              8,
+              1
+            ],
+            "raw": "本文\n"
+          },
+          "state": "recognized",
+          "reason": null
+        },
+        {
+          "span": {
+            "bytes": [
+              73,
+              77
+            ],
+            "start": [
+              8,
+              1
+            ],
+            "end": [
+              9,
+              1
+            ],
+            "raw": ":::\n"
+          },
+          "state": "recognized",
+          "reason": null
+        }
+      ],
+      "notices": [
+        {
+          "code": "block.unsupported-reference",
+          "message": "multiline reference definition outside single-line prototype profile",
+          "span": {
+            "bytes": [
+              5,
+              24
+            ],
+            "start": [
+              3,
+              1
+            ],
+            "end": [
+              5,
+              1
+            ],
+            "raw": "[a]: /url\n \"title\"\n"
+          }
+        }
+      ],
+      "references": [],
+      "nodes": [
+        {
+          "node": 0,
+          "parent": null,
+          "kind": "paragraph",
+          "span": {
+            "bytes": [
+              0,
+              4
+            ],
+            "start": [
+              1,
+              1
+            ],
+            "end": [
+              2,
+              1
+            ],
+            "raw": "[a]\n"
+          },
+          "header": null,
+          "body": {
+            "bytes": [
+              0,
+              4
+            ],
+            "start": [
+              1,
+              1
+            ],
+            "end": [
+              2,
+              1
+            ],
+            "raw": "[a]\n"
+          },
+          "closing": null,
+          "closure": "none",
+          "header_valid": true,
+          "marker": "",
+          "info": "",
+          "info_span": null,
+          "attributes": [],
+          "inlines": [
+            {
+              "kind": "text",
+              "span": {
+                "bytes": [
+                  0,
+                  4
+                ],
+                "start": [
+                  1,
+                  1
+                ],
+                "end": [
+                  2,
+                  1
+                ],
+                "raw": "[a]\n"
+              },
+              "target": null,
+              "title": null,
+              "reference": null
+            }
+          ]
+        },
+        {
+          "node": 1,
+          "parent": null,
+          "kind": "blank",
+          "span": {
+            "bytes": [
+              4,
+              5
+            ],
+            "start": [
+              2,
+              1
+            ],
+            "end": [
+              3,
+              1
+            ],
+            "raw": "\n"
+          },
+          "header": null,
+          "body": {
+            "bytes": [
+              4,
+              5
+            ],
+            "start": [
+              2,
+              1
+            ],
+            "end": [
+              3,
+              1
+            ],
+            "raw": "\n"
+          },
+          "closing": null,
+          "closure": "none",
+          "header_valid": true,
+          "marker": "",
+          "info": "",
+          "info_span": null,
+          "attributes": [],
+          "inlines": []
+        },
+        {
+          "node": 2,
+          "parent": null,
+          "kind": "unsupported",
+          "span": {
+            "bytes": [
+              5,
+              24
+            ],
+            "start": [
+              3,
+              1
+            ],
+            "end": [
+              5,
+              1
+            ],
+            "raw": "[a]: /url\n \"title\"\n"
+          },
+          "header": null,
+          "body": {
+            "bytes": [
+              5,
+              24
+            ],
+            "start": [
+              3,
+              1
+            ],
+            "end": [
+              5,
+              1
+            ],
+            "raw": "[a]: /url\n \"title\"\n"
+          },
+          "closing": null,
+          "closure": "none",
+          "header_valid": false,
+          "marker": "",
+          "info": "",
+          "info_span": null,
+          "attributes": [],
+          "inlines": []
+        },
+        {
+          "node": 3,
+          "parent": null,
+          "kind": "blank",
+          "span": {
+            "bytes": [
+              24,
+              25
+            ],
+            "start": [
+              5,
+              1
+            ],
+            "end": [
+              6,
+              1
+            ],
+            "raw": "\n"
+          },
+          "header": null,
+          "body": {
+            "bytes": [
+              24,
+              25
+            ],
+            "start": [
+              5,
+              1
+            ],
+            "end": [
+              6,
+              1
+            ],
+            "raw": "\n"
+          },
+          "closing": null,
+          "closure": "none",
+          "header_valid": true,
+          "marker": "",
+          "info": "",
+          "info_span": null,
+          "attributes": [],
+          "inlines": []
+        },
+        {
+          "node": 4,
+          "parent": null,
+          "kind": "div",
+          "span": {
+            "bytes": [
+              25,
+              77
+            ],
+            "start": [
+              6,
+              1
+            ],
+            "end": [
+              9,
+              1
+            ],
+            "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+          },
+          "header": {
+            "bytes": [
+              25,
+              66
+            ],
+            "start": [
+              6,
+              1
+            ],
+            "end": [
+              7,
+              1
+            ],
+            "raw": "::: {.requirement #REQ-A spec-version=1}\n"
+          },
+          "body": {
+            "bytes": [
+              66,
+              73
+            ],
+            "start": [
+              7,
+              1
+            ],
+            "end": [
+              8,
+              1
+            ],
+            "raw": "本文\n"
+          },
+          "closing": {
+            "bytes": [
+              73,
+              77
+            ],
+            "start": [
+              8,
+              1
+            ],
+            "end": [
+              9,
+              1
+            ],
+            "raw": ":::\n"
+          },
+          "closure": "closed",
+          "header_valid": true,
+          "marker": ":::",
+          "info": "",
+          "info_span": null,
+          "attributes": [
+            {
+              "kind": "class",
+              "name": "requirement",
+              "value": "requirement",
+              "span": {
+                "bytes": [
+                  30,
+                  42
+                ],
+                "start": [
+                  6,
+                  6
+                ],
+                "end": [
+                  6,
+                  18
+                ],
+                "raw": ".requirement"
+              },
+              "value_span": {
+                "bytes": [
+                  31,
+                  42
+                ],
+                "start": [
+                  6,
+                  7
+                ],
+                "end": [
+                  6,
+                  18
+                ],
+                "raw": "requirement"
+              }
+            },
+            {
+              "kind": "id",
+              "name": "REQ-A",
+              "value": "REQ-A",
+              "span": {
+                "bytes": [
+                  43,
+                  49
+                ],
+                "start": [
+                  6,
+                  19
+                ],
+                "end": [
+                  6,
+                  25
+                ],
+                "raw": "#REQ-A"
+              },
+              "value_span": {
+                "bytes": [
+                  44,
+                  49
+                ],
+                "start": [
+                  6,
+                  20
+                ],
+                "end": [
+                  6,
+                  25
+                ],
+                "raw": "REQ-A"
+              }
+            },
+            {
+              "kind": "attribute",
+              "name": "spec-version",
+              "value": "1",
+              "span": {
+                "bytes": [
+                  50,
+                  64
+                ],
+                "start": [
+                  6,
+                  26
+                ],
+                "end": [
+                  6,
+                  40
+                ],
+                "raw": "spec-version=1"
+              },
+              "value_span": {
+                "bytes": [
+                  63,
+                  64
+                ],
+                "start": [
+                  6,
+                  39
+                ],
+                "end": [
+                  6,
+                  40
+                ],
+                "raw": "1"
+              }
+            }
+          ],
+          "inlines": []
+        },
+        {
+          "node": 5,
+          "parent": 4,
+          "kind": "paragraph",
+          "span": {
+            "bytes": [
+              66,
+              73
+            ],
+            "start": [
+              7,
+              1
+            ],
+            "end": [
+              8,
+              1
+            ],
+            "raw": "本文\n"
+          },
+          "header": null,
+          "body": {
+            "bytes": [
+              66,
+              73
+            ],
+            "start": [
+              7,
+              1
+            ],
+            "end": [
+              8,
+              1
+            ],
+            "raw": "本文\n"
+          },
+          "closing": null,
+          "closure": "none",
+          "header_valid": true,
+          "marker": "",
+          "info": "",
+          "info_span": null,
+          "attributes": [],
+          "inlines": [
+            {
+              "kind": "text",
+              "span": {
+                "bytes": [
+                  66,
+                  73
+                ],
+                "start": [
+                  7,
+                  1
+                ],
+                "end": [
+                  8,
+                  1
+                ],
+                "raw": "本文\n"
+              },
+              "target": null,
+              "title": null,
+              "reference": null
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

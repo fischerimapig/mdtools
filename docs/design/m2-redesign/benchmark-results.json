@@ -1,0 +1,133 @@
+{
+  "python": "3.13.18",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.43",
+  "method": "SourceSnapshot creation separate; parse includes index, block, inline, validation; projection separate; bridge is extra sampled conversions; memory is Python tracemalloc in an untimed separate run, excludes original snapshot; no legacy timing comparison",
+  "limits": {
+    "max_bytes": 4194304,
+    "max_nodes": 200000,
+    "max_depth": 64,
+    "max_inline_chars": 2097152
+  },
+  "measurements": [
+    {
+      "kind": "requirements",
+      "bytes": 102396,
+      "code_points": 102396,
+      "repeats": 3,
+      "snapshot_ms": 4.233834002661752,
+      "parse_ms_median": 425.08666799767525,
+      "parse_ms_samples": [
+        421.56755899850396,
+        425.08666799767525,
+        452.33287299924996
+      ],
+      "projection_ms_median": 10.291103000781732,
+      "bridge_ms_median": 4.648305999580771,
+      "bridge_calls": 1000,
+      "parse_peak_bytes": 10122939,
+      "projection_extra_peak_bytes": 523704,
+      "candidates": 1484,
+      "status": "complete"
+    },
+    {
+      "kind": "requirements",
+      "bytes": 1048524,
+      "code_points": 1048524,
+      "repeats": 3,
+      "snapshot_ms": 41.36960200048634,
+      "parse_ms_median": 5947.2171970010095,
+      "parse_ms_samples": [
+        5146.8843679977,
+        5947.2171970010095,
+        6008.159750999766
+      ],
+      "projection_ms_median": 133.3130089988117,
+      "bridge_ms_median": 5.1152179985365365,
+      "bridge_calls": 1000,
+      "parse_peak_bytes": 100901291,
+      "projection_extra_peak_bytes": 5997904,
+      "candidates": 15196,
+      "status": "complete"
+    },
+    {
+      "kind": "multilingual",
+      "bytes": 102375,
+      "code_points": 77805,
+      "repeats": 3,
+      "snapshot_ms": 3.9347220008494332,
+      "parse_ms_median": 392.9435749996628,
+      "parse_ms_samples": [
+        421.8958900019061,
+        392.9435749996628,
+        379.31868899977417
+      ],
+      "projection_ms_median": 8.97742099914467,
+      "bridge_ms_median": 4.482915002881782,
+      "bridge_calls": 1000,
+      "parse_peak_bytes": 9163226,
+      "projection_extra_peak_bytes": 535856,
+      "candidates": 1365,
+      "status": "complete"
+    },
+    {
+      "kind": "multilingual",
+      "bytes": 1048575,
+      "code_points": 796917,
+      "repeats": 3,
+      "snapshot_ms": 31.303515999752562,
+      "parse_ms_median": 4951.039775001846,
+      "parse_ms_samples": [
+        4432.781863997661,
+        4951.039775001846,
+        4976.328913002362
+      ],
+      "projection_ms_median": 104.91019300025073,
+      "bridge_ms_median": 4.772636999405222,
+      "bridge_calls": 1000,
+      "parse_peak_bytes": 90135794,
+      "projection_extra_peak_bytes": 6065592,
+      "candidates": 13981,
+      "status": "complete"
+    },
+    {
+      "kind": "long-line",
+      "bytes": 102400,
+      "code_points": 102400,
+      "repeats": 3,
+      "snapshot_ms": 0.9806330017454457,
+      "parse_ms_median": 50.67735900229309,
+      "parse_ms_samples": [
+        90.48391900068964,
+        50.36108499916736,
+        50.67735900229309
+      ],
+      "projection_ms_median": 0.008860999514581636,
+      "bridge_ms_median": 0.005475998477777466,
+      "bridge_calls": 1,
+      "parse_peak_bytes": 976107,
+      "projection_extra_peak_bytes": 472,
+      "candidates": 0,
+      "status": "complete"
+    },
+    {
+      "kind": "long-line",
+      "bytes": 1048576,
+      "code_points": 1048576,
+      "repeats": 3,
+      "snapshot_ms": 8.833750001940643,
+      "parse_ms_median": 522.1473880010308,
+      "parse_ms_samples": [
+        529.9962989993219,
+        522.1473880010308,
+        520.2685189979093
+      ],
+      "projection_ms_median": 0.006219001079443842,
+      "bridge_ms_median": 0.006064998160582036,
+      "bridge_calls": 1,
+      "parse_peak_bytes": 9759507,
+      "projection_extra_peak_bytes": 472,
+      "candidates": 0,
+      "status": "complete"
+    }
+  ]
+}

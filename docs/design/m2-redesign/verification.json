@@ -1,0 +1,159 @@
+{
+  "recorded_at": "2026-11-04T22:26:54.392036+00:00",
+  "head": "17723261c3a9a47f69b763d4898c1db0d290c0fd",
+  "branch": "issue/52-document-parser-prototype",
+  "baseline_sha": "b11368128d4e2a476f2204af40bdfdc947f1cc88",
+  "baseline_tree": "746a4ee6b1a8b6574756254e11289ce907fed089",
+  "head_tree": "746a4ee6b1a8b6574756254e11289ce907fed089",
+  "origin_spec_integration": "17723261c3a9a47f69b763d4898c1db0d290c0fd",
+  "tracked_diff": "pyproject.toml | 3 +++\n 1 file changed, 3 insertions(+)",
+  "python": "3.13.18",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.43",
+  "uv": "uv 0.13.6 (x86_64-unknown-linux-gnu)",
+  "dependencies": {
+    "pytest": "9.0.3",
+    "jsonschema": "4.26.0",
+    "PyYAML": "6.0.3",
+    "attrs": "26.1.0",
+    "rpds-py": "2026.9.1"
+  },
+  "review_pdf_sha256": "9e5f2e12398e0d12be3f412440772809d79410ccc8d4fd681470abe95982cab3",
+  "content": {
+    "pyproject.toml": {
+      "bytes": 791,
+      "sha256": "302e9a3a31119eaca4376bea81352b7c6b7d174b9b2d61dcc2391a0284c6c6f0"
+    },
+    "uv.lock": {
+      "bytes": 41585,
+      "sha256": "1649653e26617eae9e0a870168977cdf48674b16243b1f76f491eabb2abcb7ea"
+    },
+    "experiments/document_parser/__init__.py": {
+      "bytes": 81,
+      "sha256": "11c57bfa2091eab173e7f67fe0d67b20c5cfbdf40ddacdee14c553d5fd1c01e5"
+    },
+    "experiments/document_parser/__main__.py": {
+      "bytes": 1734,
+      "sha256": "e57947ef93a3ab802908b585ffe4d55935dd08f83b5765e625d37d7d1739b778"
+    },
+    "experiments/document_parser/benchmark.py": {
+      "bytes": 3998,
+      "sha256": "f77ffffc1326419571b6ad2130560a3028d85d9e407389319fd7abf942d2ee3e"
+    },
+    "experiments/document_parser/blocks.py": {
+      "bytes": 14841,
+      "sha256": "cd0aea4be876311cf1e7b6c915c98de6ff56c51fa7bd55697659a018cda59028"
+    },
+    "experiments/document_parser/dump.py": {
+      "bytes": 2498,
+      "sha256": "5c26d445a1b99d31be38d0a4cbba73228eeb37f6149ba1412a0914ff74a6c4e9"
+    },
+    "experiments/document_parser/inline.py": {
+      "bytes": 9040,
+      "sha256": "3c533e75c1eab215a87e6d79ea16a9d42367e1578a00a2cb6830a64cc8e9eefc"
+    },
+    "experiments/document_parser/links.py": {
+      "bytes": 3892,
+      "sha256": "cb36037b3307f841cdd1da92948014379cc54b68800689ae1de9ce523091f25b"
+    },
+    "experiments/document_parser/model.py": {
+      "bytes": 9811,
+      "sha256": "b209886475d47ff2fc555de727579917f773e657e7c33141821169b0804c9cd2"
+    },
+    "experiments/document_parser/parser.py": {
+      "bytes": 5874,
+      "sha256": "ed7b2a55dbb431f00f48f002b9f53f2b64e044eccb3991b67419aee0e0f1330c"
+    },
+    "experiments/document_parser/projection.py": {
+      "bytes": 4723,
+      "sha256": "e43db8b80c90e705f68bc280fa5dca10b0f785a2d246ea6750ba72b4c19bd9d4"
+    },
+    "experiments/document_parser/tests/legacy_adapter.py": {
+      "bytes": 3701,
+      "sha256": "e2cf11253bd602abf269e1c95080b5c2f8fb7f8d9d445ef7c9635440b2a3653f"
+    },
+    "experiments/document_parser/tests/report.py": {
+      "bytes": 3453,
+      "sha256": "11e07a731253b7418a732830881cf4016f449926a7c4916b27ec150a68a56459"
+    },
+    "experiments/document_parser/tests/test_architecture.py": {
+      "bytes": 5468,
+      "sha256": "55b393d3406c16eb304c4fcc6d1c73651390d9ffcd1adb4ac474276ea76dca04"
+    },
+    "experiments/document_parser/tests/test_blocks.py": {
+      "bytes": 13906,
+      "sha256": "7f8ce1838b08ebfc27fb135e0b7a90bfbff85c5d8007f69a271c978a8f3aaf35"
+    },
+    "experiments/document_parser/tests/test_corpus.py": {
+      "bytes": 2459,
+      "sha256": "acf6a65f9ea4414b0e4e6eaa89710ecde9c8e72d133c1ac686ff078144f6b46a"
+    },
+    "experiments/document_parser/tests/test_inline.py": {
+      "bytes": 7925,
+      "sha256": "1e7a54e48b9d502d8aec3fd22b3f6da3033a2110f0a9702f936d26c28d6e838f"
+    },
+    "experiments/document_parser/tests/test_review_entry.py": {
+      "bytes": 3395,
+      "sha256": "78c75a1a26b92085d21c106675972ab6faec631366764fe6f13123bb1092d48b"
+    },
+    "experiments/document_parser/tests/test_source_contract.py": {
+      "bytes": 4014,
+      "sha256": "8c3e3c3c88b92055ff156db9f7f1ccc8c8d128f3c0c69fde0eabfb0f40333f3e"
+    },
+    "experiments/document_parser/corpus/m2.json": {
+      "bytes": 48504,
+      "sha256": "11cc01d1c1b6f127ca346f52fbd73483eb22d8ec10faf59789a901ce4d8863da"
+    },
+    "experiments/document_parser/corpus/README.md": {
+      "bytes": 2530,
+      "sha256": "52a3dfdcfda29b346e6f2c9503ae553d454d5778f8741a4385cfb01e44a14032"
+    },
+    "experiments/document_parser/corpus/demo.md": {
+      "bytes": 91,
+      "sha256": "2c4754377b7d7b875e35107efec91a2b930487b207549e0438514c848d7fd6e9"
+    }
+  },
+  "production_diff": "",
+  "publication": {
+    "commit": false,
+    "push": false,
+    "pr": false,
+    "github_issue_write": false,
+    "merge": false,
+    "tag": false
+  },
+  "tests": {
+    "before_related": "180 passed in 1.34s",
+    "before_all": "1137 passed, 1 skipped in 20.85s",
+    "prototype": "132 passed in 1.36s",
+    "after_all": "1269 passed, 1 skipped in 19.54s",
+    "skip": "mdsplit/tests/test_roundtrip.py:89 Sample file not found",
+    "legacy_details_after_full_suite": "49 passed in 0.22s"
+  },
+  "build": {
+    "sdist_entries": 339,
+    "wheel_entries": 226,
+    "prototype_entries": 0,
+    "clean_wheel_smoke": "python -I -S; spec show REQ-NORMAL complete"
+  },
+  "notes": [
+    "Full-suite runtime implementation unchanged after execution; test-only legacy evidence serialization expanded afterward and 49 corpus tests rerun (0.22s).",
+    "SourceSnapshot creation excluded from parse timing and tracemalloc; benchmark records it separately.",
+    "Metadata and git state are local evidence, not CI or publication."
+  ],
+  "publication_preparation": {
+    "date": "2026-11-05",
+    "authorization": "User requested committing and pushing the prototype branch; no PR.",
+    "whitespace_only_adjustments": [
+      "docs/design/m2-redesign/design.md",
+      "docs/design/m2-redesign/plan.md",
+      "docs/design/m2-redesign/references.md",
+      "docs/design/m2-redesign/results.md",
+      "docs/design/m2-redesign/traces.md",
+      "experiments/document_parser/README.md",
+      "experiments/document_parser/corpus/demo.md"
+    ],
+    "demo_sha256_after_eof_cleanup": "13b2e870dc552e8d3a139fb0917478cc19eb5079b44ac3344ee60b0a3f685a28",
+    "demo_check": "python -S CLI: complete, source 90 bytes, REQ-A [38,90)",
+    "historical_record": "content/publication and test results above describe the 2026-11-04 verification snapshot; runtime, tests and fixed JSON corpus are unchanged."
+  }
+}

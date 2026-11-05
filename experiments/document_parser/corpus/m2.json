@@ -1,0 +1,2005 @@
+{
+  "schema_version": 1,
+  "baseline_sha": "b11368128d4e2a476f2204af40bdfdc947f1cc88",
+  "cases": [
+    {
+      "id": "C-fixture-cancel-allow",
+      "classification": "C",
+      "input": {
+        "fixture": "docs/spec/examples/cancellation/cancel-allow.md"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Preserve all candidates, raw bodies, language and model ownership from the real M2 manuscript.",
+      "expected": {
+        "ids": [
+          "REQ-CANCEL-ALLOW"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-ALLOW",
+            "ids": [
+              "REQ-CANCEL-ALLOW"
+            ],
+            "span": [
+              25,
+              483
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": "ja",
+                "span": [
+                  104,
+                  174
+                ],
+                "text": "支払い済みで未発送なら、キャンセルを許可する。\n"
+              },
+              {
+                "language": "en",
+                "span": [
+                  193,
+                  268
+                ],
+                "text": "Allow cancellation when payment is complete and the order has not shipped.\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  273,
+                  479
+                ],
+                "body": [
+                  283,
+                  475
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-ALLOW",
+            "ids": [
+              "REQ-CANCEL-ALLOW"
+            ],
+            "span": [
+              25,
+              483
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": "ja",
+                "span": [
+                  104,
+                  174
+                ],
+                "text": "支払い済みで未発送なら、キャンセルを許可する。\n"
+              },
+              {
+                "language": "en",
+                "span": [
+                  193,
+                  268
+                ],
+                "text": "Allow cancellation when payment is complete and the order has not shipped.\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  273,
+                  479
+                ],
+                "body": [
+                  283,
+                  475
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-CANCEL-ALLOW"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-fixture-cancel-deny",
+      "classification": "C",
+      "input": {
+        "fixture": "docs/spec/examples/cancellation/cancel-deny.md"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Preserve all candidates, raw bodies, language and model ownership from the real M2 manuscript.",
+      "expected": {
+        "ids": [
+          "REQ-CANCEL-DENY"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-DENY",
+            "ids": [
+              "REQ-CANCEL-DENY"
+            ],
+            "span": [
+              25,
+              355
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  113,
+                  172
+                ],
+                "text": "支払い済みなら、キャンセルを禁止する。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  172,
+                  351
+                ],
+                "body": [
+                  182,
+                  347
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-DENY",
+            "ids": [
+              "REQ-CANCEL-DENY"
+            ],
+            "span": [
+              25,
+              355
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  113,
+                  172
+                ],
+                "text": "支払い済みなら、キャンセルを禁止する。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  172,
+                  351
+                ],
+                "body": [
+                  182,
+                  347
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-CANCEL-DENY"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-fixture-guidance",
+      "classification": "C",
+      "input": {
+        "fixture": "docs/spec/examples/cancellation/guidance.md"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Preserve all candidates, raw bodies, language and model ownership from the real M2 manuscript.",
+      "expected": {
+        "ids": [
+          "REQ-CANCEL-GUIDANCE"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-GUIDANCE",
+            "ids": [
+              "REQ-CANCEL-GUIDANCE"
+            ],
+            "span": [
+              25,
+              197
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  93,
+                  193
+                ],
+                "text": "キャンセルを受け付けた場合は、利用者に分かりやすい案内を表示する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-CANCEL-GUIDANCE",
+            "ids": [
+              "REQ-CANCEL-GUIDANCE"
+            ],
+            "span": [
+              25,
+              197
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  93,
+                  193
+                ],
+                "text": "キャンセルを受け付けた場合は、利用者に分かりやすい案内を表示する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-CANCEL-GUIDANCE"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-fixture-normal",
+      "classification": "C",
+      "input": {
+        "fixture": "docs/spec/examples/model-contract/normal.md"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Preserve all candidates, raw bodies, language and model ownership from the real M2 manuscript.",
+      "expected": {
+        "ids": [
+          "REQ-NORMAL"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-NORMAL",
+            "ids": [
+              "REQ-NORMAL"
+            ],
+            "span": [
+              0,
+              256
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  60,
+                  107
+                ],
+                "text": "支払い済みなら処理を許可する。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  107,
+                  252
+                ],
+                "body": [
+                  117,
+                  248
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-NORMAL",
+            "ids": [
+              "REQ-NORMAL"
+            ],
+            "span": [
+              0,
+              256
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  60,
+                  107
+                ],
+                "text": "支払い済みなら処理を許可する。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  107,
+                  252
+                ],
+                "body": [
+                  117,
+                  248
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-NORMAL"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-fixture-multilingual",
+      "classification": "C",
+      "input": {
+        "fixture": "docs/spec/examples/model-contract/multilingual.md"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Preserve all candidates, raw bodies, language and model ownership from the real M2 manuscript.",
+      "expected": {
+        "ids": [
+          "REQ-MULTILINGUAL"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-MULTILINGUAL",
+            "ids": [
+              "REQ-MULTILINGUAL"
+            ],
+            "span": [
+              0,
+              156
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": "ja",
+                "span": [
+                  66,
+                  101
+                ],
+                "text": "処理状況を表示する。📚\n"
+              },
+              {
+                "language": "en",
+                "span": [
+                  120,
+                  148
+                ],
+                "text": "Show the processing status.\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-MULTILINGUAL",
+            "ids": [
+              "REQ-MULTILINGUAL"
+            ],
+            "span": [
+              0,
+              156
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": "ja",
+                "span": [
+                  66,
+                  101
+                ],
+                "text": "処理状況を表示する。📚\n"
+              },
+              {
+                "language": "en",
+                "span": [
+                  120,
+                  148
+                ],
+                "text": "Show the processing status.\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-MULTILINGUAL"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-fixture-natural-only",
+      "classification": "C",
+      "input": {
+        "fixture": "docs/spec/examples/model-contract/natural-only.md"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Preserve all candidates, raw bodies, language and model ownership from the real M2 manuscript.",
+      "expected": {
+        "ids": [
+          "REQ-NATURAL"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-NATURAL",
+            "ids": [
+              "REQ-NATURAL"
+            ],
+            "span": [
+              0,
+              94
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  47,
+                  90
+                ],
+                "text": "利用者に処理状況を表示する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-NATURAL",
+            "ids": [
+              "REQ-NATURAL"
+            ],
+            "span": [
+              0,
+              94
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  47,
+                  90
+                ],
+                "text": "利用者に処理状況を表示する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-NATURAL"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-fixture-invalid",
+      "classification": "C",
+      "input": {
+        "fixture": "docs/spec/examples/model-contract/invalid.md"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Preserve all candidates, raw bodies, language and model ownership from the real M2 manuscript.",
+      "expected": {
+        "ids": [
+          null,
+          "REQ-RECOVER"
+        ],
+        "candidates": [
+          {
+            "id": null,
+            "ids": [],
+            "span": [
+              0,
+              65
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  34,
+                  61
+                ],
+                "text": "IDが欠落している。\n"
+              }
+            ],
+            "mdspec": []
+          },
+          {
+            "id": "REQ-RECOVER",
+            "ids": [
+              "REQ-RECOVER"
+            ],
+            "span": [
+              66,
+              160
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  113,
+                  156
+                ],
+                "text": "回復後もこの要件を保持する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": null,
+            "ids": [],
+            "span": [
+              0,
+              65
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  34,
+                  61
+                ],
+                "text": "IDが欠落している。\n"
+              }
+            ],
+            "mdspec": []
+          },
+          {
+            "id": "REQ-RECOVER",
+            "ids": [
+              "REQ-RECOVER"
+            ],
+            "span": [
+              66,
+              160
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  113,
+                  156
+                ],
+                "text": "回復後もこの要件を保持する。\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-RECOVER"
+          ],
+          "completeness": "partial",
+          "diagnostics": [
+            {
+              "code": "spec.invalid-requirement",
+              "severity": "error",
+              "category": "user",
+              "message": "Missing requirement attribute: id",
+              "primary": {
+                "kind": "original",
+                "span": [
+                  0,
+                  34
+                ],
+                "reason": null
+              },
+              "related": [],
+              "requirement_id": null
+            }
+          ],
+          "rejected": [
+            {
+              "kind": "requirement",
+              "span": [
+                0,
+                65
+              ],
+              "text": "::: {.requirement spec-version=1}\nIDが欠落している。\n:::\n",
+              "diagnostic_codes": [
+                "spec.invalid-requirement"
+              ]
+            }
+          ]
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-fixture-broken-model",
+      "classification": "C",
+      "input": {
+        "fixture": "docs/spec/examples/model-contract/broken-model.md"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Preserve all candidates, raw bodies, language and model ownership from the real M2 manuscript.",
+      "expected": {
+        "ids": [
+          "REQ-BROKEN"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-BROKEN",
+            "ids": [
+              "REQ-BROKEN"
+            ],
+            "span": [
+              0,
+              197
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  46,
+                  108
+                ],
+                "text": "形式記述が壊れていてもnatural-onlyにしない。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  108,
+                  193
+                ],
+                "body": [
+                  118,
+                  189
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-BROKEN",
+            "ids": [
+              "REQ-BROKEN"
+            ],
+            "span": [
+              0,
+              197
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  46,
+                  108
+                ],
+                "text": "形式記述が壊れていてもnatural-onlyにしない。\n\n"
+              }
+            ],
+            "mdspec": [
+              {
+                "span": [
+                  108,
+                  193
+                ],
+                "body": [
+                  118,
+                  189
+                ],
+                "info": "mdspec",
+                "direct": true,
+                "closure": "closed"
+              }
+            ]
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-BROKEN"
+          ],
+          "completeness": "partial",
+          "diagnostics": [
+            {
+              "code": "spec.invalid-model",
+              "severity": "error",
+              "category": "user",
+              "message": "Missing model field: when",
+              "primary": {
+                "kind": "original",
+                "span": [
+                  118,
+                  188
+                ],
+                "reason": null
+              },
+              "related": [],
+              "requirement_id": "REQ-BROKEN"
+            },
+            {
+              "code": "spec.invalid-model",
+              "severity": "error",
+              "category": "user",
+              "message": "Missing model field: must",
+              "primary": {
+                "kind": "original",
+                "span": [
+                  118,
+                  188
+                ],
+                "reason": null
+              },
+              "related": [],
+              "requirement_id": "REQ-BROKEN"
+            }
+          ],
+          "rejected": [
+            {
+              "kind": "model",
+              "span": [
+                108,
+                193
+              ],
+              "text": "```mdspec\n{\"version\": 1, \"id\": \"MODEL-BROKEN\", \"kind\": \"constraint\", \"uses\": []}\n```\n",
+              "diagnostic_codes": [
+                "spec.invalid-model"
+              ]
+            }
+          ]
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-normal",
+      "classification": "C",
+      "input": {
+        "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: normal",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              52
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  41,
+                  48
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              52
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  41,
+                  48
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-body-only",
+      "classification": "C",
+      "input": {
+        "raw": "本文だけ\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: body-only",
+      "expected": {
+        "ids": [],
+        "candidates": [],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-malformed-header",
+      "classification": "C",
+      "input": {
+        "raw": "::: {.requirement #REQ-A spec-version=1} trailing\n本文\n:::\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: malformed-header",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              61
+            ],
+            "header_valid": false,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  50,
+                  57
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "partial"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              61
+            ],
+            "header_valid": false,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  50,
+                  57
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [],
+          "completeness": "partial",
+          "diagnostics": [
+            {
+              "code": "spec.invalid-requirement",
+              "severity": "error",
+              "category": "user",
+              "message": "Expected ::: {attributes} with no trailing text",
+              "primary": {
+                "kind": "original",
+                "span": [
+                  0,
+                  50
+                ],
+                "reason": null
+              },
+              "related": [],
+              "requirement_id": null
+            }
+          ],
+          "rejected": [
+            {
+              "kind": "requirement",
+              "span": [
+                0,
+                61
+              ],
+              "text": "::: {.requirement #REQ-A spec-version=1} trailing\n本文\n:::\n",
+              "diagnostic_codes": [
+                "spec.invalid-requirement"
+              ]
+            }
+          ]
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-unclosed-div",
+      "classification": "C",
+      "input": {
+        "raw": "::: {.requirement #REQ-A spec-version=1}\n本文\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: unclosed-div",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              48
+            ],
+            "header_valid": true,
+            "closure": "eof",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  41,
+                  48
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "partial"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              0,
+              48
+            ],
+            "header_valid": true,
+            "closure": "eof",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  41,
+                  48
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "partial",
+          "diagnostics": [
+            {
+              "code": "spec.invalid-requirement",
+              "severity": "error",
+              "category": "user",
+              "message": "Requirement is not closed in this source snapshot",
+              "primary": {
+                "kind": "original",
+                "span": [
+                  0,
+                  41
+                ],
+                "reason": null
+              },
+              "related": [],
+              "requirement_id": "REQ-A"
+            }
+          ],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-literal-fence",
+      "classification": "C",
+      "input": {
+        "raw": "```text\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n```\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: literal-fence",
+      "expected": {
+        "ids": [],
+        "candidates": [],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-literal-comment",
+      "classification": "C",
+      "input": {
+        "raw": "<!--\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n-->\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: literal-comment",
+      "expected": {
+        "ids": [],
+        "candidates": [],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-literal-code-span",
+      "classification": "C",
+      "input": {
+        "raw": "`<!--`\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: literal-code-span",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              8,
+              60
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  49,
+                  56
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              8,
+              60
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  49,
+                  56
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-literal-html-attribute",
+      "classification": "C",
+      "input": {
+        "raw": "<a title=\"<!--\">x</a>\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: literal-html-attribute",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              23,
+              75
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  64,
+                  71
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              23,
+              75
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  64,
+                  71
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-unicode-lf",
+      "classification": "C",
+      "input": {
+        "raw": "序📚 文\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: unicode-lf",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              15,
+              67
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  56,
+                  63
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              15,
+              67
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  56,
+                  63
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-unicode-crlf",
+      "classification": "C",
+      "input": {
+        "raw": "序📚\r\n\r\n::: {.requirement #REQ-A spec-version=1}\r\n本文\r\n:::\r\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: unicode-crlf",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              11,
+              66
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  53,
+                  61
+                ],
+                "text": "本文\r\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              11,
+              66
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  53,
+                  61
+                ],
+                "text": "本文\r\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "C-unicode-cr",
+      "classification": "C",
+      "input": {
+        "raw": "序📚\r\r::: {.requirement #REQ-A spec-version=1}\r本文\r:::\r"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Detect literal boundary or original UTF-8/newline span regressions: unicode-cr",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              9,
+              61
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  50,
+                  57
+                ],
+                "text": "本文\r"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              9,
+              61
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  50,
+                  57
+                ],
+                "text": "本文\r"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "public": {
+          "ids": [
+            "REQ-A"
+          ],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "",
+      "unsupported_reason": null
+    },
+    {
+      "id": "I-51-link-title",
+      "classification": "I",
+      "input": {
+        "raw": "[説明](https://example.com \"<!--\")\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Issue #51: a comment marker inside a link title must not hide the following requirement.",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              38,
+              90
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  79,
+                  86
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "Intentional prototype correction; baseline loses REQ-A. No production switch authorized.",
+      "unsupported_reason": null
+    },
+    {
+      "id": "I-51-image-title",
+      "classification": "I",
+      "input": {
+        "raw": "![画像](https://example.com/image.png \"<!--\")\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Issue #51: a comment marker inside a link title must not hide the following requirement.",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              49,
+              101
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  90,
+                  97
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "Intentional prototype correction; baseline loses REQ-A. No production switch authorized.",
+      "unsupported_reason": null
+    },
+    {
+      "id": "I-51-reference-title",
+      "classification": "I",
+      "input": {
+        "raw": "[ref]: https://example.com \"<!--\"\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Issue #51: a comment marker inside a link title must not hide the following requirement.",
+      "expected": {
+        "ids": [
+          "REQ-A"
+        ],
+        "candidates": [
+          {
+            "id": "REQ-A",
+            "ids": [
+              "REQ-A"
+            ],
+            "span": [
+              35,
+              87
+            ],
+            "header_valid": true,
+            "closure": "closed",
+            "bodies": [
+              {
+                "language": null,
+                "span": [
+                  76,
+                  83
+                ],
+                "text": "本文\n"
+              }
+            ],
+            "mdspec": []
+          }
+        ],
+        "document_status": "complete"
+      },
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "Intentional prototype correction; baseline loses REQ-A. No production switch authorized.",
+      "unsupported_reason": null
+    },
+    {
+      "id": "I-pending-paragraph-comment",
+      "classification": "I",
+      "input": {
+        "raw": "text <!--\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Record an unapproved block/comment-boundary difference without rewriting C expectations.",
+      "expected": null,
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "Unapproved intentional-change candidate; no production application.",
+      "unsupported_reason": "Expected semantics pending compatibility decision; observation only."
+    },
+    {
+      "id": "I-pending-div-tail-comment",
+      "classification": "I",
+      "input": {
+        "raw": "::: {.ordinary} <!--\n:::\n\n::: {.requirement #REQ-A spec-version=1}\n本文\n:::\n"
+      },
+      "compare_fields": [
+        "id",
+        "ids",
+        "span",
+        "header_valid",
+        "closure",
+        "bodies",
+        "mdspec"
+      ],
+      "detection_purpose": "Record an unapproved block/comment-boundary difference without rewriting C expectations.",
+      "expected": null,
+      "legacy": {
+        "candidates": [],
+        "public": {
+          "ids": [],
+          "completeness": "complete",
+          "diagnostics": [],
+          "rejected": []
+        }
+      },
+      "difference_reason": "Unapproved intentional-change candidate; no production application.",
+      "unsupported_reason": "Expected semantics pending compatibility decision; observation only."
+    }
+  ]
+}
